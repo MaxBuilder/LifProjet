@@ -1,1 +1,5 @@
 # LifProjet
+
+## Modélisation distribuée d’un jeu stratégique
+
+L’objectif de ce projet est de proposer une modélisation distribuée d’un jeu stratégique. Nous prendrons comme exemple le tactical RPG. Nous considérerons des personnages qui évoluent sur un environnement dynamique. Les personnages appartiennent à plusieurs groupes. Les personnages peuvent se déplacer en même temps selon des règles préétablies. Nous implémenterons une méthode de résolution distribuée avec des entités autonomes dotée de comportements intelligents. Nous commencerons par définir des stratégies de résolution simples dans lesquelles les personnages effectuent des déplacements uniquement sur la base de leur perception. Dans une deuxième étape, nous définirons des stratégies de résolution plus fines permettant aux personnages de construire des stratégies de jeu collectives en interagissant avec leur voisinage. L'étudiant peut avoir acces a une premiere implementation deja realisee. 
