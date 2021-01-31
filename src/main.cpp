@@ -1,8 +1,14 @@
-#include "Application.hpp"
+#include "Application/Application.hpp"
+
+#include <stdexcept>
+#include <iostream>
 
 int main() {
-    Application app;
-    app.launch();
-
-    return 0;
+    try {
+        Application app;
+        app.run();
+    }
+    catch (std::exception& e) {
+        std::cout << "\nEXCEPTION: " << e.what() << std::endl;
+    }
 }
