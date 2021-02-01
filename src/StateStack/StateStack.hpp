@@ -36,7 +36,7 @@ public:
 
     void update(sf::Time dt);
     void draw();
-    void handleEvent(const sf::Event event);
+    void handleEvent(const sf::Event& event);
 
     void pushState(States::ID stateID);
     void popState();

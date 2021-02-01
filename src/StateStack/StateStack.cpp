@@ -18,7 +18,7 @@ void StateStack::draw() {
         state->draw();
 }
 
-void StateStack::handleEvent(const sf::Event event) {
+void StateStack::handleEvent(const sf::Event& event) {
     for(auto itr = mStack.rbegin() ; itr != mStack.rend() ; ++itr) {
         if(!(*itr)->handleEvent(event))
             break;

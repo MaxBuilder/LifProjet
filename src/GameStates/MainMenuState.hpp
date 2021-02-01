@@ -6,6 +6,8 @@
 #define LIFPROJET_MAINMENUSTATE_HPP
 
 #include "../StateStack/State.hpp"
+#include "../GUI/Button.hpp"
+#include "../GUI/Container.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
@@ -21,6 +23,7 @@ public:
 
 private :
     sf::Sprite background;
+    GUI::Container mGUIContainer;
 };
 
 

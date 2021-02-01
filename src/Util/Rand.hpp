@@ -20,7 +20,7 @@ private:
     static std::default_random_engine generator;
 };
 
-std::default_random_engine Random::generator = std::default_random_engine(static_cast<unsigned int>(time(0))); // à modifier
+std::default_random_engine Random::generator = std::default_random_engine(static_cast<unsigned long>(std::time(nullptr))); // à modifier
 
 int Random::Generate(int p_min, int p_max) {
     std::uniform_int_distribution<int> distribution(p_min, p_max);

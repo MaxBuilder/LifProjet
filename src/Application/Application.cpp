@@ -15,6 +15,7 @@ Application::Application()
 {
     // Chargement des ressources
     mTextures.load(Textures::Background, "data/test.png");
+    mTextures.load(Textures::Button, "data/Buttons.png");
     mFonts.load(Fonts::Main, "data/font.ttf");
 
     mStatisticsText.setFont(mFonts.get(Fonts::Main));
