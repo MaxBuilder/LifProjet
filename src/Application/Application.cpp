@@ -1,6 +1,7 @@
 #include "Application.hpp"
 
 #include "../GameStates/MainMenuState.hpp"
+#include "../GameStates/MapEditorState.hpp"
 
 const sf::Time Application::TimePerFrame = sf::seconds(1.f/60.f);
 
@@ -23,7 +24,8 @@ Application::Application()
 
     // Initialisation des gamestates
     registerStates();
-    mStateStack.pushState(States::MainMenu);
+    // mStateStack.pushState(States::MainMenu);
+    mStateStack.pushState(States::MapEditor);
 }
 
 void Application::run() {
@@ -87,4 +89,5 @@ void Application::updateStatistics(sf::Time dt) {
 
 void Application::registerStates() {
     mStateStack.registerState<MainMenuState>(States::MainMenu);
+    mStateStack.registerState<MapEditorState>(States::MapEditor);
 }
