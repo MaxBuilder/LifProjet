@@ -6,9 +6,11 @@
 #define LIFPROJET_MAPEDITORSTATE_HPP
 
 #include "../StateStack/State.hpp"
+#include "../Map/TilesMap.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Window/Event.hpp>
 
 class MapEditorState : public State {
 public:
@@ -19,7 +21,9 @@ public:
     virtual bool handleEvent(const sf::Event& event);
 
 private :
-    sf::Sprite background;
+    TilesMap map;
+
+    void switchGround(const sf::Event& event);
 };
 
 #endif //LIFPROJET_MAPEDITORSTATE_HPP

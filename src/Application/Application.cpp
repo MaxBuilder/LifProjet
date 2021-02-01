@@ -6,7 +6,7 @@
 const sf::Time Application::TimePerFrame = sf::seconds(1.f/60.f);
 
 Application::Application()
-: mWindow(sf::VideoMode(1280, 720), "Jeu", sf::Style::Close)
+: mWindow(sf::VideoMode(1920, 1080), "Jeu", sf::Style::Close)
 , mTextures()
 , mFonts()
 , mStateStack(State::Context(mWindow, mTextures, mFonts))
@@ -16,6 +16,7 @@ Application::Application()
 {
     // Chargement des ressources
     mTextures.load(Textures::Background, "data/test.png");
+    mTextures.load(Textures::Map, "data/TextureMap.png");
     mFonts.load(Fonts::Main, "data/font.ttf");
 
     mStatisticsText.setFont(mFonts.get(Fonts::Main));
@@ -26,6 +27,7 @@ Application::Application()
     registerStates();
     // mStateStack.pushState(States::MainMenu);
     mStateStack.pushState(States::MapEditor);
+    mStateStack.handleEvent(sf::Event());
 }
 
 void Application::run() {
