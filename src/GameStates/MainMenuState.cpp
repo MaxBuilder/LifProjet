@@ -12,7 +12,7 @@ MainMenuState::MainMenuState(StateStack &stack, Context context)
     sf::Texture& texture = context.textures.get(Textures::Background);
     background.setTexture(texture);
 
-    auto button = std::make_shared<GUI::Button>(context);
+    auto button = std::make_shared<GUI::Button>(context, 200, 50, Textures::Button);
     button->setPosition(100, 100);
     button->setText("Coucou");
 

@@ -8,6 +8,7 @@
 #include "Component.hpp"
 #include "../StateStack/State.hpp"
 #include "../Util/Utility.hpp"
+#include "../Resources/ResourceIdentifiers.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
@@ -31,7 +32,8 @@ namespace GUI {
         };
 
     public:
-        Button(State::Context context);
+        Button(State::Context context, float width, float height, Textures::ID textureID);
+        //Button(State::Context context);
 
         void setCallback(Callback callback);
         void setText(const std::string& text);
@@ -55,7 +57,7 @@ namespace GUI {
         sf::Sprite mSprite;
         sf::Text mText;
         bool mIsToggle;
-
+        float width, height;
     };
 
 }

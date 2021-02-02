@@ -16,6 +16,7 @@ Application::Application()
     // Chargement des ressources
     mTextures.load(Textures::Background, "data/test.png");
     mTextures.load(Textures::Button, "data/Buttons.png");
+    mTextures.load(Textures::Test, "data/test2.png");
     mFonts.load(Fonts::Main, "data/font.ttf");
 
     mStatisticsText.setFont(mFonts.get(Fonts::Main));
@@ -25,6 +26,7 @@ Application::Application()
     // Initialisation des gamestates
     registerStates();
     mStateStack.pushState(States::MainMenu);
+    processInput(); // Fix to apply pending changes to statestack
 }
 
 void Application::run() {

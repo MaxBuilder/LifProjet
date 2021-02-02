@@ -8,11 +8,14 @@
 
 namespace GUI {
 
-    Button::Button(State::Context context)
+    Button::Button(State::Context context, float width, float height, Textures::ID textureID)
+    //Button::Button(State::Context context)
     : mCallback()
-    , mSprite(context.textures.get(Textures::Button))
+    , mSprite(context.textures.get(textureID))
     , mText("", context.fonts.get(Fonts::Main), 16)
-    , mIsToggle(false) {
+    , mIsToggle(false)
+    , width(width)
+    , height(height) {
         changeTexture(Normal);
 
         sf::FloatRect bounds = mSprite.getLocalBounds();
@@ -77,7 +80,7 @@ namespace GUI {
     }
 
     void Button::changeTexture(Type buttonType) {
-        sf::IntRect textureRect(0, 50 * buttonType, 200, 50);
+        sf::IntRect textureRect(0, 50 * buttonType, width, height);
         mSprite.setTextureRect(textureRect);
     }
 

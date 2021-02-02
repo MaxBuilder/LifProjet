@@ -16,7 +16,8 @@ namespace sf
 namespace Textures {
     enum ID {
         Background,
-        Button
+        Button,
+        Test
     };
 }
 
