@@ -9,7 +9,6 @@
 namespace GUI {
 
     Button::Button(State::Context context, float width, float height, Textures::ID textureID)
-    //Button::Button(State::Context context)
     : mCallback()
     , mSprite(context.textures.get(textureID))
     , mText("", context.fonts.get(Fonts::Main), 16)

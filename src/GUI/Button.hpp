@@ -33,7 +33,6 @@ namespace GUI {
 
     public:
         Button(State::Context context, float width, float height, Textures::ID textureID);
-        //Button(State::Context context);
 
         void setCallback(Callback callback);
         void setText(const std::string& text);
