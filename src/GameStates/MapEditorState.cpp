@@ -24,7 +24,7 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
 
     if(event.type == sf::Event::KeyPressed){
         std::cout<<"Keypressed\n";
-        switchGround(event);
+        switchTool(event);
     }
 
     if (event.type == sf::Event::MouseMoved){
@@ -38,7 +38,7 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
     return false;
 }
 
-void MapEditorState::switchGround(const sf::Event& event){
+void MapEditorState::switchTool(const sf::Event& event){
     switch (event.key.code){
 
         case sf::Keyboard::Numpad0 : map.setGroundSelection(Textures::ground::Grass); break;
@@ -50,6 +50,16 @@ void MapEditorState::switchGround(const sf::Event& event){
         case sf::Keyboard::Numpad3 : map.setGroundSelection(Textures::ground::Water); break;
 
         case sf::Keyboard::Numpad4 : map.setGroundSelection(Textures::ground::Wall); break;
+
+        case sf::Keyboard::Numpad7 : map.setRotation(0.f); break;
+
+        case sf::Keyboard::Numpad8 : map.setRotation(90.f); break;
+
+        case sf::Keyboard::Numpad9 : map.setRotation(-1.f); break;
+
+        case sf::Keyboard::S : map.save("data/Maps/test.map"); break;
+
+        case sf::Keyboard::L : map.load("data/Maps/test.map"); break;
 
         default : std::cout<<"default way : "<<event.key.code<<"\n"; break;
 

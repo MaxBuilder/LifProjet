@@ -23,7 +23,7 @@ public:
 private :
     TilesMap map;
 
-    void switchGround(const sf::Event& event);
+    void switchTool(const sf::Event& event);
 };
 
 #endif //LIFPROJET_MAPEDITORSTATE_HPP
