@@ -29,7 +29,7 @@ Textures::building::ID Tile::getBuilding() const{
     return building;
 }
 
-int Tile::getMoveSpeed() const{
+float Tile::getMoveSpeed() const{
     return moveSpeed;
 }
 
@@ -45,7 +45,7 @@ void Tile::setBuilding(const Textures::building::ID &id){
     building = id;
 }
 
-void Tile::setMoveSpeed(const int &speed){
+void Tile::setMoveSpeed(const float &speed){
     assert(speed >= 0);
     moveSpeed = speed;
 }

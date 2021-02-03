@@ -8,7 +8,7 @@
 
 MapEditorState::MapEditorState(StateStack &stack, Context context)
         : State(stack, context)
-        , map(mapMode::mapEditor, context.textures.get(Textures::Map)){
+        , map(map::mode::mapEditor, context.textures.get(Textures::Map),  context.window.getSize()){
 }
 
 void MapEditorState::draw() {
@@ -23,15 +23,14 @@ bool MapEditorState::update(sf::Time dt) {
 bool MapEditorState::handleEvent(const sf::Event& event) {
 
     if(event.type == sf::Event::KeyPressed){
-        std::cout<<"Keypressed\n";
         switchTool(event);
     }
 
     if (event.type == sf::Event::MouseMoved){
 
         sf::Vector2i position = sf::Mouse::getPosition(getContext().window);
-
-        if (position.x < 1920*0.8f and position.x >= 0 and position.y >= 108 and position.y < 1080-108 ) // rectangle contenant la map
+        sf::Vector2u  size = getContext().window.getSize();
+        if (position.x < size.x*0.8f and position.x >= 0 and position.y >= size.y*0.1 and position.y < size.y*0.9 ) // rectangle contenant la map
 
             map.handleEvent(event, getContext().window);
     }
@@ -60,6 +59,16 @@ void MapEditorState::switchTool(const sf::Event& event){
         case sf::Keyboard::S : map.save("data/Maps/test.map"); break;
 
         case sf::Keyboard::L : map.load("data/Maps/test.map"); break;
+
+        case sf::Keyboard::A : map.setTool(map::tool::standard); break;
+
+        case sf::Keyboard::Z : map.setTool(map::tool::square3); break;
+
+        case sf::Keyboard::E : map.setTool(map::tool::circle5); break;
+
+        case sf::Keyboard::R : map.setTool(map::tool::fill); break;
+
+        case sf::Keyboard::U : map.Undo(); break;
 
         default : std::cout<<"default way : "<<event.key.code<<"\n"; break;
 

@@ -12,9 +12,12 @@ namespace sf
     //class Shader;
     //class SoundBuffer;
 }
-namespace mapMode{
+namespace map{
     enum mode{
         mapEditor, game, preview
+    };
+    enum tool{
+        standard, square3, circle5, fill, undo
     };
 }
 

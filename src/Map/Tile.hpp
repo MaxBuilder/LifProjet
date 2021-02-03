@@ -18,14 +18,14 @@ public:
     Textures::ground::ID getGround() const;
     Textures::building::ID getBuilding() const;
 
-    int getMoveSpeed() const;
+    float getMoveSpeed() const;
     float getRotation() const;
     bool isCrossable() const;
 
     void setGround(const Textures::ground::ID &id);
     void setBuilding(const Textures::building::ID &id);
 
-    void setMoveSpeed(const int &speed);
+    void setMoveSpeed(const float &speed);
     void setRotation(const float &rotation);
     void setcrossable(const bool &cross);
 
@@ -37,7 +37,7 @@ private:
 
     Textures::building::ID building;
 
-    int moveSpeed;
+    float moveSpeed;
     bool crossable;
 
 };
