@@ -12,13 +12,34 @@ namespace sf
     //class Shader;
     //class SoundBuffer;
 }
+namespace map{
+    enum mode{
+        mapEditor, game, preview
+    };
+    enum tool{
+        standard, square3, circle5, fill, undo
+    };
+}
 
 namespace Textures {
     enum ID {
         Background,
         Button,
-        Test
+        Test,
+        Map
     };
+
+    namespace ground{
+        enum ID {
+            None, Grass, Wood, Sand, Wall, Water
+        };
+    }
+
+    namespace building{
+        enum ID{
+            None, Barrier
+        };
+    }
 }
 
 namespace Fonts {
