@@ -7,6 +7,7 @@
 
 #include "../GameStates/StateIdentifiers.hpp"
 #include "../Resources/ResourceIdentifiers.hpp"
+#include "../Audio/SoundPlayer.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Time.hpp>
@@ -20,14 +21,14 @@ class State {
 public:
     typedef std::unique_ptr<State> Ptr;
 
-    struct Context { // Sert à stocker toutes les refs utiles dans les states (à incrémenter)
+    struct Context { // Stocke toutes les refs utiles dans les states (à incrémenter)
         sf::RenderWindow& window;
         TextureHolder& textures;
         FontHolder& fonts;
         //MusicPlayer& music;
-        //SoundPlayer& sounds;
+        SoundPlayer& sounds;
 
-        Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts);
+        Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, SoundPlayer& sounds);
     };
 
 

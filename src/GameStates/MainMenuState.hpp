@@ -13,6 +13,7 @@
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/System/Sleep.hpp>
 
 class MainMenuState : public State {
 public:

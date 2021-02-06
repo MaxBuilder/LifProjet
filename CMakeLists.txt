@@ -14,5 +14,5 @@ add_executable(LifProjet src/main.cpp src/Application/Application.cpp src/Applic
         src/GameStates/MainMenuState.hpp src/GUI/Component.cpp src/GUI/Component.hpp
         src/GUI/Button.cpp src/GUI/Button.hpp src/Util/Utility.cpp src/GUI/Container.cpp src/GUI/Container.hpp
         src/GameStates/MapEditorState.cpp src/GameStates/MapEditorState.hpp src/Map/TilesMap.hpp src/Map/TilesMap.cpp
-        src/Map/Tile.cpp src/Map/Tile.hpp)
+        src/Map/Tile.cpp src/Map/Tile.hpp src/Audio/SoundPlayer.cpp src/Audio/SoundPlayer.hpp src/Audio/MusicPlayer.cpp src/Audio/MusicPlayer.hpp)
 target_link_libraries(LifProjet sfml-graphics sfml-audio)

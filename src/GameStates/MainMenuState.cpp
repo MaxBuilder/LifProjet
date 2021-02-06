@@ -27,6 +27,7 @@ MainMenuState::MainMenuState(StateStack &stack, Context context)
     auto playButton = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
     playButton->setPosition(390, 360);
     playButton->setText("Simulation");
+    // set callback
 
     auto editorButton = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
     editorButton->setPosition(390, 460);
@@ -34,6 +35,7 @@ MainMenuState::MainMenuState(StateStack &stack, Context context)
     editorButton->setCallback([this] () {
         requestStackPop();
         requestStackPush(States::MapEditor);
+        getContext().sounds.play(Sounds::Menu);
     });
 
     auto quitButton = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
@@ -41,6 +43,8 @@ MainMenuState::MainMenuState(StateStack &stack, Context context)
     quitButton->setText("Quit");
     quitButton->setCallback([this] () {
         requestStackPop();
+        getContext().sounds.play(Sounds::Menu);
+        sf::sleep(sf::milliseconds(200));
     });
 
     mGUIContainer.pack(playButton);

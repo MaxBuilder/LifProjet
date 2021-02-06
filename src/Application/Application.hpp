@@ -6,6 +6,7 @@
 #include "../StateStack//StateStack.hpp"
 #include "../Resources/ResourceIdentifiers.hpp"
 #include "../Resources/ResourceHolder.hpp"
+#include "../Audio/SoundPlayer.hpp"
 #include "../Util/Utility.hpp"
 #include <SFML/System/Time.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -25,6 +26,7 @@ private:
 
     void updateStatistics(sf::Time dt);
     void registerStates();
+    //void loadTextures();
 
 
 private:
@@ -33,6 +35,7 @@ private:
     sf::RenderWindow mWindow;
     TextureHolder mTextures;
     FontHolder mFonts;
+    SoundPlayer mSounds;
 
     StateStack mStateStack;
 

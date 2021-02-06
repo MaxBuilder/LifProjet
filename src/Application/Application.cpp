@@ -9,7 +9,8 @@ Application::Application()
 : mWindow(sf::VideoMode(1280, 720), "LifProjet", sf::Style::Close)
 , mTextures()
 , mFonts()
-, mStateStack(State::Context(mWindow, mTextures, mFonts))
+, mSounds()
+, mStateStack(State::Context(mWindow, mTextures, mFonts, mSounds))
 , mStatisticsText()
 , mStatisticsUpdateTime()
 , mStatisticsNumFrames(0)
@@ -25,14 +26,17 @@ Application::Application()
     mTextures.load(Textures::Map, "data/textureMap.png");
     mFonts.load(Fonts::Main, "data/font.ttf");
 
+    // Chargement des effets sonores
+    mSounds.load(Sounds::Menu, "data/audio/click.wav");
+
     mStatisticsText.setFont(mFonts.get(Fonts::Main));
     mStatisticsText.setPosition(.5f, .5f);
     mStatisticsText.setCharacterSize(10u);
 
-    // Initialisation des gamestates
+    // Initialisation de la statestack
     registerStates();
     mStateStack.pushState(States::MainMenu);
-    mStateStack.handleEvent(sf::Event());
+    mStateStack.handleEvent(sf::Event()); // Temp solution for initial startup
 }
 
 void Application::run() {

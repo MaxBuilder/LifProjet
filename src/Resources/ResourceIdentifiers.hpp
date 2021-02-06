@@ -9,7 +9,7 @@ namespace sf
 {
     class Texture;
     class Font;
-    //class SoundBuffer;
+    class SoundBuffer;
 }
 
 namespace Textures {
@@ -44,7 +44,9 @@ namespace Fonts {
 }
 
 namespace Sounds {
-    // à venir
+    enum ID {
+        Menu,
+    };
 }
 
 namespace map{
@@ -61,7 +63,6 @@ class ResourceHolder;
 
 typedef ResourceHolder<sf::Texture, Textures::ID> TextureHolder;
 typedef ResourceHolder<sf::Font, Fonts::ID>	FontHolder;
-//typedef ResourceHolder<sf::Shader, Shaders::ID>	ShaderHolder;
-//typedef ResourceHolder<sf::SoundBuffer, SoundEffect::ID> SoundBufferHolder;
+typedef ResourceHolder<sf::SoundBuffer, Sounds::ID> SoundBufferHolder;
 
 #endif //LIFPROJET_RESOURCEIDENTIFIERS_HPP
