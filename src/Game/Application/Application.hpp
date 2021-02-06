@@ -3,11 +3,12 @@
 #ifndef LIFPROJET_APPLICATION_HPP
 #define LIFPROJET_APPLICATION_HPP
 
-#include "../StateStack//StateStack.hpp"
+#include "../../Core/StateStack/StateStack.hpp"
+#include "../../Core/Audio/SoundPlayer.hpp"
+#include "../../Core/Util/Utility.hpp"
 #include "../Resources/ResourceIdentifiers.hpp"
 #include "../Resources/ResourceHolder.hpp"
-#include "../Audio/SoundPlayer.hpp"
-#include "../Util/Utility.hpp"
+
 #include <SFML/System/Time.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>

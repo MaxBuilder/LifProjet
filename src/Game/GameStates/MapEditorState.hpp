@@ -5,8 +5,8 @@
 #ifndef LIFPROJET_MAPEDITORSTATE_HPP
 #define LIFPROJET_MAPEDITORSTATE_HPP
 
-#include "../StateStack/State.hpp"
-#include "../Map/TilesMap.hpp"
+#include "../../Core/StateStack/State.hpp"
+#include "../../Game/Map/TilesMap.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>

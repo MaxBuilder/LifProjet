@@ -4,7 +4,7 @@
 
 #include "Button.hpp"
 
-#include "../Resources/ResourceHolder.hpp"
+#include "../../Game/Resources/ResourceHolder.hpp"
 
 namespace GUI {
 

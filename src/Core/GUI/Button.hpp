@@ -6,9 +6,9 @@
 #define LIFPROJET_BUTTON_HPP
 
 #include "Component.hpp"
-#include "../StateStack/State.hpp"
-#include "../Util/Utility.hpp"
-#include "../Resources/ResourceIdentifiers.hpp"
+#include "../../Core/StateStack/State.hpp"
+#include "../../Core/Util/Utility.hpp"
+#include "../../Game/Resources/ResourceIdentifiers.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>

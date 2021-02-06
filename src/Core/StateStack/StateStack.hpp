@@ -7,10 +7,11 @@
 
 #include "State.hpp"
 
+#include "../../Core/Util/Foreach.hpp"
+
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/System/Time.hpp>
-#include "../Util/Foreach.hpp"
 
 #include <vector>
 #include <utility>

@@ -3,7 +3,9 @@
 //
 
 #include "MapEditorState.hpp"
-#include "../Resources/ResourceHolder.hpp"
+
+#include "../../Game/Resources/ResourceHolder.hpp"
+
 #include <iostream>
 
 MapEditorState::MapEditorState(StateStack &stack, Context context)

@@ -10,7 +10,7 @@
 #include "SFML/Graphics/Drawable.hpp"
 #include "SFML/Graphics/Transformable.hpp"
 #include "SFML/Graphics/Sprite.hpp"
-#include "../Resources/ResourceIdentifiers.hpp"
+#include "../../Game/Resources/ResourceIdentifiers.hpp"
 #include "SFML/Graphics/Texture.hpp"
 #include "SFML/Window/Event.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"

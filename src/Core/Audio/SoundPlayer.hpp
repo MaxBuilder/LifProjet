@@ -5,8 +5,8 @@
 #ifndef LIFPROJET_SOUNDPLAYER_HPP
 #define LIFPROJET_SOUNDPLAYER_HPP
 
-#include "../Resources/ResourceIdentifiers.hpp"
-#include "../Resources/ResourceHolder.hpp"
+#include "../../Game/Resources/ResourceIdentifiers.hpp"
+#include "../../Game/Resources/ResourceHolder.hpp"
 
 #include <SFML/System/NonCopyable.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>

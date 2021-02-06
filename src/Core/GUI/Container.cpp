@@ -3,10 +3,9 @@
 //
 
 #include "Container.hpp"
-#include <iostream>
-
-#include "../Util/Foreach.hpp"
 #include "Button.hpp"
+
+#include "../../Core/Util/Foreach.hpp"
 
 namespace GUI {
 

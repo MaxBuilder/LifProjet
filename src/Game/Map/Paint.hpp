@@ -6,7 +6,8 @@
 #define LIFPROJET_PAINT_HPP
 
 #include "Tile.hpp"
-#include "../Resources/ResourceIdentifiers.hpp"
+
+#include "../../Game/Resources/ResourceIdentifiers.hpp"
 
 class Paint{
 

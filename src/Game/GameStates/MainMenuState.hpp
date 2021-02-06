@@ -5,11 +5,11 @@
 #ifndef LIFPROJET_MAINMENUSTATE_HPP
 #define LIFPROJET_MAINMENUSTATE_HPP
 
-#include "../StateStack/State.hpp"
-#include "../GUI/Container.hpp"
-#include "../GUI/Button.hpp"
-#include "../Util/Utility.hpp"
-#include "../Util/Rand.hpp"
+#include "../../Core/StateStack/State.hpp"
+#include "../../Core/GUI/Container.hpp"
+#include "../../Core/GUI/Button.hpp"
+#include "../../Core/Util/Utility.hpp"
+#include "../../Core/Util/Rand.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>

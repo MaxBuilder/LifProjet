@@ -3,8 +3,8 @@
 //
 
 #include "MainMenuState.hpp"
-#include "../Resources/ResourceHolder.hpp"
-#include <iostream>
+
+#include "../../Game/Resources/ResourceHolder.hpp"
 
 MainMenuState::MainMenuState(StateStack &stack, Context context)
 : State(stack, context)

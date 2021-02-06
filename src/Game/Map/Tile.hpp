@@ -5,7 +5,7 @@
 #ifndef LIFPROJET_TILE_HPP
 #define LIFPROJET_TILE_HPP
 
-#include "../Resources/ResourceIdentifiers.hpp"
+#include "../../Game/Resources/ResourceIdentifiers.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 
 class Tile {

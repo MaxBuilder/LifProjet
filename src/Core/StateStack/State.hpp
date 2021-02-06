@@ -5,8 +5,8 @@
 #ifndef LIFPROJET_STATE_HPP
 #define LIFPROJET_STATE_HPP
 
-#include "../GameStates/StateIdentifiers.hpp"
-#include "../Resources/ResourceIdentifiers.hpp"
+#include "../../Game/GameStates/StateIdentifiers.hpp"
+#include "../../Game/Resources/ResourceIdentifiers.hpp"
 #include "../Audio/SoundPlayer.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
