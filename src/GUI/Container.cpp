@@ -6,18 +6,20 @@
 #include <iostream>
 
 #include "../Util/Foreach.hpp"
+#include "Button.hpp"
 
 namespace GUI {
 
     Container::Container()
-            : mChildren(), mSelectedChild(-1) {
+    : mChildren()
+    , mSelectedChild(-1) {
     }
 
     void Container::pack(Component::Ptr component) {
         mChildren.push_back(component);
 
-        if (!hasSelection() && component->isSelectable())
-            select(mChildren.size() - 1);
+        /*if (!hasSelection() && component->isSelectable())
+            select(mChildren.size() - 1);*/
     }
 
     bool Container::isSelectable() const {
@@ -36,6 +38,20 @@ namespace GUI {
             } else if (event.key.code == sf::Keyboard::Return || event.key.code == sf::Keyboard::Space) {
                 if (hasSelection())
                     mChildren[mSelectedChild]->activate();
+            }
+        }
+    }
+
+    // Reserved for buttons (click action)
+    void Container::handleEvent(const sf::Event &event, const sf::RenderWindow& window) {
+        sf::Vector2i mouseCoord = sf::Mouse::getPosition(window);
+        float x = mouseCoord.x, y = mouseCoord.y;
+            for(auto& child : mChildren) {
+            std::shared_ptr<Button> derived = std::dynamic_pointer_cast<Button>(child);
+            if(x >= derived->getPosition().x and x <= derived->getPosition().x + derived->getWidth()
+            and y >= derived->getPosition().y and y <= derived->getPosition().y + derived->getHeight()) {
+                if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                    derived->activate();
             }
         }
     }

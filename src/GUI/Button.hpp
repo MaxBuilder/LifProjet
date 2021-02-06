@@ -45,6 +45,9 @@ namespace GUI {
         virtual void activate();
         virtual void deactivate();
 
+        float getWidth() const;
+        float getHeight() const;
+
         virtual void handleEvent(const sf::Event& event);
 
     private:

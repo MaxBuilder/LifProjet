@@ -9,19 +9,49 @@
 MainMenuState::MainMenuState(StateStack &stack, Context context)
 : State(stack, context)
 , mGUIContainer() {
-    sf::Texture& texture = context.textures.get(Textures::Background);
-    background.setTexture(texture);
+    Textures::ID backgroundID;
+    switch(Random::Generate(1, 4)) {
+        case 1: backgroundID = Textures::Background1; break;
+        case 2: backgroundID = Textures::Background2; break;
+        case 3: backgroundID = Textures::Background3; break;
+        case 4: backgroundID = Textures::Background4; break;
+    }
 
-    auto button = std::make_shared<GUI::Button>(context, 200, 50, Textures::Button);
-    button->setPosition(100, 100);
-    button->setText("Coucou");
+    sf::Texture& backgroundTexture = context.textures.get(backgroundID);
+    background.setTexture(backgroundTexture);
+    sf::Texture& titleTexture = context.textures.get(Textures::MenuTitle);
+    title.setTexture(titleTexture);
+    centerOrigin(title);
+    title.setPosition(640, 180);
 
-    mGUIContainer.pack(button);
+    auto playButton = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
+    playButton->setPosition(390, 360);
+    playButton->setText("Simulation");
+
+    auto editorButton = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
+    editorButton->setPosition(390, 460);
+    editorButton->setText("Edit Map");
+    editorButton->setCallback([this] () {
+        requestStackPop();
+        requestStackPush(States::MapEditor);
+    });
+
+    auto quitButton = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
+    quitButton->setPosition(390, 560);
+    quitButton->setText("Quit");
+    quitButton->setCallback([this] () {
+        requestStackPop();
+    });
+
+    mGUIContainer.pack(playButton);
+    mGUIContainer.pack(editorButton);
+    mGUIContainer.pack(quitButton);
 }
 
 void MainMenuState::draw() {
     sf::RenderWindow& window = getContext().window;
     window.draw(background);
+    window.draw(title);
     window.draw(mGUIContainer);
 }
 
@@ -30,7 +60,6 @@ bool MainMenuState::update(sf::Time dt) {
 }
 
 bool MainMenuState::handleEvent(const sf::Event &event) {
-    //std::cout << event << std::endl;
-    mGUIContainer.handleEvent(event);
+    mGUIContainer.handleEvent(event, getContext().window);
     return false;
 }

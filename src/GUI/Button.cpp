@@ -35,7 +35,7 @@ namespace GUI {
     }
 
    bool Button::isSelectable() const {
-        return true;
+        return false;
     }
 
     void Button::select() {
@@ -68,6 +68,14 @@ namespace GUI {
                 changeTexture(Selected);
             else changeTexture(Normal);
         }
+    }
+
+    float Button::getWidth() const {
+        return width;
+    }
+
+    float Button::getHeight() const {
+        return height;
     }
 
     void Button::handleEvent(const sf::Event& event) {}

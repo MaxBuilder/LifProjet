@@ -9,34 +9,29 @@ namespace sf
 {
     class Texture;
     class Font;
-    //class Shader;
     //class SoundBuffer;
-}
-namespace map{
-    enum mode{
-        mapEditor, game, preview
-    };
-    enum tool{
-        standard, square3, circle5, fill, undo
-    };
 }
 
 namespace Textures {
     enum ID {
-        Background,
-        Button,
-        Test,
+        None,
+        Background1,
+        Background2,
+        Background3,
+        Background4,
+        MenuTitle,
+        MenuButton,
         Map
     };
 
-    namespace ground{
+    namespace ground {
         enum ID {
             None, Grass, Wood, Sand, Wall, Water
         };
     }
 
-    namespace building{
-        enum ID{
+    namespace building {
+        enum ID {
             None, Barrier
         };
     }
@@ -45,6 +40,19 @@ namespace Textures {
 namespace Fonts {
     enum ID {
         Main
+    };
+}
+
+namespace Sounds {
+    // à venir
+}
+
+namespace map{
+    enum mode {
+        mapEditor, game, preview
+    };
+    enum tool {
+        standard, square3, circle5, fill, undo
     };
 }
 

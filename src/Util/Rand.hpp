@@ -6,28 +6,35 @@
 #define LIFPROJET_RAND_HPP
 
 #include<random>
-#include<ctime>
+#include<chrono>
 
-class Random final {
-public:
-    Random() = delete;
+namespace {
+    class Random final {
+    public:
+        Random() = delete;
 
-    static int Generate(int p_min, int p_max);
-    static int Generate(float p_min, float p_max);
-    static bool TryPercentage(float p_percentage);
+        // All inclusive
+        static int Generate(int p_min, int p_max);
 
-private:
-    static std::default_random_engine generator;
-};
+        static float Generate(float p_min, float p_max);
 
-std::default_random_engine Random::generator = std::default_random_engine(static_cast<unsigned long>(std::time(nullptr))); // à modifier
+        static bool TryPercentage(float p_percentage);
+
+    private:
+        static std::default_random_engine generator;
+    };
+}
+
+#endif //LIFPROJET_RAND_HPP
+
+std::default_random_engine Random::generator = std::default_random_engine(std::chrono::steady_clock::now().time_since_epoch().count()); // à modifier
 
 int Random::Generate(int p_min, int p_max) {
     std::uniform_int_distribution<int> distribution(p_min, p_max);
     return distribution(generator);
 }
 
-int Random::Generate(float p_min, float p_max) {
+float Random::Generate(float p_min, float p_max) {
     std::uniform_real_distribution<float> distribution(p_min, p_max);
     return distribution(generator);
 }
@@ -37,4 +44,4 @@ bool Random::TryPercentage(float p_percentage) {
     return distribution(generator);
 }
 
-#endif //LIFPROJET_RAND_HPP
+

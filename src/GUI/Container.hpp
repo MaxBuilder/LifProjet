@@ -10,6 +10,7 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 
 #include <memory>
 #include <vector>
@@ -26,6 +27,7 @@ namespace GUI {
 
         virtual bool isSelectable() const;
         virtual void handleEvent(const sf::Event& event);
+        virtual void handleEvent(const sf::Event& event, const sf::RenderWindow& window); // Reserved for buttons
 
     private:
         virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const;

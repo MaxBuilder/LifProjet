@@ -6,7 +6,7 @@
 const sf::Time Application::TimePerFrame = sf::seconds(1.f/60.f);
 
 Application::Application()
-: mWindow(sf::VideoMode(1280, 720), "Jeu", sf::Style::Close)
+: mWindow(sf::VideoMode(1280, 720), "LifProjet", sf::Style::Close)
 , mTextures()
 , mFonts()
 , mStateStack(State::Context(mWindow, mTextures, mFonts))
@@ -14,11 +14,15 @@ Application::Application()
 , mStatisticsUpdateTime()
 , mStatisticsNumFrames(0)
 {
-    // Chargement des ressources
-    mTextures.load(Textures::Background, "data/test.png");
-    mTextures.load(Textures::Map, "data/TextureMap.png");
-    mTextures.load(Textures::Button, "data/Buttons.png");
-    mTextures.load(Textures::Test, "data/test2.png");
+    // Chargement des ressources (heaven naming conventions)
+    mTextures.load(Textures::None, "data/none.png");
+    mTextures.load(Textures::Background1, "data/background/background_menu1.png");
+    mTextures.load(Textures::Background2, "data/background/background_menu2.png");
+    mTextures.load(Textures::Background3, "data/background/background_menu3.png");
+    mTextures.load(Textures::Background4, "data/background/background_menu4.png");
+    mTextures.load(Textures::MenuButton, "data/menuButton.png");
+    mTextures.load(Textures::MenuTitle, "data/menuTitle.png");
+    mTextures.load(Textures::Map, "data/textureMap.png");
     mFonts.load(Fonts::Main, "data/font.ttf");
 
     mStatisticsText.setFont(mFonts.get(Fonts::Main));
