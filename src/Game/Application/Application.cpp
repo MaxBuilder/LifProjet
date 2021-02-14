@@ -2,6 +2,7 @@
 
 #include "../GameStates/MainMenuState.hpp"
 #include "../GameStates/MapEditorState.hpp"
+#include "../GameStates/GameState.hpp"
 
 const sf::Time Application::TimePerFrame = sf::seconds(1.f/60.f);
 
@@ -104,4 +105,5 @@ void Application::updateStatistics(sf::Time dt) {
 void Application::registerStates() {
     mStateStack.registerState<MainMenuState>(States::MainMenu);
     mStateStack.registerState<MapEditorState>(States::MapEditor);
+    //mStateStack.registerState<GameState>(States::Game);
 }
