@@ -8,7 +8,6 @@
 Tile::Tile(){
     ground = Textures::ground::None;
     rotate = 0;
-    building = Textures::building::None;
     moveSpeed = 1;
     crossable = false;
 }
@@ -25,10 +24,6 @@ Textures::ground::ID Tile::getGround() const{
     return ground;
 }
 
-Textures::building::ID Tile::getBuilding() const{
-    return building;
-}
-
 float Tile::getMoveSpeed() const{
     return moveSpeed;
 }
@@ -39,10 +34,6 @@ bool Tile::isCrossable() const{
 
 void Tile::setGround(const Textures::ground::ID &id){
     ground = id;
-}
-
-void Tile::setBuilding(const Textures::building::ID &id){
-    building = id;
 }
 
 void Tile::setMoveSpeed(const float &speed){
@@ -63,4 +54,29 @@ void Tile::setRotation(const float &rotation){
     assert(rotation == 0 or rotation == 90 or rotation == 180 or rotation == 270);
     rotate = rotation;
     sprite.setRotation(rotation);
+}
+
+BuildMap::BuildMap(Textures::building::ID ID,sf::IntRect position, float rotation ){
+    mId  = ID;
+    mPosition = position;
+    mRotation = rotation;
+}
+
+Textures::building::ID BuildMap::getID() const{
+    return mId;
+}
+
+sf::IntRect BuildMap::getPosition() const{
+    return mPosition;
+}
+
+sf::Sprite& BuildMap::getSprite(){
+    return mSprite;
+}
+
+sf::Sprite BuildMap::getConstSprite() const{
+    return mSprite;
+}
+void BuildMap::setPosition(sf::IntRect rect) {
+    mPosition = rect;
 }

@@ -19,9 +19,12 @@ namespace Textures {
         Background2,
         Background3,
         Background4,
+        MapEditorBackGround,
         MenuTitle,
         MenuButton,
-        Map
+        MapEditorButton,
+        Map,
+        Builds
     };
 
     namespace ground {
@@ -32,7 +35,7 @@ namespace Textures {
 
     namespace building {
         enum ID {
-            None, Barrier
+            None, Barrier, Castle, Home
         };
     }
 }
@@ -50,9 +53,6 @@ namespace Sounds {
 }
 
 namespace map{
-    enum mode {
-        mapEditor, game, preview
-    };
     enum tool {
         standard, square3, circle5, fill, undo
     };

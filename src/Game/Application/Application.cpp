@@ -6,7 +6,7 @@
 const sf::Time Application::TimePerFrame = sf::seconds(1.f/60.f);
 
 Application::Application()
-: mWindow(sf::VideoMode(1280, 720), "LifProjet", sf::Style::Close)
+: mWindow(sf::VideoMode(1920, 1080), "LifProjet", sf::Style::Fullscreen)
 , mTextures()
 , mFonts()
 , mSounds()
@@ -21,9 +21,12 @@ Application::Application()
     mTextures.load(Textures::Background2, "data/background/background_menu2.png");
     mTextures.load(Textures::Background3, "data/background/background_menu3.png");
     mTextures.load(Textures::Background4, "data/background/background_menu4.png");
-    mTextures.load(Textures::MenuButton, "data/menuButton.png");
-    mTextures.load(Textures::MenuTitle, "data/menuTitle.png");
+    mTextures.load(Textures::MapEditorBackGround, "data/background/mapEditorBackGround.png");
+    mTextures.load(Textures::MenuButton, "data/MenuButton.png");
+    mTextures.load(Textures::MapEditorButton, "data/MapEditorButton.png");
+    mTextures.load(Textures::MenuTitle, "data/MenuTitle.png");
     mTextures.load(Textures::Map, "data/textureMap.png");
+    mTextures.load(Textures::Builds, "data/textureBuild.png");
     mFonts.load(Fonts::Main, "data/font.ttf");
 
     // Chargement des effets sonores

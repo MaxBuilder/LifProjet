@@ -18,56 +18,37 @@
 #include <fstream>
 #include <list>
 
-struct action {
-
-    Textures::ground::ID id;
-    map::tool tool;
-    float rotation;
-    sf::Vector2i coordinate;
-
-};
-
 class TilesMap : public sf::Drawable, public sf::Transformable{
 
 public:
-    TilesMap(map::mode type,const sf::Texture &text, sf::Vector2u Wsize);
+    TilesMap(const sf::Texture &texture, float blocSize, sf::Vector2i origin);
 
     void save(const std::string &file) const;
     void load(const std::string &file);
+    void setDrawBuildings(bool draw);
 
     Tile& getTile(int x, int y);
-    virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-    void handleEvent(const sf::Event& event,const sf::RenderWindow& window);
+    std::pair<std::vector<BuildMap>::iterator,
+            std::vector<BuildMap>::iterator> getBuildingsIt();
 
-    void setGroundSelection(Textures::ground::ID id);
-    void setRotation(float rotation);
-    void setTool(map::tool tmpTool);
+    void addBuildings(BuildMap build);
+    void supBuildings(std::vector<BuildMap>::iterator it);
 
-    void Undo();
+    float getBlockSize() const;
+    sf::Vector2i getOrigins() const;
+
+    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 private:
 
-    void paintSquare3(float rotation, Textures::ground::ID id, sf::Vector2i coordinate);
-    void paintCircle5(float rotation, Textures::ground::ID id, sf::Vector2i coordinate);
-    void paintFill(float rotation, Textures::ground::ID id, sf::Vector2i coordinate);
-
-    void recPaintFill(float rotation, Textures::ground::ID id, sf::Vector2i coordinate, bool* isPaint);
-
     Tile grid_id[64][36];
+    std::vector<BuildMap> mBuildings;
 
-    sf::Vector2i origin;
-    sf::Vector2u windowSize;
-    sf::Vector2i lastTileUpdate;
-    sf::Texture texture;
+    float mBlockSize;
+    sf::Vector2i mOrigin;
 
-    float size;
-    float rotate;
+    bool mDrawBuildings;
 
-    Textures::ground::ID ground_selection;
-    Textures::ground::ID lastGround;
-    map::tool tool;
-
-    std::list<action> undo;
 };
 
 

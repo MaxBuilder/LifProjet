@@ -34,6 +34,10 @@ namespace GUI {
         mIsToggle = flag;
     }
 
+    bool Button::getToggle(){
+        return mIsToggle;
+    }
+
    bool Button::isSelectable() const {
         return false;
     }
@@ -87,7 +91,7 @@ namespace GUI {
     }
 
     void Button::changeTexture(Type buttonType) {
-        sf::IntRect textureRect(0, 50 * buttonType, width, height);
+        sf::IntRect textureRect(0, 70 * buttonType, width, height);
         mSprite.setTextureRect(textureRect);
     }
 

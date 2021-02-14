@@ -43,14 +43,25 @@ namespace GUI {
 
     // Reserved for buttons (click action)
     void Container::handleEvent(const sf::Event &event, const sf::RenderWindow& window) {
+
+        if (event.type != sf::Event::MouseButtonPressed) return;
+
         sf::Vector2i mouseCoord = sf::Mouse::getPosition(window);
+        mouseCoord = static_cast<sf::Vector2i>(window.mapPixelToCoords(mouseCoord));
         float x = mouseCoord.x, y = mouseCoord.y;
             for(auto& child : mChildren) {
             std::shared_ptr<Button> derived = std::dynamic_pointer_cast<Button>(child);
             if(x >= derived->getPosition().x and x <= derived->getPosition().x + derived->getWidth()
             and y >= derived->getPosition().y and y <= derived->getPosition().y + derived->getHeight()) {
-                if(sf::Mouse::isButtonPressed(sf::Mouse::Left))
+                if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                    if (derived->getToggle()) {
+                        for(auto& child2 : mChildren) {
+                            std::shared_ptr<Button> derived2 = std::dynamic_pointer_cast<Button>(child2);
+                            derived2->deactivate();
+                        }
+                    }
                     derived->activate();
+                }
             }
         }
     }

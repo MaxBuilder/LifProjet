@@ -6,6 +6,9 @@
 #define LIFPROJET_MAPEDITORSTATE_HPP
 
 #include "../../Core/StateStack/State.hpp"
+#include "../../Core/GUI/Container.hpp"
+#include "../../Core/GUI/Button.hpp"
+
 #include "../../Game/Map/TilesMap.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
@@ -20,10 +23,36 @@ public:
     virtual bool update(sf::Time dt);
     virtual bool handleEvent(const sf::Event& event);
 
+    void paintSquare3( sf::Vector2i coordinate);
+    void paintCircle5( sf::Vector2i coordinate);
+    void paintFill( sf::Vector2i coordinate);
+
+    void recPaintFill(sf::Vector2i coordinate, bool* isPaint);
+
+    void createBuildings(sf::Vector2i pos);
+    void setBuildings();
+    void supressBuildings(sf::Vector2i pos);
+
 private :
+    sf::View view;
+    sf::Sprite background;
+
     TilesMap map;
 
-    void switchTool(const sf::Event& event);
+    GUI::Container mToolBar;
+    GUI::Container mTextureRotation;
+    GUI::Container mPalette;
+    GUI::Container mCurrentMap;
+
+    float rotate;
+    std::string mMapPath;
+
+    Textures::building::ID mBuild_selection;
+    Textures::ground::ID ground_selection;
+    Textures::ground::ID lastGround ;
+    sf::Vector2i lastTileUpdate ;
+    map::tool tool;
+
 };
 
 #endif //LIFPROJET_MAPEDITORSTATE_HPP

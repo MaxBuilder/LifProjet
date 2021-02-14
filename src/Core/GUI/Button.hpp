@@ -26,8 +26,8 @@ namespace GUI {
 
         enum Type {
             Normal,
-            Selected,
             Pressed,
+            Selected,
             ButtonCount
         };
 
@@ -38,6 +38,7 @@ namespace GUI {
         void setText(const std::string& text);
         void setToggle(bool flag);
 
+        bool getToggle();
         virtual bool isSelectable() const;
         virtual void select();
         virtual void deselect();

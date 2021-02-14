@@ -5,34 +5,20 @@
 #include "TilesMap.hpp"
 #include <cassert>
 
-TilesMap::TilesMap(map::mode type,const sf::Texture &text, sf::Vector2u Wsize){
-    windowSize = Wsize;
-    texture = text;
-    rotate = 0;
-    ground_selection = Textures::ground::Grass;
-    lastGround = Textures::ground::None;
-    lastTileUpdate = {-1,-1};
+TilesMap::TilesMap(const sf::Texture &texture, float blocSize, sf::Vector2i origin){
 
-    switch (type) {
-        case map::mode::mapEditor :
-            size = static_cast<float>(windowSize.x*0.8/64);
-            origin = sf::Vector2i(size/2,windowSize.y*0.1+size/2);
-            break;
-        case map::mode::game :
-            size = static_cast<float>(windowSize.x/64);
-            origin = sf::Vector2i(size/2,size/2);
-            break;
-        case map::preview : break;
-    }
+    mDrawBuildings = false;
+    mOrigin = origin;
+    mBlockSize = blocSize;
 
     for(int y = 0; y < 36; y++){
         for(int x = 0; x < 64; x++){
             Tile *tile = &grid_id[x][y];
 
             tile->getSprite().setTexture(texture);
-            tile->getSprite().setScale(size/15.f,size/15.f);
+            tile->getSprite().setScale(float(mBlockSize)/15.f,float(mBlockSize)/15.f);
             tile->getSprite().setOrigin(15.f/2.f,15.f/2.f);
-            tile->getSprite().setPosition(origin.x+float(x)*size,origin.y+float(y)*size);
+            tile->getSprite().setPosition(mOrigin.x+float(x)*mBlockSize+mBlockSize/2,mOrigin.y+float(y)*mBlockSize+mBlockSize/2);
 
             Paint::paintSprite(0 ,grid_id[x][y].getGround(), *tile);
 
@@ -45,152 +31,16 @@ Tile& TilesMap::getTile(int x, int y){
     return grid_id[x][y];
 }
 
-void TilesMap::handleEvent(const sf::Event& event, const sf::RenderWindow& window){
-    sf::Vector2i pos = sf::Mouse::getPosition(window);
-    pos.y = pos.y - origin.y + static_cast<int>(size/2);
-    pos.y = pos.y/size;
-    pos.x = pos.x/size;
-
-    action ac;
-
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Right) or (sf::Mouse::isButtonPressed(sf::Mouse::Left))){
-
-        if (lastTileUpdate == pos and lastGround == ground_selection)
-            return;
-        else{
-            lastTileUpdate = pos;
-            lastGround = ground_selection;
-        }
-
-        ac.coordinate = pos;
-        ac.rotation =  grid_id[pos.x][pos.y].getRotation();
-        ac.id = grid_id[pos.x][pos.y].getGround();
-        ac.tool = map::tool::standard;
-    }
-
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-        Paint::paintSprite(rotate, Textures::ground::None, grid_id[pos.x][pos.y]);
-        undo.push_front(ac);
-
-    }
-
-    else if (sf::Mouse::isButtonPressed(sf::Mouse::Left)){
-        switch ( tool ){
-
-            case map::tool::standard : Paint::paintSprite(rotate, ground_selection, grid_id[pos.x][pos.y]); break;
-
-            case map::tool::square3 : paintSquare3(rotate, ground_selection, pos); break;
-
-            case map::tool::circle5 : paintCircle5(rotate, ground_selection, pos); break;
-
-            case map::tool::fill : paintFill(rotate, ground_selection, pos); break;
-
-            default : break;
-        }
-        ac.tool = tool;
-        undo.push_front(ac);
-    }
-
-    if (undo.size() > 20 )
-        undo.pop_back();
-
+float TilesMap::getBlockSize() const{
+    return mBlockSize;
 }
 
-void TilesMap::Undo() {
-    std::cout<<"Undo\n";
-    action ac;
-    if( !undo.empty() )  ac = undo.front();
-    else return;
-
-    undo.pop_front();
-
-    switch ( ac.tool ){
-
-        case map::tool::standard : Paint::paintSprite(ac.rotation, ac.id, grid_id[ac.coordinate.x][ac.coordinate.y]); break;
-
-        case map::tool::square3 : paintSquare3(ac.rotation,  ac.id, ac.coordinate); break;
-
-        case map::tool::circle5 : paintCircle5(ac.rotation,  ac.id, ac.coordinate); break;
-
-        case map::tool::fill : paintFill(ac.rotation,  ac.id, ac.coordinate); break;
-
-        default : break;
-    }
-
+sf::Vector2i TilesMap::getOrigins() const{
+    return mOrigin;
 }
 
-void TilesMap::setGroundSelection(Textures::ground::ID id){
-    ground_selection = id;
-}
-
-void TilesMap::setRotation(float rotation){
-    assert(rotation == 0 or rotation == 90 or rotation == -1);
-    rotate = rotation;
-}
-
-void TilesMap::setTool(map::tool tmpTool) {
-    tool = tmpTool;
-}
-
-void TilesMap::paintSquare3(float rotation, Textures::ground::ID id, sf::Vector2i coordinate){
-    Paint::paintSprite(rotation, id, grid_id[coordinate.x][coordinate.y]);
-
-    if (coordinate.x > 0){
-        Paint::paintSprite(rotation, id, grid_id[coordinate.x-1][coordinate.y]);
-        if (coordinate.y > 0)
-            Paint::paintSprite(rotation, id, grid_id[coordinate.x-1][coordinate.y-1]);
-        if (coordinate.y < 35)
-            Paint::paintSprite(rotation, id, grid_id[coordinate.x-1][coordinate.y+1]);
-    }
-    if(coordinate.x < 63){
-        Paint::paintSprite(rotation, id, grid_id[coordinate.x+1][coordinate.y]);
-        if (coordinate.y > 0)
-            Paint::paintSprite(rotation, id, grid_id[coordinate.x+1][coordinate.y-1]);
-        if (coordinate.y < 35)
-            Paint::paintSprite(rotation, id, grid_id[coordinate.x+1][coordinate.y+1]);
-    }
-    if (coordinate.y > 0)
-        Paint::paintSprite(rotation, id, grid_id[coordinate.x][coordinate.y-1]);
-    if (coordinate.y < 35)
-        Paint::paintSprite(rotation, id, grid_id[coordinate.x][coordinate.y+1]);
-
-}
-
-void TilesMap::paintCircle5(float rotation, Textures::ground::ID id, sf::Vector2i coordinate){
-    Paint::paintSprite(rotation, id, grid_id[coordinate.x][coordinate.y]);
-}
-
-void TilesMap::paintFill(float rotation, Textures::ground::ID id, sf::Vector2i coordinate){
-    bool isPaint[36*64] = {false};
-    recPaintFill(rotation, id, coordinate, isPaint);
-}
-
-void TilesMap::recPaintFill(float rotation, Textures::ground::ID id, sf::Vector2i co, bool* isPaint){
-
-    isPaint[co.x+64*co.y] = true;
-
-    if ( co.x > 0 and !isPaint[co.x-1+64*co.y] and
-        grid_id[co.x][co.y].getGround() == grid_id[co.x-1][co.y].getGround() )
-
-        recPaintFill(rotation, id, sf::Vector2i (co.x - 1, co.y), isPaint);
-
-    if ( co.x < 63 and !isPaint[co.x+1+64*co.y] and
-        grid_id[co.x][co.y].getGround() == grid_id[co.x+1][co.y].getGround() )
-
-        recPaintFill(rotation, id, sf::Vector2i (co.x + 1, co.y), isPaint);
-
-    if ( co.y > 0 and !isPaint[co.x+64*(co.y-1)] and
-        grid_id[co.x][co.y].getGround() == grid_id[co.x][co.y-1].getGround() )
-
-        recPaintFill(rotation, id, sf::Vector2i (co.x, co.y - 1), isPaint);
-
-    if ( co.y < 35 and !isPaint[co.x+64*(co.y+1)] and
-        grid_id[co.x][co.y].getGround() == grid_id[co.x][co.y+1].getGround() )
-
-        recPaintFill(rotation, id, sf::Vector2i (co.x, co.y + 1), isPaint);
-
-    Paint::paintSprite(rotation, id, grid_id[co.x][co.y]);
-
+void TilesMap::setDrawBuildings(bool draw) {
+    mDrawBuildings = draw;
 }
 
 void TilesMap::save(const std::string &file) const{
@@ -208,12 +58,30 @@ void TilesMap::save(const std::string &file) const{
             wf.write((char *) &(y.rotate), sizeof(float));
         }
     }
+
+    int left, top;
+    Textures::building::ID buildID;
+    std::size_t size = mBuildings.size();
+    wf.write((char *) &(size), sizeof(std::size_t));
+
+    for (const auto &b : mBuildings){
+        left = b.getPosition().left;
+        top = b.getPosition().top;
+        buildID = b.getID();
+
+        wf.write((char *) &(buildID), sizeof(Textures::building::ID));
+        wf.write((char *) &(left), sizeof(int));
+        wf.write((char *) &(top), sizeof(int));
+        wf.write((char *) &(b.mRotation), sizeof(float));
+    }
+
     wf.close();
 
 }
 
 void TilesMap::load(const std::string &file) {
 
+    mBuildings.clear();
     std::ifstream rf(file, std::ios::out | std::ios::binary);
     if(!rf) {
         std::cout << "Cannot open file!" << std::endl;
@@ -229,9 +97,43 @@ void TilesMap::load(const std::string &file) {
             Paint::paintSprite(tile.rotate, tile.ground, tile);
         }
     }
+
+    std::size_t nb_buildings = 0;
+    int left, top;
+    float rot;
+    Textures::building::ID buildID = Textures::building::None;
+
+    rf.read((char *) &(nb_buildings), sizeof(std::size_t));
+    for (std::size_t i(0); i<nb_buildings; i++){
+
+        rf.read((char *) &(buildID), sizeof(Textures::building::ID));
+        rf.read((char *) &(left), sizeof(int));
+        rf.read((char *) &(top), sizeof(int));
+        rf.read((char *) &(rot), sizeof(float));
+
+        sf::IntRect rect1 ={left, top, 0, 0};
+
+        BuildMap build(buildID, rect1,rot);
+        addBuildings(build);
+
+    }
+
     rf.close();
 
 
+}
+
+std::pair<std::vector<BuildMap>::iterator,
+        std::vector<BuildMap>::iterator> TilesMap::getBuildingsIt(){
+    return std::make_pair(mBuildings.begin(),mBuildings.end());
+}
+
+void TilesMap::addBuildings(BuildMap build){
+    mBuildings.push_back(std::move(build));
+}
+
+void TilesMap::supBuildings(std::vector<BuildMap>::iterator it){
+    mBuildings.erase(it);
 }
 
 void TilesMap::draw(sf::RenderTarget& target, sf::RenderStates states) const{
@@ -245,4 +147,8 @@ void TilesMap::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 
         }
     }
+    if (mDrawBuildings)
+        for( const auto &build : mBuildings)
+            target.draw(build.getConstSprite(),states);
+
 }

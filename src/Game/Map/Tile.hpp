@@ -16,14 +16,12 @@ public:
     sf::Sprite getConstSprite() const;
 
     Textures::ground::ID getGround() const;
-    Textures::building::ID getBuilding() const;
 
     float getMoveSpeed() const;
     float getRotation() const;
     bool isCrossable() const;
 
     void setGround(const Textures::ground::ID &id);
-    void setBuilding(const Textures::building::ID &id);
 
     void setMoveSpeed(const float &speed);
     void setRotation(const float &rotation);
@@ -35,12 +33,30 @@ public:
 private:
     sf::Sprite sprite;
 
-    Textures::building::ID building;
-
     float moveSpeed;
     bool crossable;
 
 };
 
+class BuildMap{
+public:
+    BuildMap(Textures::building::ID ID,sf::IntRect position, float rotation );
+
+    Textures::building::ID getID() const;
+    sf::IntRect getPosition() const;
+    void setPosition(sf::IntRect rect);
+
+    sf::Sprite& getSprite();
+    sf::Sprite getConstSprite() const;
+
+    float mRotation;
+
+private:
+    Textures::building::ID mId;
+
+    sf::IntRect mPosition;
+    sf::Sprite mSprite;
+
+};
 
 #endif //LIFPROJET_TILE_HPP
