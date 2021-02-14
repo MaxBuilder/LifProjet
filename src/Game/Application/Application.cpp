@@ -6,7 +6,7 @@
 const sf::Time Application::TimePerFrame = sf::seconds(1.f/60.f);
 
 Application::Application()
-: mWindow(sf::VideoMode(1920, 1080), "LifProjet", sf::Style::Fullscreen)
+: mWindow(sf::VideoMode(1280, 720), "LifProjet", sf::Style::Close)
 , mTextures()
 , mFonts()
 , mSounds()
