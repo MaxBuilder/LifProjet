@@ -24,7 +24,30 @@ namespace Textures {
         MenuButton,
         MapEditorButton,
         Map,
-        Builds
+        Builds,
+        // MapEditor
+        Back,
+        SmallBrush,
+        MediumBrush,
+        BigBrush,
+        Fill,
+        Eraser,
+        New,
+        Load,
+        Save,
+        Undo,
+        Redo,
+        Grass,
+        Sand,
+        Stone,
+        Wood,
+        Water,
+        Barrier,
+        Home,
+        Castle,
+        RotateUp,
+        RotateRight
+
     };
 
     namespace ground {
@@ -54,7 +77,7 @@ namespace Sounds {
 
 namespace map{
     enum tool {
-        standard, square3, circle5, fill, undo
+        standard, square3, circle5, fill, eraser, undo
     };
 }
 

@@ -5,25 +5,35 @@
 #include "TilesMap.hpp"
 #include <cassert>
 
-TilesMap::TilesMap(const sf::Texture &texture, float blocSize, sf::Vector2i origin){
-
+TilesMap::TilesMap(const sf::Texture &texture, float blocSize, sf::Vector2i origin)
+: texture(texture)
+{
     mDrawBuildings = false;
     mOrigin = origin;
     mBlockSize = blocSize;
 
-    for(int y = 0; y < 36; y++){
-        for(int x = 0; x < 64; x++){
+    for(int y = 0; y < 36; y++) {
+        for (int x = 0; x < 64; x++) {
             Tile *tile = &grid_id[x][y];
 
             tile->getSprite().setTexture(texture);
-            tile->getSprite().setScale(float(mBlockSize)/15.f,float(mBlockSize)/15.f);
-            tile->getSprite().setOrigin(15.f/2.f,15.f/2.f);
-            tile->getSprite().setPosition(mOrigin.x+float(x)*mBlockSize+mBlockSize/2,mOrigin.y+float(y)*mBlockSize+mBlockSize/2);
-
-            Paint::paintSprite(0 ,grid_id[x][y].getGround(), *tile);
-
+            tile->getSprite().setScale(float(mBlockSize) / 15.f, float(mBlockSize) / 15.f);
+            tile->getSprite().setOrigin(15.f / 2.f, 15.f / 2.f);
+            tile->getSprite().setPosition(mOrigin.x + float(x) * mBlockSize + mBlockSize / 2,
+                                          mOrigin.y + float(y) * mBlockSize + mBlockSize / 2);
+            Paint::paintSprite(0 ,Textures::ground::None, *tile);
         }
     }
+    //clear();
+}
+
+void TilesMap::clear() {
+    for(int y = 0; y < 36; y++) {
+        for (int x = 0; x < 64; x++) {
+            Paint::paintSprite(0 ,Textures::ground::None, grid_id[x][y]);
+        }
+    }
+    mBuildings.clear();
 }
 
 Tile& TilesMap::getTile(int x, int y){

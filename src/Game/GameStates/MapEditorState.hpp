@@ -34,15 +34,15 @@ public:
     void supressBuildings(sf::Vector2i pos);
 
 private :
-    sf::View view;
     sf::Sprite background;
-
     TilesMap map;
+    sf::Text mapPath;
+    sf::Text editorCoord;
 
+    GUI::Container mEditBar;
     GUI::Container mToolBar;
-    GUI::Container mTextureRotation;
-    GUI::Container mPalette;
-    GUI::Container mCurrentMap;
+    GUI::Container mRotationBar;
+    GUI::Container mPaletteBar;
 
     float rotate;
     std::string mMapPath;

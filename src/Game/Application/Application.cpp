@@ -28,6 +28,31 @@ Application::Application()
     mTextures.load(Textures::MenuTitle, "data/MenuTitle.png");
     mTextures.load(Textures::Map, "data/textureMap.png");
     mTextures.load(Textures::Builds, "data/textureBuild.png");
+
+    // Texture de l'editeur de map
+    mTextures.load(Textures::Back, "data/Editor/back.png");
+    mTextures.load(Textures::New, "data/Editor/new.png");
+    mTextures.load(Textures::Load, "data/Editor/load.png");
+    mTextures.load(Textures::Save, "data/Editor/save.png");
+    mTextures.load(Textures::Undo, "data/Editor/undo.png");
+    mTextures.load(Textures::Redo, "data/Editor/redo.png");
+    mTextures.load(Textures::SmallBrush, "data/Editor/small.png");
+    mTextures.load(Textures::MediumBrush, "data/Editor/medium.png");
+    mTextures.load(Textures::BigBrush, "data/Editor/big.png");
+    mTextures.load(Textures::Eraser, "data/Editor/eraser.png");
+    mTextures.load(Textures::Fill, "data/Editor/fill.png");
+    mTextures.load(Textures::Grass, "data/Editor/grass.png");
+    mTextures.load(Textures::Sand, "data/Editor/sand.png");
+    mTextures.load(Textures::Water, "data/Editor/water.png");
+    mTextures.load(Textures::Wood, "data/Editor/wood.png");
+    mTextures.load(Textures::Stone, "data/Editor/stone.png");
+    mTextures.load(Textures::Barrier, "data/Editor/barrier.png");
+    mTextures.load(Textures::Home, "data/Editor/home.png");
+    mTextures.load(Textures::Castle, "data/Editor/castle.png");
+    mTextures.load(Textures::RotateUp, "data/Editor/up.png");
+    mTextures.load(Textures::RotateRight, "data/Editor/right.png");
+
+
     mFonts.load(Fonts::Main, "data/font.ttf");
 
     // Chargement des effets sonores

@@ -23,6 +23,7 @@ class TilesMap : public sf::Drawable, public sf::Transformable{
 public:
     TilesMap(const sf::Texture &texture, float blocSize, sf::Vector2i origin);
 
+    void clear();
     void save(const std::string &file) const;
     void load(const std::string &file);
     void setDrawBuildings(bool draw);
@@ -43,6 +44,7 @@ private:
 
     Tile grid_id[64][36];
     std::vector<BuildMap> mBuildings;
+    sf::Texture texture;
 
     float mBlockSize;
     sf::Vector2i mOrigin;
