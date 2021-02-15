@@ -2,6 +2,7 @@
 
 #include "../GameStates/MainMenuState.hpp"
 #include "../GameStates/MapEditorState.hpp"
+#include "../GameStates/SubEditorState.hpp"
 #include "../GameStates/GameState.hpp"
 
 const sf::Time Application::TimePerFrame = sf::seconds(1.f/60.f);
@@ -51,6 +52,7 @@ Application::Application()
     mTextures.load(Textures::Castle, "data/Editor/castle.png");
     mTextures.load(Textures::RotateUp, "data/Editor/up.png");
     mTextures.load(Textures::RotateRight, "data/Editor/right.png");
+    mTextures.load(Textures::SubEditorBackground, "data/Editor/subBackground.png");
 
 
     mFonts.load(Fonts::Main, "data/font.ttf");
@@ -130,5 +132,6 @@ void Application::updateStatistics(sf::Time dt) {
 void Application::registerStates() {
     mStateStack.registerState<MainMenuState>(States::MainMenu);
     mStateStack.registerState<MapEditorState>(States::MapEditor);
+    mStateStack.registerState<SubEditorState>(States::MapEditorSubMenu);
     //mStateStack.registerState<GameState>(States::Game);
 }

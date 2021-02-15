@@ -3,13 +3,13 @@
 //
 
 #include "MapEditorState.hpp"
-#include <iostream>
 
 #include "MapEditorState.hpp"
 
 MapEditorState::MapEditorState(StateStack &stack, Context context)
         : State(stack, context)
         , map(context.textures.get(Textures::Map), 16.f,sf::Vector2i(92,90))
+        , subBackground(getContext().textures.get(Textures::SubEditorBackground))
 {
 
     background.setTexture(context.textures.get(Textures::MapEditorBackGround));
@@ -20,8 +20,8 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     mapPath.setCharacterSize(20u);
 
     rotate = 0.f;
-    mMapPath = std::string("data/Maps/demo2.map");
-    ground_selection = Textures::ground::Sand;
+    MapEditorState::mMapPath = "Unsaved";
+    ground_selection = Textures::ground::Grass;
     lastGround = Textures::ground::None;
     lastTileUpdate = {-1,-1};
 
@@ -31,7 +31,6 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
 
     auto backButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::Back);
     backButton->setPosition(16, 10);
-    //backButton->setText("Back");
     backButton->setCallback([this](){
         requestStackPop();
         requestStackPush(States::MainMenu);
@@ -50,7 +49,8 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     auto saveButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::Save);
     saveButton->setPosition(170, 10);
     saveButton->setCallback([this] () {
-        map.save(mMapPath);
+        subMenu = true;
+        saveload = true;
         getContext().sounds.play(Sounds::Menu);
     });
     mEditBar.pack(saveButton);
@@ -58,8 +58,8 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     auto loadButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::Load);
     loadButton->setPosition(242, 10);
     loadButton->setCallback([this] () {
-        map.load(mMapPath);
-        setBuildings();
+        subMenu = true;
+        saveload = false;
         getContext().sounds.play(Sounds::Menu);
     });
     mEditBar.pack(loadButton);
@@ -230,6 +230,62 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     });
     mPaletteBar.pack(castleButton);
 
+    // Boutons du sous-menu :
+
+    auto map1 = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
+    map1->setPosition(380, 200);
+    map1->setText("Save 1");
+    map1->setCallback([this] () {
+        mMapPath = "data/Maps/demo1.map";
+        subMenu = false;
+        if(saveload) map.save(MapEditorState::mMapPath);
+        else {
+            map.load(MapEditorState::mMapPath);
+            setBuildings();
+        }
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mSubMenu.pack(map1);
+
+    auto map2 = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
+    map2->setPosition(380, 300);
+    map2->setText("Save 2");
+    map2->setCallback([this] () {
+        mMapPath = "data/Maps/demo2.map";
+        subMenu = false;
+        if(saveload) map.save(MapEditorState::mMapPath);
+        else {
+            map.load(MapEditorState::mMapPath);
+            setBuildings();
+        }
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mSubMenu.pack(map2);
+
+    auto map3 = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
+    map3->setPosition(380, 400);
+    map3->setText("Save 3");
+    map3->setCallback([this] () {
+        mMapPath = "data/Maps/demo3.map";
+        subMenu = false;
+        if(saveload) map.save(MapEditorState::mMapPath);
+        else {
+            map.load(MapEditorState::mMapPath);
+            setBuildings();
+        }
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mSubMenu.pack(map3);
+
+    auto ret = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
+    ret->setPosition(380, 500);
+    ret->setText("Back");
+    ret->setCallback([this] () {
+        subMenu = false;
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mSubMenu.pack(ret);
+
     /*
     auto rotateAleaButton = std::make_shared<GUI::Button>(context, 130, 70, Textures::MapEditorButton);
     rotateAleaButton->setPosition(1536-130-30,1026-70.f/2 );
@@ -239,42 +295,12 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
         rotate = -1;
         getContext().sounds.play(Sounds::Menu);
     });
-    mTextureRotation.pack(rotateAleaButton);
-
-    auto map1Button = std::make_shared<GUI::Button>(context, 329, 70, Textures::MenuButton);
-    map1Button->setPosition(1536+29,1026-70.f/2 );
-    map1Button->setText("map 1");
-    map1Button->setToggle(true);
-    map1Button->setCallback([this](){
-        mMapPath = std::string("data/Maps/demo1.map");
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mCurrentMap.pack(map1Button);
-
-    auto map2Button = std::make_shared<GUI::Button>(context, 329, 70, Textures::MenuButton);
-    map2Button->setPosition(1536+29,1026-70.f/2 - 70-29);
-    map2Button->setText("map 2");
-    map2Button->setToggle(true);
-    map2Button->setCallback([this](){
-        mMapPath = std::string("data/Maps/demo2.map");
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mCurrentMap.pack(map2Button);
-
-    auto map3Button = std::make_shared<GUI::Button>(context, 329, 70, Textures::MenuButton);
-    map3Button->setPosition(1536+29,1026-70.f/2 -2*70-2*29 );
-    map3Button->setText("map 3");
-    map3Button->setToggle(true);
-    map3Button->setCallback([this](){
-        mMapPath = std::string("data/Maps/demo3.map");
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mCurrentMap.pack(map3Button);*/
+    mTextureRotation.pack(rotateAleaButton);*/
 }
 
 void MapEditorState::draw() {
-
     sf::RenderWindow& window = getContext().window;
+
     window.draw(background);
     window.draw(map);
     window.draw(mEditBar);
@@ -285,6 +311,11 @@ void MapEditorState::draw() {
     mapPath.setString(mMapPath);
     window.draw(mapPath);
 
+    if(subMenu) {
+        window.draw(subBackground);
+        window.draw(mSubMenu);
+    }
+
     // Ajouter position
 }
 
@@ -293,6 +324,11 @@ bool MapEditorState::update(sf::Time dt) {
 }
 
 bool MapEditorState::handleEvent(const sf::Event& event) {
+
+    if(subMenu) {
+        mSubMenu.handleEvent(event, getContext().window);
+        return false;
+    }
 
     mEditBar.handleEvent(event, getContext().window);
     mToolBar.handleEvent(event, getContext().window);

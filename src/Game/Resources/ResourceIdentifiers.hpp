@@ -46,7 +46,8 @@ namespace Textures {
         Home,
         Castle,
         RotateUp,
-        RotateRight
+        RotateRight,
+        SubEditorBackground
 
     };
 

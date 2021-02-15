@@ -11,6 +11,7 @@ namespace States {
         Intro, // + tard
         MainMenu,
         MapEditor,
+        MapEditorSubMenu,
         Settings,
         Game, // à renommer
         Pause

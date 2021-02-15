@@ -35,24 +35,32 @@ public:
 
 private :
     sf::Sprite background;
+    sf::Sprite subBackground;
     TilesMap map;
     sf::Text mapPath;
     sf::Text editorCoord;
+    std::string mMapPath;
+    bool subMenu;
+    bool saveload; // true : save | false : load
 
     GUI::Container mEditBar;
     GUI::Container mToolBar;
     GUI::Container mRotationBar;
     GUI::Container mPaletteBar;
 
+    GUI::Container mSubMenu;
+
     float rotate;
-    std::string mMapPath;
+    //std::string mMapPath;
 
     Textures::building::ID mBuild_selection;
     Textures::ground::ID ground_selection;
-    Textures::ground::ID lastGround ;
-    sf::Vector2i lastTileUpdate ;
+    Textures::ground::ID lastGround;
+    sf::Vector2i lastTileUpdate;
     map::tool tool;
 
 };
+
+
 
 #endif //LIFPROJET_MAPEDITORSTATE_HPP
