@@ -248,7 +248,7 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     mSubMenu.pack(map1);
 
     auto map2 = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
-    map2->setPosition(380, 300);
+    map2->setPosition(380, 280);
     map2->setText("Save 2");
     map2->setCallback([this] () {
         mMapPath = "data/Maps/demo2.map";
@@ -263,7 +263,7 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     mSubMenu.pack(map2);
 
     auto map3 = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
-    map3->setPosition(380, 400);
+    map3->setPosition(380, 360);
     map3->setText("Save 3");
     map3->setCallback([this] () {
         mMapPath = "data/Maps/demo3.map";
