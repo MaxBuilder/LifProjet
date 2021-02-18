@@ -13,7 +13,8 @@ namespace States {
         MapEditor,
         Settings,
         Game,
-        Pause
+        Pause,
+        Army // Grrrr
     };
 }
 

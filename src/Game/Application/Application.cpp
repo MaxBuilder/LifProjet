@@ -17,43 +17,10 @@ Application::Application()
 , mStatisticsUpdateTime()
 , mStatisticsNumFrames(0)
 {
-    // Chargement des ressources (heaven naming conventions)
-    mTextures.load(Textures::None, "data/none.png");
-    mTextures.load(Textures::MenuBackground1, "data/background/background_menu1.png");
-    mTextures.load(Textures::MenuBackground2, "data/background/background_menu2.png");
-    mTextures.load(Textures::MenuBackground3, "data/background/background_menu3.png");
-    mTextures.load(Textures::MenuBackground4, "data/background/background_menu4.png");
-    mTextures.load(Textures::EditorBackground, "data/background/mapEditorBackGround.png");
-    mTextures.load(Textures::MenuButton, "data/MenuButton.png");
-    mTextures.load(Textures::MenuTitle, "data/MenuTitle.png");
-    mTextures.load(Textures::MapGround, "data/textureMap.png");
-    mTextures.load(Textures::MapBuildings, "data/textureBuild.png");
+    // Chargement des ressources
+    loadTextures();
 
-    // Texture de l'editeur de Editor
-    mTextures.load(Textures::EditorBackButton, "data/Editor/back.png");
-    mTextures.load(Textures::EditorNewButton, "data/Editor/new.png");
-    mTextures.load(Textures::EditorLoadButton, "data/Editor/load.png");
-    mTextures.load(Textures::EditorSaveButton, "data/Editor/save.png");
-    mTextures.load(Textures::EditorUndoButton, "data/Editor/undo.png");
-    mTextures.load(Textures::EditorRedoButton, "data/Editor/redo.png");
-    mTextures.load(Textures::ToolSmallBrush, "data/Editor/small.png");
-    mTextures.load(Textures::ToolMediumBrush, "data/Editor/medium.png");
-    mTextures.load(Textures::ToolBigBrush, "data/Editor/big.png");
-    mTextures.load(Textures::ToolEraser, "data/Editor/eraser.png");
-    mTextures.load(Textures::ToolFill, "data/Editor/fill.png");
-    mTextures.load(Textures::EditorGrassButton, "data/Editor/grass.png");
-    mTextures.load(Textures::EditorSandButton, "data/Editor/sand.png");
-    mTextures.load(Textures::EditorWaterButton, "data/Editor/water.png");
-    mTextures.load(Textures::EditorWoodButton, "data/Editor/wood.png");
-    mTextures.load(Textures::EditorStoneButton, "data/Editor/stone.png");
-    mTextures.load(Textures::EditorBarrierButton, "data/Editor/barrier.png");
-    mTextures.load(Textures::EditorHomeButton, "data/Editor/home.png");
-    mTextures.load(Textures::EditorCastleButton, "data/Editor/castle.png");
-    mTextures.load(Textures::EditorRotateUpButton, "data/Editor/up.png");
-    mTextures.load(Textures::EditorRotateRightButton, "data/Editor/right.png");
-    mTextures.load(Textures::SubBackground, "data/Editor/subBackground.png");
-
-
+    // Chargement des polices de texte
     mFonts.load(Fonts::Main, "data/font.ttf");
 
     // Chargement des effets sonores
@@ -66,7 +33,7 @@ Application::Application()
     // Initialisation de la statestack
     registerStates();
     mStateStack.pushState(States::MainMenu);
-    mStateStack.handleEvent(sf::Event()); // Temp solution for initial startup
+    mStateStack.handleEvent(sf::Event()); // Pas mieux pour l'instant
 }
 
 void Application::run() {
@@ -112,7 +79,7 @@ void Application::render() {
     mStateStack.draw();
 
     mWindow.setView(mWindow.getDefaultView());
-    mWindow.draw(mStatisticsText);
+    //mWindow.draw(mStatisticsText);
 
     mWindow.display();
 }
@@ -126,6 +93,44 @@ void Application::updateStatistics(sf::Time dt) {
         mStatisticsUpdateTime -= sf::seconds(1.0f);
         mStatisticsNumFrames = 0;
     }
+}
+
+void Application::loadTextures() {
+    mTextures.load(Textures::None, "data/none.png");
+
+    mTextures.load(Textures::MenuBackground1, "data/background/background_menu1.png");
+    mTextures.load(Textures::MenuBackground2, "data/background/background_menu2.png");
+    mTextures.load(Textures::MenuBackground3, "data/background/background_menu3.png");
+    mTextures.load(Textures::MenuBackground4, "data/background/background_menu4.png");
+    mTextures.load(Textures::EditorBackground, "data/background/mapEditorBackGround.png");
+    mTextures.load(Textures::MenuButton, "data/MenuButton.png");
+    mTextures.load(Textures::MenuTitle, "data/MenuTitle.png");
+
+    mTextures.load(Textures::MapGround, "data/textureMap.png");
+    mTextures.load(Textures::MapBuildings, "data/textureBuild.png");
+
+    mTextures.load(Textures::EditorBackButton, "data/Editor/back.png");
+    mTextures.load(Textures::EditorNewButton, "data/Editor/new.png");
+    mTextures.load(Textures::EditorLoadButton, "data/Editor/load.png");
+    mTextures.load(Textures::EditorSaveButton, "data/Editor/save.png");
+    mTextures.load(Textures::EditorUndoButton, "data/Editor/undo.png");
+    mTextures.load(Textures::EditorRedoButton, "data/Editor/redo.png");
+    mTextures.load(Textures::ToolSmallBrush, "data/Editor/small.png");
+    mTextures.load(Textures::ToolMediumBrush, "data/Editor/medium.png");
+    mTextures.load(Textures::ToolBigBrush, "data/Editor/big.png");
+    mTextures.load(Textures::ToolEraser, "data/Editor/eraser.png");
+    mTextures.load(Textures::ToolFill, "data/Editor/fill.png");
+    mTextures.load(Textures::EditorGrassButton, "data/Editor/grass.png");
+    mTextures.load(Textures::EditorSandButton, "data/Editor/sand.png");
+    mTextures.load(Textures::EditorWaterButton, "data/Editor/water.png");
+    mTextures.load(Textures::EditorWoodButton, "data/Editor/wood.png");
+    mTextures.load(Textures::EditorStoneButton, "data/Editor/stone.png");
+    mTextures.load(Textures::EditorBarrierButton, "data/Editor/barrier.png");
+    mTextures.load(Textures::EditorHomeButton, "data/Editor/home.png");
+    mTextures.load(Textures::EditorCastleButton, "data/Editor/castle.png");
+    mTextures.load(Textures::EditorRotateUpButton, "data/Editor/up.png");
+    mTextures.load(Textures::EditorRotateRightButton, "data/Editor/right.png");
+    mTextures.load(Textures::SubBackground, "data/Editor/subBackground.png");
 }
 
 void Application::registerStates() {
