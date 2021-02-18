@@ -27,7 +27,11 @@ MainMenuState::MainMenuState(StateStack &stack, Context context)
     auto playButton = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
     playButton->setPosition(390, 360);
     playButton->setText("Simulation");
-    // set callback
+    playButton->setCallback([this] () {
+        requestStackPop();
+        requestStackPush(States::Game);
+        getContext().sounds.play(Sounds::Menu);
+    });
 
     auto editorButton = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
     editorButton->setPosition(390, 460);

@@ -131,5 +131,5 @@ void Application::updateStatistics(sf::Time dt) {
 void Application::registerStates() {
     mStateStack.registerState<MainMenuState>(States::MainMenu);
     mStateStack.registerState<MapEditorState>(States::MapEditor);
-    //mStateStack.registerState<GameState>(States::Game);
+    mStateStack.registerState<GameState>(States::Game);
 }
