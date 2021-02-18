@@ -3,6 +3,7 @@
 #include "../GameStates/MainMenuState.hpp"
 #include "../GameStates/MapEditorState.hpp"
 #include "../GameStates/GameState.hpp"
+#include "../GameStates/PauseState.hpp"
 
 const sf::Time Application::TimePerFrame = sf::seconds(1.f/60.f);
 
@@ -132,4 +133,5 @@ void Application::registerStates() {
     mStateStack.registerState<MainMenuState>(States::MainMenu);
     mStateStack.registerState<MapEditorState>(States::MapEditor);
     mStateStack.registerState<GameState>(States::Game);
+    mStateStack.registerState<PauseState>(States::Pause);
 }

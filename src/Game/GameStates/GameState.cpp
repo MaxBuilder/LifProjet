@@ -50,7 +50,9 @@ bool GameState::handleEvent(const sf::Event &event) {
     mSpeed = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ? 1500 : 800;
 
     mScroll = (int)event.mouseWheelScroll.delta;
-    //std::cout << mScroll << std::endl;
+
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+        requestStackPush(States::Pause);
 
     return false;
 }
