@@ -11,10 +11,10 @@ MainMenuState::MainMenuState(StateStack &stack, Context context)
 , mGUIContainer() {
     Textures::ID backgroundID;
     switch(Random::Generate(1, 4)) {
-        case 1: backgroundID = Textures::Background1; break;
-        case 2: backgroundID = Textures::Background2; break;
-        case 3: backgroundID = Textures::Background3; break;
-        case 4: backgroundID = Textures::Background4; break;
+        case 1: backgroundID = Textures::MenuBackground1; break;
+        case 2: backgroundID = Textures::MenuBackground2; break;
+        case 3: backgroundID = Textures::MenuBackground3; break;
+        case 4: backgroundID = Textures::MenuBackground4; break;
     }
 
     sf::Texture& backgroundTexture = context.textures.get(backgroundID);
@@ -35,7 +35,7 @@ MainMenuState::MainMenuState(StateStack &stack, Context context)
 
     auto editorButton = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
     editorButton->setPosition(390, 460);
-    editorButton->setText("Edit Map");
+    editorButton->setText("Edit MapGround");
     editorButton->setCallback([this] () {
         requestStackPop();
         requestStackPush(States::MapEditor);

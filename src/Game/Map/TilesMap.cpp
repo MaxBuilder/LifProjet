@@ -21,7 +21,7 @@ TilesMap::TilesMap(const sf::Texture &texture, float blocSize, sf::Vector2i orig
             tile->getSprite().setOrigin(15.f / 2.f, 15.f / 2.f);
             tile->getSprite().setPosition(mOrigin.x + float(x) * mBlockSize + mBlockSize / 2,
                                           mOrigin.y + float(y) * mBlockSize + mBlockSize / 2);
-            Paint::paintSprite(0 ,Textures::ground::None, *tile);
+            Paint::paintSprite(0 , Textures::Ground::None, *tile);
         }
     }
     //clear();
@@ -30,7 +30,7 @@ TilesMap::TilesMap(const sf::Texture &texture, float blocSize, sf::Vector2i orig
 void TilesMap::clear() {
     for(int y = 0; y < 36; y++) {
         for (int x = 0; x < 64; x++) {
-            Paint::paintSprite(0 ,Textures::ground::None, grid_id[x][y]);
+            Paint::paintSprite(0 , Textures::Ground::None, grid_id[x][y]);
         }
     }
     mBuildings.clear();
@@ -64,13 +64,13 @@ void TilesMap::save(const std::string &file) const{
     for(const auto & x : grid_id) {
         for (const auto & y : x) {
 
-            wf.write((char *) &(y.ground), sizeof(Textures::ground::ID));
+            wf.write((char *) &(y.ground), sizeof(Textures::Ground::ID));
             wf.write((char *) &(y.rotate), sizeof(float));
         }
     }
 
     int left, top;
-    Textures::building::ID buildID;
+    Textures::Building::ID buildID;
     std::size_t size = mBuildings.size();
     wf.write((char *) &(size), sizeof(std::size_t));
 
@@ -79,7 +79,7 @@ void TilesMap::save(const std::string &file) const{
         top = b.getPosition().top;
         buildID = b.getID();
 
-        wf.write((char *) &(buildID), sizeof(Textures::building::ID));
+        wf.write((char *) &(buildID), sizeof(Textures::Building::ID));
         wf.write((char *) &(left), sizeof(int));
         wf.write((char *) &(top), sizeof(int));
         wf.write((char *) &(b.mRotation), sizeof(float));
@@ -101,7 +101,7 @@ void TilesMap::load(const std::string &file) {
     for(auto & x : grid_id) {
         for (auto & tile : x) {
 
-            rf.read((char *) &(tile.ground), sizeof(Textures::ground::ID));
+            rf.read((char *) &(tile.ground), sizeof(Textures::Ground::ID));
             rf.read((char *) &(tile.rotate), sizeof(float));
 
             Paint::paintSprite(tile.rotate, tile.ground, tile);
@@ -111,12 +111,12 @@ void TilesMap::load(const std::string &file) {
     std::size_t nb_buildings = 0;
     int left, top;
     float rot;
-    Textures::building::ID buildID = Textures::building::None;
+    Textures::Building::ID buildID = Textures::Building::None;
 
     rf.read((char *) &(nb_buildings), sizeof(std::size_t));
     for (std::size_t i(0); i<nb_buildings; i++){
 
-        rf.read((char *) &(buildID), sizeof(Textures::building::ID));
+        rf.read((char *) &(buildID), sizeof(Textures::Building::ID));
         rf.read((char *) &(left), sizeof(int));
         rf.read((char *) &(top), sizeof(int));
         rf.read((char *) &(rot), sizeof(float));

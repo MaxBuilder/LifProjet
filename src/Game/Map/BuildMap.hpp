@@ -10,9 +10,9 @@
 
 class BuildMap {
 public:
-    BuildMap(Textures::building::ID ID,sf::IntRect position, float rotation );
+    BuildMap(Textures::Building::ID ID, sf::IntRect position, float rotation );
 
-    Textures::building::ID getID() const;
+    Textures::Building::ID getID() const;
     sf::IntRect getPosition() const;
     void setPosition(sf::IntRect rect);
 
@@ -22,7 +22,7 @@ public:
     float mRotation;
 
 private:
-    Textures::building::ID mId;
+    Textures::Building::ID mId;
 
     sf::IntRect mPosition;
     sf::Sprite mSprite;

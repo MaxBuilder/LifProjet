@@ -19,40 +19,39 @@ Application::Application()
 {
     // Chargement des ressources (heaven naming conventions)
     mTextures.load(Textures::None, "data/none.png");
-    mTextures.load(Textures::Background1, "data/background/background_menu1.png");
-    mTextures.load(Textures::Background2, "data/background/background_menu2.png");
-    mTextures.load(Textures::Background3, "data/background/background_menu3.png");
-    mTextures.load(Textures::Background4, "data/background/background_menu4.png");
-    mTextures.load(Textures::MapEditorBackGround, "data/background/mapEditorBackGround.png");
+    mTextures.load(Textures::MenuBackground1, "data/background/background_menu1.png");
+    mTextures.load(Textures::MenuBackground2, "data/background/background_menu2.png");
+    mTextures.load(Textures::MenuBackground3, "data/background/background_menu3.png");
+    mTextures.load(Textures::MenuBackground4, "data/background/background_menu4.png");
+    mTextures.load(Textures::EditorBackground, "data/background/mapEditorBackGround.png");
     mTextures.load(Textures::MenuButton, "data/MenuButton.png");
-    mTextures.load(Textures::MapEditorButton, "data/MapEditorButton.png");
     mTextures.load(Textures::MenuTitle, "data/MenuTitle.png");
-    mTextures.load(Textures::Map, "data/textureMap.png");
-    mTextures.load(Textures::Builds, "data/textureBuild.png");
+    mTextures.load(Textures::MapGround, "data/textureMap.png");
+    mTextures.load(Textures::MapBuildings, "data/textureBuild.png");
 
-    // Texture de l'editeur de map
-    mTextures.load(Textures::Back, "data/Editor/back.png");
-    mTextures.load(Textures::New, "data/Editor/new.png");
-    mTextures.load(Textures::Load, "data/Editor/load.png");
-    mTextures.load(Textures::Save, "data/Editor/save.png");
-    mTextures.load(Textures::Undo, "data/Editor/undo.png");
-    mTextures.load(Textures::Redo, "data/Editor/redo.png");
-    mTextures.load(Textures::SmallBrush, "data/Editor/small.png");
-    mTextures.load(Textures::MediumBrush, "data/Editor/medium.png");
-    mTextures.load(Textures::BigBrush, "data/Editor/big.png");
-    mTextures.load(Textures::Eraser, "data/Editor/eraser.png");
-    mTextures.load(Textures::Fill, "data/Editor/fill.png");
-    mTextures.load(Textures::Grass, "data/Editor/grass.png");
-    mTextures.load(Textures::Sand, "data/Editor/sand.png");
-    mTextures.load(Textures::Water, "data/Editor/water.png");
-    mTextures.load(Textures::Wood, "data/Editor/wood.png");
-    mTextures.load(Textures::Stone, "data/Editor/stone.png");
-    mTextures.load(Textures::Barrier, "data/Editor/barrier.png");
-    mTextures.load(Textures::Home, "data/Editor/home.png");
-    mTextures.load(Textures::Castle, "data/Editor/castle.png");
-    mTextures.load(Textures::RotateUp, "data/Editor/up.png");
-    mTextures.load(Textures::RotateRight, "data/Editor/right.png");
-    mTextures.load(Textures::SubEditorBackground, "data/Editor/subBackground.png");
+    // Texture de l'editeur de Editor
+    mTextures.load(Textures::EditorBackButton, "data/Editor/back.png");
+    mTextures.load(Textures::EditorNewButton, "data/Editor/new.png");
+    mTextures.load(Textures::EditorLoadButton, "data/Editor/load.png");
+    mTextures.load(Textures::EditorSaveButton, "data/Editor/save.png");
+    mTextures.load(Textures::EditorUndoButton, "data/Editor/undo.png");
+    mTextures.load(Textures::EditorRedoButton, "data/Editor/redo.png");
+    mTextures.load(Textures::ToolSmallBrush, "data/Editor/small.png");
+    mTextures.load(Textures::ToolMediumBrush, "data/Editor/medium.png");
+    mTextures.load(Textures::ToolBigBrush, "data/Editor/big.png");
+    mTextures.load(Textures::ToolEraser, "data/Editor/eraser.png");
+    mTextures.load(Textures::ToolFill, "data/Editor/fill.png");
+    mTextures.load(Textures::EditorGrassButton, "data/Editor/grass.png");
+    mTextures.load(Textures::EditorSandButton, "data/Editor/sand.png");
+    mTextures.load(Textures::EditorWaterButton, "data/Editor/water.png");
+    mTextures.load(Textures::EditorWoodButton, "data/Editor/wood.png");
+    mTextures.load(Textures::EditorStoneButton, "data/Editor/stone.png");
+    mTextures.load(Textures::EditorBarrierButton, "data/Editor/barrier.png");
+    mTextures.load(Textures::EditorHomeButton, "data/Editor/home.png");
+    mTextures.load(Textures::EditorCastleButton, "data/Editor/castle.png");
+    mTextures.load(Textures::EditorRotateUpButton, "data/Editor/up.png");
+    mTextures.load(Textures::EditorRotateRightButton, "data/Editor/right.png");
+    mTextures.load(Textures::SubBackground, "data/Editor/subBackground.png");
 
 
     mFonts.load(Fonts::Main, "data/font.ttf");

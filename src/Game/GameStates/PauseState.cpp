@@ -7,7 +7,7 @@
 PauseState::PauseState(StateStack &stack, Context& context)
 : State(stack, context)
 , mText("Pause", context.fonts.get(Fonts::Main))
-, mBackground(context.textures.get(Textures::SubEditorBackground))
+, mBackground(context.textures.get(Textures::SubBackground))
 {
     mText.setCharacterSize(100u);
     mText.setPosition(640, 200);

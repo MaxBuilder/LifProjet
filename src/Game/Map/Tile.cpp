@@ -6,7 +6,7 @@
 #include <cassert>
 
 Tile::Tile(){
-    ground = Textures::ground::None;
+    ground = Textures::Ground::None;
     rotate = 0;
     moveSpeed = 1;
     crossable = false;
@@ -20,7 +20,7 @@ sf::Sprite Tile::getConstSprite() const{
     return sprite;
 }
 
-Textures::ground::ID Tile::getGround() const{
+Textures::Ground::ID Tile::getGround() const{
     return ground;
 }
 
@@ -32,7 +32,7 @@ bool Tile::isCrossable() const{
     return crossable;
 }
 
-void Tile::setGround(const Textures::ground::ID &id){
+void Tile::setGround(const Textures::Ground::ID &id){
     ground = id;
 }
 

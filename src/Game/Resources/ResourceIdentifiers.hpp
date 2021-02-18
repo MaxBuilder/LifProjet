@@ -15,49 +15,50 @@ namespace sf
 namespace Textures {
     enum ID {
         None,
-        Background1,
-        Background2,
-        Background3,
-        Background4,
-        MapEditorBackGround,
+
+        SubBackground,
+        MenuBackground1,
+        MenuBackground2,
+        MenuBackground3,
+        MenuBackground4,
         MenuTitle,
         MenuButton,
-        MapEditorButton,
-        Map,
-        Builds,
-        // MapEditor
-        Back,
-        SmallBrush,
-        MediumBrush,
-        BigBrush,
-        Fill,
-        Eraser,
-        New,
-        Load,
-        Save,
-        Undo,
-        Redo,
-        Grass,
-        Sand,
-        Stone,
-        Wood,
-        Water,
-        Barrier,
-        Home,
-        Castle,
-        RotateUp,
-        RotateRight,
-        SubEditorBackground
+
+        MapGround,
+        MapBuildings,
+
+        EditorBackground,
+        EditorBackButton,
+        ToolSmallBrush,
+        ToolMediumBrush,
+        ToolBigBrush,
+        ToolFill,
+        ToolEraser,
+        EditorNewButton,
+        EditorLoadButton,
+        EditorSaveButton,
+        EditorUndoButton,
+        EditorRedoButton,
+        EditorGrassButton,
+        EditorSandButton,
+        EditorStoneButton,
+        EditorWoodButton,
+        EditorWaterButton,
+        EditorBarrierButton,
+        EditorHomeButton,
+        EditorCastleButton,
+        EditorRotateUpButton,
+        EditorRotateRightButton,
 
     };
 
-    namespace ground {
+    namespace Ground {
         enum ID {
             None, Grass, Wood, Sand, Wall, Water
         };
     }
 
-    namespace building {
+    namespace Building {
         enum ID {
             None, Barrier, Castle, Home
         };
@@ -76,9 +77,9 @@ namespace Sounds {
     };
 }
 
-namespace map{
-    enum tool {
-        standard, square3, circle5, fill, eraser, undo
+namespace Editor {
+    enum Tool {
+        standard, square3, circle5, fill, eraser
     };
 }
 

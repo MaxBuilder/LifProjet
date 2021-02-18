@@ -4,13 +4,13 @@
 
 #include "BuildMap.hpp"
 
-BuildMap::BuildMap(Textures::building::ID ID,sf::IntRect position, float rotation ){
+BuildMap::BuildMap(Textures::Building::ID ID, sf::IntRect position, float rotation ){
     mId  = ID;
     mPosition = position;
     mRotation = rotation;
 }
 
-Textures::building::ID BuildMap::getID() const{
+Textures::Building::ID BuildMap::getID() const{
     return mId;
 }
 

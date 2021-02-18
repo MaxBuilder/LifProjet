@@ -53,11 +53,11 @@ private :
     float rotate;
     //std::string mMapPath;
 
-    Textures::building::ID mBuild_selection;
-    Textures::ground::ID ground_selection;
-    Textures::ground::ID lastGround;
+    Textures::Building::ID mBuild_selection;
+    Textures::Ground::ID ground_selection;
+    Textures::Ground::ID lastGround;
     sf::Vector2i lastTileUpdate;
-    map::tool tool;
+    Editor::Tool tool;
 
 };
 
