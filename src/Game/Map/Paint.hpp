@@ -10,7 +10,7 @@
 #include "../../Game/Resources/ResourceIdentifiers.hpp"
 
 
-class Paint{
+class Paint {
 
 public :
 

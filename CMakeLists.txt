@@ -27,5 +27,7 @@ add_executable(LifProjet src/main.cpp
         src/Core/Scene/SpriteNode.cpp src/Core/Scene/SpriteNode.hpp
         src/Core/Scene/SceneNode.cpp src/Core/Scene/SceneNode.hpp
         src/Game/GameStates/GameState.cpp src/Game/GameStates/GameState.hpp
-        src/Core/Scene/TextNode.cpp src/Core/Scene/TextNode.hpp src/Game/GameStates/PauseState.cpp src/Game/GameStates/PauseState.hpp)
+        src/Core/Scene/TextNode.cpp src/Core/Scene/TextNode.hpp
+        src/Game/GameStates/PauseState.cpp src/Game/GameStates/PauseState.hpp
+        src/Game/Map/BuildMap.cpp src/Game/Map/BuildMap.hpp)
 target_link_libraries(LifProjet sfml-graphics sfml-audio)
