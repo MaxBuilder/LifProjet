@@ -2,13 +2,13 @@
 
 #include "../GameStates/MainMenuState.hpp"
 #include "../GameStates/MapEditorState.hpp"
+#include "../GameStates/SettingsState.hpp"
 #include "../GameStates/GameState.hpp"
 
 const sf::Time Application::TimePerFrame = sf::seconds(1.f/60.f);
 
 Application::Application()
-: mWindow(sf::VideoMode(1280, 720), "LifProjet", sf::Style::Close)
-, mTextures()
+: mTextures()
 , mFonts()
 , mSounds()
 , mStateStack(State::Context(mWindow, mTextures, mFonts, mSounds))
@@ -16,6 +16,13 @@ Application::Application()
 , mStatisticsUpdateTime()
 , mStatisticsNumFrames(0)
 {
+    loadSettings();
+
+    mWindow.create(mVideoMode,"LifProjet",mWindowStyle);
+    mView.setSize(1280,720);
+    mView.setCenter(1280/2.f, 720/2.f);
+    mView.setViewport(sf::FloatRect(0, 0, 1, 1));
+
     // Chargement des ressources (heaven naming conventions)
     mTextures.load(Textures::None, "data/none.png");
     mTextures.load(Textures::Background1, "data/background/background_menu1.png");
@@ -25,6 +32,7 @@ Application::Application()
     mTextures.load(Textures::MapEditorBackGround, "data/background/mapEditorBackGround.png");
     mTextures.load(Textures::MenuButton, "data/MenuButton.png");
     mTextures.load(Textures::MapEditorButton, "data/MapEditorButton.png");
+    mTextures.load(Textures::Checkbox, "data/Checkbox.png");
     mTextures.load(Textures::MenuTitle, "data/MenuTitle.png");
     mTextures.load(Textures::Map, "data/textureMap.png");
     mTextures.load(Textures::Builds, "data/textureBuild.png");
@@ -69,6 +77,7 @@ void Application::run() {
 void Application::processInput() {
     sf::Event event;
     while (mWindow.pollEvent(event)) {
+        mWindow.setView(mView);
         mStateStack.handleEvent(event);
 
         if (event.type == sf::Event::Closed)
@@ -83,6 +92,7 @@ void Application::update(sf::Time dt) {
 void Application::render() {
     mWindow.clear();
 
+    mWindow.setView(mView);
     mStateStack.draw();
 
     mWindow.setView(mWindow.getDefaultView());
@@ -105,5 +115,27 @@ void Application::updateStatistics(sf::Time dt) {
 void Application::registerStates() {
     mStateStack.registerState<MainMenuState>(States::MainMenu);
     mStateStack.registerState<MapEditorState>(States::MapEditor);
+    mStateStack.registerState<SettingsState>(States::Settings);
     //mStateStack.registerState<GameState>(States::Game);
+}
+
+void Application::loadSettings() {
+    std::ifstream settings("data/Settings/Settings.txt");
+
+    if(!settings.is_open()) {
+        std::cout << "Cannot open Settings file!" << std::endl;
+        return ;
+    }
+    int height, width;
+    std::string tmp;
+
+    settings >> tmp;
+    settings >> mWindowStyle;
+    settings >> tmp;
+    settings >> width;
+    settings >> tmp;
+    settings >> height;
+
+    mVideoMode = sf::VideoMode(width,height);
+    settings.close();
 }

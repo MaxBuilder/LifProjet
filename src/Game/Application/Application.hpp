@@ -14,6 +14,8 @@
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/Text.hpp>
 
+#include <fstream>
+
 class Application {
 public:
     Application();
@@ -27,12 +29,14 @@ private:
 
     void updateStatistics(sf::Time dt);
     void registerStates();
+    void loadSettings();
     //void loadTextures();
 
 
 private:
     static const sf::Time TimePerFrame;
 
+    sf::View mView;
     sf::RenderWindow mWindow;
     TextureHolder mTextures;
     FontHolder mFonts;
@@ -43,6 +47,9 @@ private:
     sf::Text mStatisticsText;
     sf::Time mStatisticsUpdateTime;
     std::size_t mStatisticsNumFrames;
+
+    sf::VideoMode mVideoMode;
+    int mWindowStyle;
 };
 
 #endif //LIFPROJET_APPLICATION_HPP

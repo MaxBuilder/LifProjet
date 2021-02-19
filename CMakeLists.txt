@@ -16,6 +16,7 @@ add_executable(LifProjet src/main.cpp
         src/Core/Util/Rand.hpp src/Core/Util/Foreach.hpp
         src/Core/Util/Utility.hpp src/Core/Util/Utility.cpp
         src/Game/GameStates/MainMenuState.cpp src/Game/GameStates/MainMenuState.hpp
+        src/Game/GameStates/SettingsState.cpp src/Game/GameStates/SettingsState.hpp
         src/Core/GUI/Component.cpp src/Core/GUI/Component.hpp
         src/Core/GUI/Button.cpp src/Core/GUI/Button.hpp
         src/Core/GUI/Container.cpp src/Core/GUI/Container.hpp
@@ -27,5 +28,7 @@ add_executable(LifProjet src/main.cpp
         src/Core/Scene/SpriteNode.cpp src/Core/Scene/SpriteNode.hpp
         src/Core/Scene/SceneNode.cpp src/Core/Scene/SceneNode.hpp
         src/Game/GameStates/GameState.cpp src/Game/GameStates/GameState.hpp
-        src/Core/Scene/TextNode.cpp src/Core/Scene/TextNode.hpp)
+        src/Core/Scene/TextNode.cpp src/Core/Scene/TextNode.hpp
+        src/Core/Gui/ButtonList.cpp  src/Core/Gui/ButtonList.hpp
+        src/Core/Gui/CheckBox.cpp src/Core/Gui/CheckBox.hpp)
 target_link_libraries(LifProjet sfml-graphics sfml-audio)

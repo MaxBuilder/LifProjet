@@ -23,6 +23,7 @@ namespace Textures {
         MenuTitle,
         MenuButton,
         MapEditorButton,
+        Checkbox,
         Map,
         Builds
     };

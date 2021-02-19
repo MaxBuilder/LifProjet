@@ -4,6 +4,8 @@
 
 #include "Container.hpp"
 #include "Button.hpp"
+#include "ButtonList.hpp"
+#include "CheckBox.hpp"
 
 #include "../../Core/Util/Foreach.hpp"
 
@@ -60,6 +62,42 @@ namespace GUI {
                             derived2->deactivate();
                         }
                     }
+                    derived->activate();
+                }
+            }
+        }
+    }
+
+    void Container::handleListEvent(const sf::Event &event, const sf::RenderWindow& window) {
+
+        if (event.type != sf::Event::MouseButtonPressed) return;
+
+        sf::Vector2i mouseCoord = sf::Mouse::getPosition(window);
+        mouseCoord = static_cast<sf::Vector2i>(window.mapPixelToCoords(mouseCoord));
+        float x = mouseCoord.x, y = mouseCoord.y;
+        for(auto& child : mChildren) {
+            std::shared_ptr<ButtonList> derived = std::dynamic_pointer_cast<ButtonList>(child);
+            if(x >= derived->getPosition().x and x <= derived->getPosition().x + derived->getWidth()
+               and y >= derived->getPosition().y and y <= derived->getPosition().y + derived->getHeight()) {
+                if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                    derived->handleEvent(event, window);
+                }
+            }
+        }
+    }
+
+    void Container::handleCheckBoxEvent(const sf::Event &event, const sf::RenderWindow& window) {
+
+        if (event.type != sf::Event::MouseButtonPressed) return;
+
+        sf::Vector2i mouseCoord = sf::Mouse::getPosition(window);
+        mouseCoord = static_cast<sf::Vector2i>(window.mapPixelToCoords(mouseCoord));
+        float x = mouseCoord.x, y = mouseCoord.y;
+        for(auto& child : mChildren) {
+            std::shared_ptr<CheckBox> derived = std::dynamic_pointer_cast<CheckBox>(child);
+            if(x >= derived->getPosition().x and x <= derived->getPosition().x + derived->getWidth()
+               and y >= derived->getPosition().y and y <= derived->getPosition().y + derived->getHeight()) {
+                if(sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
                     derived->activate();
                 }
             }

@@ -28,6 +28,8 @@ namespace GUI {
         virtual bool isSelectable() const;
         virtual void handleEvent(const sf::Event& event);
         virtual void handleEvent(const sf::Event& event, const sf::RenderWindow& window); // Reserved for buttons
+        virtual void handleListEvent(const sf::Event &event, const sf::RenderWindow& window); // reserve for ButtonList
+        virtual void handleCheckBoxEvent(const sf::Event &event, const sf::RenderWindow& window); // reserve for Checkbox
 
     private:
         virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const;
