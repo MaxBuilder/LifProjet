@@ -234,9 +234,9 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
 
     auto map1 = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
     map1->setPosition(380, 200);
-    map1->setText("EditorSaveButton 1");
+    map1->setText("Save 1");
     map1->setCallback([this] () {
-        mMapPath = "data/Maps/demo1.Editor";
+        mMapPath = "data/Maps/demo1.map";
         subMenu = false;
         if(saveload) map.save(MapEditorState::mMapPath);
         else {
@@ -249,9 +249,9 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
 
     auto map2 = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
     map2->setPosition(380, 280);
-    map2->setText("EditorSaveButton 2");
+    map2->setText("Save 2");
     map2->setCallback([this] () {
-        mMapPath = "data/Maps/demo2.Editor";
+        mMapPath = "data/Maps/demo2.map";
         subMenu = false;
         if(saveload) map.save(MapEditorState::mMapPath);
         else {
@@ -264,9 +264,9 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
 
     auto map3 = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
     map3->setPosition(380, 360);
-    map3->setText("EditorSaveButton 3");
+    map3->setText("Save 3");
     map3->setCallback([this] () {
-        mMapPath = "data/Maps/demo3.Editor";
+        mMapPath = "data/Maps/demo3.map";
         subMenu = false;
         if(saveload) map.save(MapEditorState::mMapPath);
         else {
