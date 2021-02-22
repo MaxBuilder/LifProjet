@@ -13,6 +13,10 @@ PauseState::PauseState(StateStack &stack, Context& context)
     mText.setPosition(640, 200);
     centerOrigin(mText);
 
+    mDefaultView.setSize(1280,720);
+    mDefaultView.setCenter(1280/2.f, 720/2.f);
+    mDefaultView.setViewport(sf::FloatRect(0, 0, 1, 1));
+
     auto returnButton = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
     returnButton->setPosition(380, 360);
     returnButton->setText("Return");
@@ -37,8 +41,7 @@ PauseState::PauseState(StateStack &stack, Context& context)
 
 void PauseState::draw() {
     sf::RenderWindow& window = getContext().window;
-    sf::View defaultView = window.getDefaultView();
-    window.setView(defaultView);
+    window.setView(mDefaultView);
 
     window.draw(mBackground);
     window.draw(mText);

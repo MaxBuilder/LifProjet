@@ -27,6 +27,7 @@ private:
     sf::Text mText;
     sf::Sprite mBackground;
     GUI::Container mButtons;
+    sf::View mDefaultView;
 };
 
 

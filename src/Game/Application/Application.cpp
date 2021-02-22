@@ -87,8 +87,8 @@ void Application::render() {
     mWindow.setView(mView);
     mStateStack.draw();
 
-    mWindow.setView(mWindow.getDefaultView());
-    //mWindow.draw(mStatisticsText);
+    // mWindow.setView(mWindow.getDefaultView());
+    // mWindow.draw(mStatisticsText);
 
     mWindow.display();
 }
@@ -114,6 +114,7 @@ void Application::loadTextures() {
     mTextures.load(Textures::EditorBackground, "data/background/mapEditorBackGround.png");
     mTextures.load(Textures::MenuButton, "data/MenuButton.png");
     mTextures.load(Textures::MenuTitle, "data/MenuTitle.png");
+    mTextures.load(Textures::Checkbox, "data/Checkbox.png");
 
     mTextures.load(Textures::MapGround, "data/textureMap.png");
     mTextures.load(Textures::MapBuildings, "data/textureBuild.png");
@@ -148,6 +149,8 @@ void Application::registerStates() {
     mStateStack.registerState<GameState>(States::Game);
     mStateStack.registerState<PauseState>(States::Pause);
     mStateStack.registerState<SettingsState>(States::Settings);
+
+
 }
 
 void Application::loadSettings() {

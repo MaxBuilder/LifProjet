@@ -33,7 +33,7 @@ SettingsState::SettingsState(StateStack& stack, Context context) :
     mTextSound.setString("Sound : ");
 
 
-    auto backButton = std::make_shared<GUI::Button>(context, 130, 70, Textures::MapEditorButton);
+    auto backButton = std::make_shared<GUI::Button>(context, 130, 70, Textures::MenuButton);
     backButton->setPosition(20, 20);
     backButton->setText("Back");
     backButton->setCallback([this](){
@@ -43,7 +43,7 @@ SettingsState::SettingsState(StateStack& stack, Context context) :
     });
     mGUIContainer.pack(backButton);
 
-    auto applyButton = std::make_shared<GUI::Button>(context, 130, 70, Textures::MapEditorButton);
+    auto applyButton = std::make_shared<GUI::Button>(context, 130, 70, Textures::MenuButton);
     applyButton->setPosition(1280-130-20,720-70-20 );
     applyButton->setText("Apply");
     applyButton->setCallback([this](){
@@ -52,7 +52,7 @@ SettingsState::SettingsState(StateStack& stack, Context context) :
     });
     mGUIContainer.pack(applyButton);
 
-    auto saveButton = std::make_shared<GUI::Button>(context, 130, 70, Textures::MapEditorButton);
+    auto saveButton = std::make_shared<GUI::Button>(context, 130, 70, Textures::MenuButton);
     saveButton->setPosition(1280-2*130-2*20,720-70-20 );
     saveButton->setText("Save");
     saveButton->setCallback([this](){
@@ -61,7 +61,7 @@ SettingsState::SettingsState(StateStack& stack, Context context) :
     });
     mGUIContainer.pack(saveButton);
 
-    auto vidMode = std::make_shared<GUI::ButtonList>(context, 200, 60,20u, Textures::MapEditorButton);
+    auto vidMode = std::make_shared<GUI::ButtonList>(context, 200, 60,20u, Textures::MenuButton);
     vidMode->setPosition(900-100,180-30 );
     vidMode->setCallback([this](int count){
         switch (count) {
