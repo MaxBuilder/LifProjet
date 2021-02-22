@@ -4,16 +4,15 @@
 
 #include "MapEditorState.hpp"
 
-#include "MapEditorState.hpp"
-
 MapEditorState::MapEditorState(StateStack &stack, Context context)
         : State(stack, context)
-        , map(context.textures.get(Textures::MapGround), 16.f, sf::Vector2i(92, 90))
+        , map(context.textures.get(Textures::MapGround), 16.f)
         , subBackground(getContext().textures.get(Textures::SubBackground))
 {
 
     background.setTexture(context.textures.get(Textures::EditorBackground));
     map.setDrawBuildings(true);
+    map.setPosition(92,90);
 
     mapPath.setFont(context.fonts.get(Fonts::Main));
     mapPath.setPosition(8, 684);
@@ -343,7 +342,7 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
         if (pos.x < 1116 and pos.x >= 92 and pos.y >= 90 and pos.y < 666 ){ // rectangle contenant la Editor
 
             auto caseSize = map.getBlockSize();
-            sf::Vector2i origin = map.getOrigins();
+            sf::Vector2f origin = map.getPosition();
 
             pos.y = pos.y - origin.y;
             pos.x = pos.x - origin.x;
@@ -368,7 +367,7 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
                 switch (tool) {
 
                     case Editor::Tool::standard :
-                        Paint::paintSprite(rotate, ground_selection, map.getTile(pos.x,pos.y));
+                        map.getTile(pos.x,pos.y).paint(ground_selection,rotate);
                         break;
 
                     case Editor::Tool::square3 :
@@ -384,7 +383,7 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
                         break;
 
                     case Editor::Tool::eraser :
-                        Paint::paintSprite(rotate, Textures::Ground::None, map.getTile(pos.x, pos.y));
+                        map.getTile(pos.x,pos.y).paint(Textures::Ground::None,0);
 
                     default :
                         break;
@@ -396,31 +395,31 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
 }
 
 void MapEditorState::paintSquare3(sf::Vector2i pos){
-    Paint::paintSprite(rotate, ground_selection, map.getTile(pos.x,pos.y));
+    map.getTile(pos.x,pos.y).paint(ground_selection,rotate);
 
     if (pos.x > 0){
-        Paint::paintSprite(rotate, ground_selection, map.getTile(pos.x-1,pos.y));
+        map.getTile(pos.x-1,pos.y).paint(ground_selection,rotate);
         if (pos.y > 0)
-            Paint::paintSprite(rotate, ground_selection, map.getTile(pos.x-1,pos.y-1));
+            map.getTile(pos.x-1,pos.y-1).paint(ground_selection,rotate);
         if (pos.y < 35)
-            Paint::paintSprite(rotate, ground_selection, map.getTile(pos.x-1,pos.y+1));
+            map.getTile(pos.x-1,pos.y+1).paint(ground_selection,rotate);
     }
     if(pos.x < 63){
-        Paint::paintSprite(rotate, ground_selection, map.getTile(pos.x+1,pos.y));
+        map.getTile(pos.x+1,pos.y).paint(ground_selection,rotate);
         if (pos.y > 0)
-            Paint::paintSprite(rotate, ground_selection, map.getTile(pos.x+1,pos.y-1));
+            map.getTile(pos.x+1,pos.y-1).paint(ground_selection,rotate);
         if (pos.y < 35)
-            Paint::paintSprite(rotate, ground_selection, map.getTile(pos.x+1,pos.y+1));
+            map.getTile(pos.x+1,pos.y+1).paint(ground_selection,rotate);
     }
     if (pos.y > 0)
-        Paint::paintSprite(rotate, ground_selection, map.getTile(pos.x,pos.y-1));
+        map.getTile(pos.x,pos.y-1).paint(ground_selection,rotate);
     if (pos.y < 35)
-        Paint::paintSprite(rotate, ground_selection, map.getTile(pos.x,pos.y+1));
+        map.getTile(pos.x,pos.y+1).paint(ground_selection,rotate);
 
 }
 
 void MapEditorState::paintCircle5(sf::Vector2i pos){
-    Paint::paintSprite(rotate, ground_selection, map.getTile(pos.x,pos.y-1));
+    map.getTile(pos.x,pos.y).paint(ground_selection,rotate);
 }
 
 void MapEditorState::paintFill(sf::Vector2i pos){
@@ -452,7 +451,7 @@ void MapEditorState::recPaintFill(sf::Vector2i co, bool* isPaint){
 
         recPaintFill(sf::Vector2i (co.x, co.y + 1), isPaint);
 
-    Paint::paintSprite(rotate, ground_selection,  map.getTile(co.x,co.y));
+    map.getTile(co.x,co.y).paint(ground_selection,rotate);
 
 }
 

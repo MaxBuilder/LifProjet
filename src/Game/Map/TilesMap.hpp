@@ -6,7 +6,6 @@
 #define LIFPROJET_TILESMAP_HPP
 
 #include "Tile.hpp"
-#include "Paint.hpp"
 #include "BuildMap.hpp"
 #include "../../Game/Resources/ResourceIdentifiers.hpp"
 
@@ -24,7 +23,7 @@
 class TilesMap : public sf::Drawable, public sf::Transformable{
 
 public:
-    TilesMap(const sf::Texture &texture, float blocSize, sf::Vector2i origin);
+    TilesMap(const sf::Texture &texture, float blocSize);
 
     void clear();
     void save(const std::string &file) const;
@@ -39,18 +38,17 @@ public:
     void supBuildings(std::vector<BuildMap>::iterator it);
 
     float getBlockSize() const;
-    sf::Vector2i getOrigins() const;
 
-    void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+    void draw(sf::RenderTarget& target, sf::RenderStates states)const override;
 
 private:
 
     Tile grid_id[64][36];
     std::vector<BuildMap> mBuildings;
     sf::Texture texture;
+    sf::Sprite mSprite;
 
     float mBlockSize;
-    sf::Vector2i mOrigin;
 
     bool mDrawBuildings;
 

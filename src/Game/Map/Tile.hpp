@@ -12,9 +12,6 @@ class Tile {
 public:
     Tile();
 
-    sf::Sprite& getSprite();
-    sf::Sprite getConstSprite() const;
-
     Textures::Ground::ID getGround() const;
 
     float getMoveSpeed() const;
@@ -24,15 +21,15 @@ public:
     void setGround(const Textures::Ground::ID &id);
 
     void setMoveSpeed(const float &speed);
+
+    void paint(const Textures::Ground::ID &id,const float &rotation );
     void setRotation(const float &rotation);
     void setcrossable(const bool &cross);
 
-    float rotate;
+private:
     Textures::Ground::ID ground;
 
-private:
-    sf::Sprite sprite;
-
+    float rotate;
     float moveSpeed;
     bool crossable;
 

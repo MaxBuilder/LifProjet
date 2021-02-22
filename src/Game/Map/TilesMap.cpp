@@ -5,32 +5,23 @@
 #include "TilesMap.hpp"
 #include <cassert>
 
-TilesMap::TilesMap(const sf::Texture &texture, float blocSize, sf::Vector2i origin)
+TilesMap::TilesMap(const sf::Texture &texture, float blocSize)
 : texture(texture)
 {
     mDrawBuildings = false;
-    mOrigin = origin;
     mBlockSize = blocSize;
 
-    for(int y = 0; y < 36; y++) {
-        for (int x = 0; x < 64; x++) {
-            Tile *tile = &grid_id[x][y];
+    mSprite.setTexture(texture);
+    mSprite.setScale(float(mBlockSize) / 15.f, float(mBlockSize) / 15.f);
+    mSprite.setOrigin(15.f / 2.f, 15.f / 2.f);
 
-            tile->getSprite().setTexture(texture);
-            tile->getSprite().setScale(float(mBlockSize) / 15.f, float(mBlockSize) / 15.f);
-            tile->getSprite().setOrigin(15.f / 2.f, 15.f / 2.f);
-            tile->getSprite().setPosition(mOrigin.x + float(x) * mBlockSize + mBlockSize / 2,
-                                          mOrigin.y + float(y) * mBlockSize + mBlockSize / 2);
-            Paint::paintSprite(0 , Textures::Ground::None, *tile);
-        }
-    }
     //clear();
 }
 
 void TilesMap::clear() {
-    for(int y = 0; y < 36; y++) {
-        for (int x = 0; x < 64; x++) {
-            Paint::paintSprite(0 , Textures::Ground::None, grid_id[x][y]);
+    for(auto & x : grid_id) {
+        for (auto & t : x) {
+            t.paint(Textures::Ground::None,0);
         }
     }
     mBuildings.clear();
@@ -45,10 +36,6 @@ float TilesMap::getBlockSize() const{
     return mBlockSize;
 }
 
-sf::Vector2i TilesMap::getOrigins() const{
-    return mOrigin;
-}
-
 void TilesMap::setDrawBuildings(bool draw) {
     mDrawBuildings = draw;
 }
@@ -61,11 +48,17 @@ void TilesMap::save(const std::string &file) const{
         return;
     }
 
-    for(const auto & x : grid_id) {
-        for (const auto & y : x) {
+    Textures::Ground::ID tmpGround = Textures::Ground::None;
+    float tmpRotate = 0;
 
-            wf.write((char *) &(y.ground), sizeof(Textures::Ground::ID));
-            wf.write((char *) &(y.rotate), sizeof(float));
+    for(const auto & x : grid_id) {
+        for (const auto & t : x) {
+
+            tmpGround = t.getGround();
+            tmpRotate = t.getRotation();
+
+            wf.write((char *) &(tmpGround), sizeof(Textures::Ground::ID));
+            wf.write((char *) &(tmpRotate), sizeof(float));
         }
     }
 
@@ -98,13 +91,16 @@ void TilesMap::load(const std::string &file) {
         return ;
     }
 
+    Textures::Ground::ID tmpGround = Textures::Ground::None;
+    float tmpRotate = 0;
+
     for(auto & x : grid_id) {
-        for (auto & tile : x) {
+        for (auto & t : x) {
 
-            rf.read((char *) &(tile.ground), sizeof(Textures::Ground::ID));
-            rf.read((char *) &(tile.rotate), sizeof(float));
+            rf.read((char *) &(tmpGround), sizeof(Textures::Ground::ID));
+            rf.read((char *) &(tmpRotate), sizeof(float));
 
-            Paint::paintSprite(tile.rotate, tile.ground, tile);
+            t.paint(tmpGround,tmpRotate);
         }
     }
 
@@ -130,7 +126,6 @@ void TilesMap::load(const std::string &file) {
 
     rf.close();
 
-
 }
 
 std::pair<std::vector<BuildMap>::iterator,
@@ -147,13 +142,46 @@ void TilesMap::supBuildings(std::vector<BuildMap>::iterator it){
 }
 
 void TilesMap::draw(sf::RenderTarget& target, sf::RenderStates states) const{
+    sf::Sprite sprite = mSprite;
 
     states.transform *= getTransform();
 
     for(int y = 0; y < 36; y++) {
-        for (const auto & x : grid_id) {
+        for (int x = 0; x < 64; x++) {
+            const Tile t = grid_id[x][y];
 
-            target.draw(x[y].getConstSprite(), states);
+            switch (t.getGround()) {
+
+                case Textures::Ground::None :
+                    sprite.setTextureRect(sf::IntRect(0, 0, 15, 15));
+                    break;
+
+                case Textures::Ground::Grass :
+                    sprite.setTextureRect(sf::IntRect(15, 0, 15, 15));
+                    break;
+
+                case Textures::Ground::Sand :
+                    sprite.setTextureRect(sf::IntRect(30, 0, 15, 15));
+                    break;
+
+                case Textures::Ground::Wood :
+                    sprite.setTextureRect(sf::IntRect(45, 0, 15, 15));
+                    break;
+
+                case Textures::Ground::Water :
+                    sprite.setTextureRect(sf::IntRect(60, 0, 15, 15));
+                    break;
+
+                case Textures::Ground::Wall :
+                    sprite.setTextureRect(sf::IntRect(75, 0, 15, 15));
+                    break;
+            }
+
+            sprite.setPosition( float(x) * mBlockSize + mBlockSize / 2,
+                                float(y) * mBlockSize + mBlockSize / 2);
+            sprite.setRotation(t.getRotation());
+
+            target.draw(sprite, states);
 
         }
     }

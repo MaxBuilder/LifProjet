@@ -11,14 +11,46 @@ Tile::Tile(){
     moveSpeed = 1;
     crossable = false;
 }
+void Tile::paint(const Textures::Ground::ID &id,const float &rotation ){
+    ground = id;
 
-sf::Sprite& Tile::getSprite(){
-    return sprite;
+    if (rotation >= 0) rotate = rotation;
+    else rotate = static_cast<float>((std::rand()%3)*90);
+
+    switch (id) {
+
+        case Textures::Ground::None :
+            moveSpeed = 1;
+            crossable = false;
+            break;
+
+        case Textures::Ground::Grass :
+            moveSpeed = 1;
+            crossable = true;
+            break;
+
+        case Textures::Ground::Sand :
+            moveSpeed = 0.6f;
+            crossable = true;
+            break;
+
+        case Textures::Ground::Wood :
+            moveSpeed = 1.2f;
+            crossable = true;
+            break;
+
+        case Textures::Ground::Water :
+            moveSpeed = 0.3f;
+            crossable = false;
+            break;
+
+        case Textures::Ground::Wall :
+            moveSpeed = 1;
+            crossable = false;
+            break;
+    }
 }
 
-sf::Sprite Tile::getConstSprite() const{
-    return sprite;
-}
 
 Textures::Ground::ID Tile::getGround() const{
     return ground;
@@ -53,5 +85,4 @@ float Tile::getRotation() const{
 void Tile::setRotation(const float &rotation){
     assert(rotation == 0 or rotation == 90 or rotation == 180 or rotation == 270);
     rotate = rotation;
-    sprite.setRotation(rotation);
 }
