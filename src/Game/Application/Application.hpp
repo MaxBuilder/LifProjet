@@ -29,8 +29,8 @@ private:
 
     void updateStatistics(sf::Time dt);
     void registerStates();
+    void loadTextures();
     void loadSettings();
-    //void loadTextures();
 
 
 private:

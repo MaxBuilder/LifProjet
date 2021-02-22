@@ -10,11 +10,11 @@
 #include "../../Game/Resources/ResourceIdentifiers.hpp"
 
 
-class Paint{
+class Paint {
 
 public :
 
-    static void paintSprite(float rotation, Textures::ground::ID id, Tile& tile){
+    static void paintSprite(float rotation, Textures::Ground::ID id, Tile& tile){
         tile.setGround(id);
 
         if (rotation >= 0) tile.setRotation(rotation);
@@ -24,37 +24,37 @@ public :
 
         switch (id) {
 
-            case Textures::ground::None :
+            case Textures::Ground::None :
                 tile.getSprite().setTextureRect(sf::IntRect(0, 0, 15, 15));
                 tile.setMoveSpeed(1);
                 tile.setcrossable(false);
                 break;
 
-            case Textures::ground::Grass :
+            case Textures::Ground::Grass :
                 tile.getSprite().setTextureRect(sf::IntRect(15, 0, 15, 15));
                 tile.setMoveSpeed(1);
                 tile.setcrossable(true);
                 break;
 
-            case Textures::ground::Sand :
+            case Textures::Ground::Sand :
                 tile.getSprite().setTextureRect(sf::IntRect(30, 0, 15, 15));
                 tile.setMoveSpeed(0.6f);
                 tile.setcrossable(true);
                 break;
 
-            case Textures::ground::Wood :
+            case Textures::Ground::Wood :
                 tile.getSprite().setTextureRect(sf::IntRect(45, 0, 15, 15));
                 tile.setMoveSpeed(1.2);
                 tile.setcrossable(true);
                 break;
 
-            case Textures::ground::Water :
+            case Textures::Ground::Water :
                 tile.getSprite().setTextureRect(sf::IntRect(60, 0, 15, 15));
                 tile.setMoveSpeed(0.3);
                 tile.setcrossable(false);
                 break;
 
-            case Textures::ground::Wall :
+            case Textures::Ground::Wall :
                 tile.getSprite().setTextureRect(sf::IntRect(75, 0, 15, 15));
                 tile.setMoveSpeed(1);
                 tile.setcrossable(false);

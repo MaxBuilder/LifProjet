@@ -91,7 +91,7 @@ namespace GUI {
     }
 
     void Button::changeTexture(Type buttonType) {
-        sf::IntRect textureRect(0, 70 * buttonType, width, height);
+        sf::IntRect textureRect(0, height * buttonType, width, height);
         mSprite.setTextureRect(textureRect);
     }
 

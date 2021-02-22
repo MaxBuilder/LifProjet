@@ -7,13 +7,16 @@
 
 #include "Tile.hpp"
 #include "Paint.hpp"
+#include "BuildMap.hpp"
+#include "../../Game/Resources/ResourceIdentifiers.hpp"
+
 #include "SFML/Graphics/Drawable.hpp"
 #include "SFML/Graphics/Transformable.hpp"
 #include "SFML/Graphics/Sprite.hpp"
-#include "../../Game/Resources/ResourceIdentifiers.hpp"
 #include "SFML/Graphics/Texture.hpp"
 #include "SFML/Window/Event.hpp"
 #include "SFML/Graphics/RenderWindow.hpp"
+
 #include <iostream>
 #include <fstream>
 #include <list>
@@ -23,6 +26,7 @@ class TilesMap : public sf::Drawable, public sf::Transformable{
 public:
     TilesMap(const sf::Texture &texture, float blocSize, sf::Vector2i origin);
 
+    void clear();
     void save(const std::string &file) const;
     void load(const std::string &file);
     void setDrawBuildings(bool draw);
@@ -43,6 +47,7 @@ private:
 
     Tile grid_id[64][36];
     std::vector<BuildMap> mBuildings;
+    sf::Texture texture;
 
     float mBlockSize;
     sf::Vector2i mOrigin;

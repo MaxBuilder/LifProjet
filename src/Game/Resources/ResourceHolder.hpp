@@ -41,7 +41,7 @@ void ResourceHolder<Resource, Identifier>::load(Identifier id, const std::string
     if (!resource->loadFromFile(filename))
         throw std::runtime_error("ResourceHolder::load - Failed to load " + filename);
 
-    // If loading successful, insert resource to map
+    // If loading successful, insert resource to Editor
     insertResource(id, std::move(resource));
 }
 
@@ -54,7 +54,7 @@ void ResourceHolder<Resource, Identifier>::load(Identifier id, const std::string
     if (!resource->loadFromFile(filename, secondParam))
         throw std::runtime_error("ResourceHolder::load - Failed to load " + filename);
 
-    // If loading successful, insert resource to map
+    // If loading successful, insert resource to Editor
     insertResource(id, std::move(resource));
 }
 

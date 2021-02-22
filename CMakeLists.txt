@@ -30,5 +30,7 @@ add_executable(LifProjet src/main.cpp
         src/Game/GameStates/GameState.cpp src/Game/GameStates/GameState.hpp
         src/Core/Scene/TextNode.cpp src/Core/Scene/TextNode.hpp
         src/Core/Gui/ButtonList.cpp  src/Core/Gui/ButtonList.hpp
-        src/Core/Gui/CheckBox.cpp src/Core/Gui/CheckBox.hpp)
+        src/Core/Gui/CheckBox.cpp src/Core/Gui/CheckBox.hpp
+        src/Game/GameStates/PauseState.cpp src/Game/GameStates/PauseState.hpp
+        src/Game/Map/BuildMap.cpp src/Game/Map/BuildMap.hpp)
 target_link_libraries(LifProjet sfml-graphics sfml-audio)

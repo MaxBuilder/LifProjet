@@ -12,10 +12,10 @@ MainMenuState::MainMenuState(StateStack &stack, Context context)
 
     Textures::ID backgroundID;
     switch(Random::Generate(1, 4)) {
-        case 1: backgroundID = Textures::Background1; break;
-        case 2: backgroundID = Textures::Background2; break;
-        case 3: backgroundID = Textures::Background3; break;
-        case 4: backgroundID = Textures::Background4; break;
+        case 1: backgroundID = Textures::MenuBackground1; break;
+        case 2: backgroundID = Textures::MenuBackground2; break;
+        case 3: backgroundID = Textures::MenuBackground3; break;
+        case 4: backgroundID = Textures::MenuBackground4; break;
     }
 
     sf::Texture& backgroundTexture = context.textures.get(backgroundID);
@@ -26,21 +26,25 @@ MainMenuState::MainMenuState(StateStack &stack, Context context)
     title.setPosition(640, 180);
 
     auto playButton = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
-    playButton->setPosition(390, 310);
+    playButton->setPosition(390, 360);
     playButton->setText("Simulation");
-    // set callback
+    playButton->setCallback([this] () {
+        requestStackPop();
+        requestStackPush(States::Game);
+        getContext().sounds.play(Sounds::Menu);
+    });
 
     auto editorButton = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
-    editorButton->setPosition(390, 410);
-    editorButton->setText("Edit Map");
+    editorButton->setPosition(390, 460);
+    editorButton->setText("Edit MapGround");
     editorButton->setCallback([this] () {
         requestStackPop();
         requestStackPush(States::MapEditor);
         getContext().sounds.play(Sounds::Menu);
     });
 
-    auto settingsButton = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
-    settingsButton->setPosition(390, 510);
+    auto settingsButton = std::make_shared<GUI::Button>(context, 70, 70, Textures::MenuButton);
+    settingsButton->setPosition(1280-100, 720-100);
     settingsButton->setText("Settings");
     settingsButton->setCallback([this] () {
         requestStackPop();
@@ -50,7 +54,7 @@ MainMenuState::MainMenuState(StateStack &stack, Context context)
     });
 
     auto quitButton = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
-    quitButton->setPosition(390, 610);
+    quitButton->setPosition(390, 560);
     quitButton->setText("Quit");
     quitButton->setCallback([this] () {
         requestStackPop();

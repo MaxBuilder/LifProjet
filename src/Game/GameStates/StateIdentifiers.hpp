@@ -12,8 +12,9 @@ namespace States {
         MainMenu,
         MapEditor,
         Settings,
-        Game, // à renommer
-        Pause
+        Game,
+        Pause,
+        Army // Grrrr
     };
 }
 

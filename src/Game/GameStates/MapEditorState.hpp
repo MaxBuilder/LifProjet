@@ -34,25 +34,33 @@ public:
     void supressBuildings(sf::Vector2i pos);
 
 private :
-    sf::View view;
     sf::Sprite background;
-
+    sf::Sprite subBackground;
     TilesMap map;
+    sf::Text mapPath;
+    sf::Text editorCoord;
+    std::string mMapPath;
+    bool subMenu;
+    bool saveload; // true : save | false : load
 
+    GUI::Container mEditBar;
     GUI::Container mToolBar;
-    GUI::Container mTextureRotation;
-    GUI::Container mPalette;
-    GUI::Container mCurrentMap;
+    GUI::Container mRotationBar;
+    GUI::Container mPaletteBar;
+
+    GUI::Container mSubMenu;
 
     float rotate;
-    std::string mMapPath;
+    //std::string mMapPath;
 
-    Textures::building::ID mBuild_selection;
-    Textures::ground::ID ground_selection;
-    Textures::ground::ID lastGround ;
-    sf::Vector2i lastTileUpdate ;
-    map::tool tool;
+    Textures::Building::ID mBuild_selection;
+    Textures::Ground::ID ground_selection;
+    Textures::Ground::ID lastGround;
+    sf::Vector2i lastTileUpdate;
+    Editor::Tool tool;
 
 };
+
+
 
 #endif //LIFPROJET_MAPEDITORSTATE_HPP
