@@ -43,9 +43,8 @@ MainMenuState::MainMenuState(StateStack &stack, Context context)
         getContext().sounds.play(Sounds::Menu);
     });
 
-    auto settingsButton = std::make_shared<GUI::Button>(context, 70, 70, Textures::MenuButton);
+    auto settingsButton = std::make_shared<GUI::Button>(context, 70, 70, Textures::SettingsButton);
     settingsButton->setPosition(1280-100, 720-100);
-    settingsButton->setText("Settings");
     settingsButton->setCallback([this] () {
         requestStackPop();
         requestStackPush(States::Settings);
