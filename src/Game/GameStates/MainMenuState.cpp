@@ -36,7 +36,7 @@ MainMenuState::MainMenuState(StateStack &stack, Context context)
 
     auto editorButton = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
     editorButton->setPosition(390, 460);
-    editorButton->setText("Edit MapGround");
+    editorButton->setText("Edit Map");
     editorButton->setCallback([this] () {
         requestStackPop();
         requestStackPush(States::MapEditor);

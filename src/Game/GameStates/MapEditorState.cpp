@@ -279,7 +279,7 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
 
     auto ret = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
     ret->setPosition(380, 500);
-    ret->setText("EditorBackButton");
+    ret->setText("Back");
     ret->setCallback([this] () {
         subMenu = false;
         getContext().sounds.play(Sounds::Menu);
