@@ -9,7 +9,8 @@
 GameState::GameState(StateStack &stack, Context& context)
 : State(stack, context)
 , mView()
-, mBackground(context.textures.get(Textures::None))
+//, mBackground(context.textures.get(Textures::None))
+, mWorld(context.window, context.textures, context.fonts, context.sounds)
 , mDirection(0, 0)
 , mScroll(0)
 , mSpeed(0)
@@ -25,7 +26,8 @@ void GameState::draw() {
 
     window.setView(mView);
 
-    window.draw(mBackground);
+    mWorld.draw();
+    //window.draw(mBackground);
 }
 
 bool GameState::update(sf::Time dt) {

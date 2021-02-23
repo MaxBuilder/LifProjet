@@ -7,7 +7,7 @@
 
 #include "Tile.hpp"
 #include "Paint.hpp"
-#include "BuildMap.hpp"
+#include "Building.hpp"
 #include "../../Game/Resources/ResourceIdentifiers.hpp"
 
 #include "SFML/Graphics/Drawable.hpp"
@@ -32,11 +32,11 @@ public:
     void setDrawBuildings(bool draw);
 
     Tile& getTile(int x, int y);
-    std::pair<std::vector<BuildMap>::iterator,
-            std::vector<BuildMap>::iterator> getBuildingsIt();
+    std::pair<std::vector<Building>::iterator,
+            std::vector<Building>::iterator> getBuildingsIt();
 
-    void addBuildings(BuildMap build);
-    void supBuildings(std::vector<BuildMap>::iterator it);
+    void addBuildings(Building build);
+    void supBuildings(std::vector<Building>::iterator it);
 
     float getBlockSize() const;
     sf::Vector2i getOrigins() const;
@@ -46,7 +46,7 @@ public:
 private:
 
     Tile grid_id[64][36];
-    std::vector<BuildMap> mBuildings;
+    std::vector<Building> mBuildings;
     sf::Texture texture;
 
     float mBlockSize;

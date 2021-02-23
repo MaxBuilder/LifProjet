@@ -2,15 +2,15 @@
 // Created by 33771 on 18/02/2021.
 //
 
-#ifndef LIFPROJET_BUILDMAP_HPP
-#define LIFPROJET_BUILDMAP_HPP
+#ifndef LIFPROJET_BUILDING_HPP
+#define LIFPROJET_BUILDING_HPP
 
 #include "../../Game/Resources/ResourceIdentifiers.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 
-class BuildMap {
+class Building {
 public:
-    BuildMap(Textures::Building::ID ID, sf::IntRect position, float rotation );
+    Building(Textures::Building::ID ID, sf::IntRect position, float rotation );
 
     Textures::Building::ID getID() const;
     sf::IntRect getPosition() const;
@@ -30,4 +30,4 @@ private:
 };
 
 
-#endif //LIFPROJET_BUILDMAP_HPP
+#endif //LIFPROJET_BUILDING_HPP
