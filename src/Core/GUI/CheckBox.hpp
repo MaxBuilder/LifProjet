@@ -39,9 +39,6 @@ namespace GUI {
 
         virtual bool isSelectable() const;
 
-        float getWidth() const;
-        float getHeight() const;
-
         virtual void activate();
         virtual void deactivate();
 
@@ -56,7 +53,6 @@ namespace GUI {
         Callback mCallback;
         sf::Sprite mSprite;
         bool mIsToggle;
-        float width, height;
     };
 
 

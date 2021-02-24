@@ -39,7 +39,7 @@ namespace GUI {
         void selectNext();
         void selectPrevious();
 
-    private:
+    protected:
         std::vector<Component::Ptr> mChildren;
         int mSelectedChild;
 

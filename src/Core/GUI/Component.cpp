@@ -10,9 +10,19 @@ namespace GUI
     Component::Component()
     : mIsSelected(false)
     , mIsActive(false)
+    ,mHeight(0)
+    ,mWidth(0)
     {}
 
     Component::~Component() {
+    }
+
+    float Component::getWidth() const {
+        return mWidth;
+    }
+
+    float Component::getHeight() const {
+        return mHeight;
     }
 
     bool Component::isSelected() const {

@@ -5,6 +5,7 @@
 #ifndef LIFPROJET_MAPEDITORSTATE_HPP
 #define LIFPROJET_MAPEDITORSTATE_HPP
 
+#include "../../Core/GUI/ScrollingContainer.hpp"
 #include "../../Core/StateStack/State.hpp"
 #include "../../Core/GUI/Container.hpp"
 #include "../../Core/GUI/Button.hpp"
@@ -46,7 +47,7 @@ private :
     GUI::Container mEditBar;
     GUI::Container mToolBar;
     GUI::Container mRotationBar;
-    GUI::Container mPaletteBar;
+    GUI::ScrollingContainer mPaletteBar;
 
     GUI::Container mSubMenu;
 

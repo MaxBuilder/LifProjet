@@ -34,9 +34,6 @@ namespace GUI {
         void nextOption();
         void previousOption();
 
-        float getWidth() const;
-        float getHeight() const;
-
         virtual bool isSelectable() const;
         virtual void handleEvent(const sf::Event& event);
         void handleEvent(const sf::Event& event,const sf::RenderWindow& window);
@@ -51,7 +48,6 @@ namespace GUI {
         std::vector<std::string> mOptions;
 
         int mCount;
-        float width, height;
     };
 
 }

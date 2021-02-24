@@ -8,10 +8,11 @@ namespace GUI {
 
     ButtonList::ButtonList(State::Context context, float width, float height, int characterSize,
                                 Textures::ID textureID) :
-            width(width),
-            height(height),
             mSprite(context.textures.get(textureID)),
             mCount(-1){
+
+        mHeight = height;
+        mWidth = width;
 
         mTextInf.setCharacterSize(characterSize);
         mTextSup.setCharacterSize(characterSize);
@@ -26,8 +27,8 @@ namespace GUI {
         mText.setFont(context.fonts.get(Fonts::Main));
 
         mTextInf.setPosition(0, height / 2.f);
-        mTextSup.setPosition(width-mTextSup.getLocalBounds().width, height / 2.f);
-        mText.setPosition((width-mText.getLocalBounds().width) / 2.f, height / 2.f);
+        mTextSup.setPosition(mWidth-mTextSup.getLocalBounds().width, height / 2.f);
+        mText.setPosition((mWidth-mText.getLocalBounds().width) / 2.f, height / 2.f);
 
     }
 
@@ -38,29 +39,21 @@ namespace GUI {
     void ButtonList::setOption(int index){
         mCount = index;
         mText.setString(mOptions.at(mCount));
-        mText.setPosition((width-mText.getLocalBounds().width) / 2.f, height / 2.f);
+        mText.setPosition((mWidth-mText.getLocalBounds().width) / 2.f, mHeight / 2.f);
     }
 
     void ButtonList::addOption(const std::string& strOption) {
         mCount++;
         mOptions.push_back(strOption);
         mText.setString(strOption);
-        mText.setPosition((width-mText.getLocalBounds().width) / 2.f, height / 2.f);
-    }
-
-    float ButtonList::getWidth() const {
-        return width;
-    }
-
-    float ButtonList::getHeight() const {
-        return height;
+        mText.setPosition((mWidth-mText.getLocalBounds().width) / 2.f, mHeight / 2.f);
     }
 
     void ButtonList::nextOption() {
         if (mCount >= mOptions.size() - 1) return;
         mCount++;
         mText.setString(mOptions.at(mCount));
-        mText.setPosition((width-mText.getLocalBounds().width) / 2.f, height / 2.f);
+        mText.setPosition((mWidth-mText.getLocalBounds().width) / 2.f, mHeight / 2.f);
         mCallback(mCount);
     }
 
@@ -68,7 +61,7 @@ namespace GUI {
         if (mCount <= 0) return;
         mCount--;
         mText.setString(mOptions.at(mCount));
-        mText.setPosition((width-mText.getLocalBounds().width) / 2.f, height / 2.f);
+        mText.setPosition((mWidth-mText.getLocalBounds().width) / 2.f, mHeight / 2.f);
         mCallback(mCount);
     }
 

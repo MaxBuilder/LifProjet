@@ -20,6 +20,7 @@ add_executable(LifProjet src/main.cpp
         src/Core/GUI/Component.cpp src/Core/GUI/Component.hpp
         src/Core/GUI/Button.cpp src/Core/GUI/Button.hpp
         src/Core/GUI/Container.cpp src/Core/GUI/Container.hpp
+        src/Core/GUI/ScrollingContainer.cpp src/Core/GUI/ScrollingContainer.hpp
         src/Game/GameStates/MapEditorState.cpp src/Game/GameStates/MapEditorState.hpp
         src/Game/Map/TilesMap.hpp src/Game/Map/TilesMap.cpp
         src/Game/Map/Tile.cpp src/Game/Map/Tile.hpp

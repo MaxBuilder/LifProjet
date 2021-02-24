@@ -9,9 +9,10 @@ namespace GUI {
     CheckBox::CheckBox(State::Context context, float width, float height, Textures::ID textureID)
             : mCallback()
             , mSprite(context.textures.get(textureID))
-            , mIsToggle(false)
-            , width(width)
-            , height(height) {
+            , mIsToggle(false){
+
+        mHeight = height;
+        mWidth = width;
         changeTexture(Normal);
     }
 
@@ -49,14 +50,6 @@ namespace GUI {
         Component::deactivate();
     }
 
-    float CheckBox::getWidth() const {
-        return width;
-    }
-
-    float CheckBox::getHeight() const {
-        return height;
-    }
-
     void CheckBox::handleEvent(const sf::Event& event) {}
 
     void CheckBox::draw(sf::RenderTarget &target, sf::RenderStates states) const {
@@ -65,7 +58,7 @@ namespace GUI {
     }
 
     void CheckBox::changeTexture(Type buttonType) {
-        sf::IntRect textureRect(0, 40 * buttonType, width, height);
+        sf::IntRect textureRect(0, 40 * buttonType, mWidth, mHeight);
         mSprite.setTextureRect(textureRect);
     }
 
