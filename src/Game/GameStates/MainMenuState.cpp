@@ -43,15 +43,6 @@ MainMenuState::MainMenuState(StateStack &stack, Context context)
         getContext().sounds.play(Sounds::Menu);
     });
 
-    auto settingsButton = std::make_shared<GUI::Button>(context, 70, 70, Textures::SettingsButton);
-    settingsButton->setPosition(1280-100, 720-100);
-    settingsButton->setCallback([this] () {
-        requestStackPop();
-        requestStackPush(States::Settings);
-        getContext().sounds.play(Sounds::Menu);
-        sf::sleep(sf::milliseconds(200));
-    });
-
     auto quitButton = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
     quitButton->setPosition(390, 560);
     quitButton->setText("Quit");
@@ -59,6 +50,14 @@ MainMenuState::MainMenuState(StateStack &stack, Context context)
         requestStackPop();
         getContext().sounds.play(Sounds::Menu);
         sf::sleep(sf::milliseconds(200));
+    });
+
+    auto settingsButton = std::make_shared<GUI::Button>(context, 70, 70, Textures::SettingsButton);
+    settingsButton->setPosition(1280-80, 720-80);
+    settingsButton->setCallback([this] () {
+        requestStackPop();
+        requestStackPush(States::Settings);
+        getContext().sounds.play(Sounds::Menu);
     });
 
     mGUIContainer.pack(playButton);

@@ -501,7 +501,7 @@ void MapEditorState::createBuildings(sf::Vector2i pos){
     float r = rotate;
     if (r == -1) r = 0;
 
-    BuildMap build(mBuild_selection, rect1,r);
+    Building build(mBuild_selection, rect1, r);
     float blockSize = map.getBlockSize();
     if(r == 90) rect1.left += rect1.width;
     sf::Sprite &tmp = build.getSprite();

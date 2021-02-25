@@ -10,6 +10,7 @@
 #include <SFML/Window/Event.hpp>
 
 #include "../../Core/StateStack/State.hpp"
+#include "../World/World.hpp"
 
 class GameState : public State {
 public:
@@ -20,7 +21,7 @@ public:
     bool handleEvent(const sf::Event& event) override;
 
 private:
-    sf::Sprite mBackground;
+    World mWorld;
 
     sf::View mView;
     sf::Vector2f mDirection;
