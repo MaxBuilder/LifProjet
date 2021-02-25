@@ -8,7 +8,7 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
 : mTarget(outputTarget)
 , mSounds(sounds)
 , mFonts(fonts)
-, mMap(textures.get(Textures::MapGround), 20.f, sf::Vector2i(0, 0))
+, mMap(textures.get(Textures::MapGround), 20.f)
 {
     mMap.load("data/Maps/demo1.map");
 

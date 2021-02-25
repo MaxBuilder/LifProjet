@@ -6,8 +6,7 @@
 #define LIFPROJET_TILESMAP_HPP
 
 #include "Tile.hpp"
-#include "Paint.hpp"
-#include "BuildMap.hpp"
+#include "Building.hpp"
 #include "../../Game/Resources/ResourceIdentifiers.hpp"
 
 #include "SFML/Graphics/Drawable.hpp"
