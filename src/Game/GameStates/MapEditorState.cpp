@@ -230,59 +230,6 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     });
     mPaletteBar.pack(castleButton);
 
-    // test ScrollingContainer
-
-    auto woodButton2 = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorWoodButton);
-    woodButton2->setPosition(1134, 432);
-    woodButton2->setToggle(true);
-    woodButton2->setCallback([this](){
-        ground_selection = Textures::Ground::Wood;
-        mBuild_selection = Textures::Building::None;
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mPaletteBar.pack(woodButton2);
-
-    auto woodButton3 = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorWoodButton);
-    woodButton3->setPosition(1134, 498);
-    woodButton3->setToggle(true);
-    woodButton3->setCallback([this](){
-        ground_selection = Textures::Ground::Wood;
-        mBuild_selection = Textures::Building::None;
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mPaletteBar.pack(woodButton3);
-
-    auto woodButton4 = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorWoodButton);
-    woodButton4->setPosition(1134, 564);
-    woodButton4->setToggle(true);
-    woodButton4->setCallback([this](){
-        ground_selection = Textures::Ground::Wood;
-        mBuild_selection = Textures::Building::None;
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mPaletteBar.pack(woodButton4);
-
-    auto woodButton5 = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorWoodButton);
-    woodButton5->setPosition(1134, 630);
-    woodButton5->setToggle(true);
-    woodButton5->setCallback([this](){
-        ground_selection = Textures::Ground::Wood;
-        mBuild_selection = Textures::Building::None;
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mPaletteBar.pack(woodButton5);
-
-    auto woodButton6 = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorWoodButton);
-    woodButton6->setPosition(1134, 696);
-    woodButton6->setToggle(true);
-    woodButton6->setCallback([this](){
-        ground_selection = Textures::Ground::Wood;
-        mBuild_selection = Textures::Building::None;
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mPaletteBar.pack(woodButton6);
-
-
     // Boutons du sous-menu :
 
     auto map1 = std::make_shared<GUI::Button>(context, 500, 70, Textures::MenuButton);
@@ -392,7 +339,6 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
 
         sf::Vector2i WindowPosition = sf::Mouse::getPosition(getContext().window);
         sf::Vector2i pos = static_cast<sf::Vector2i>( getContext().window.mapPixelToCoords(WindowPosition));
-
         if (pos.x < 1116 and pos.x >= 92 and pos.y >= 90 and pos.y < 666 ){ // rectangle contenant la Editor
 
             auto caseSize = map.getBlockSize();
@@ -562,7 +508,7 @@ void MapEditorState::createBuildings(sf::Vector2i pos){
     tmp.setTexture(getContext().textures.get(Textures::MapBuildings));
     tmp.setTextureRect(spritePos);
     tmp.setScale(blockSize/30.f,blockSize/30.f);
-    tmp.setPosition(rect1.left*blockSize + map.getPosition().x ,rect1.top*blockSize + map.getPosition().y);
+    tmp.setPosition(rect1.left*blockSize,rect1.top*blockSize);
     tmp.setRotation(r);
 
     map.addBuildings(build);
@@ -622,7 +568,7 @@ void MapEditorState::setBuildings(){
         tmp.setTexture(getContext().textures.get(Textures::MapBuildings));
         tmp.setTextureRect(spritePos);
         tmp.setScale(blockSize/30.f,blockSize/30.f);
-        tmp.setPosition(rect.left*blockSize+map.getPosition().x,rect.top*blockSize+map.getPosition().y);
+        tmp.setPosition(rect.left*blockSize,rect.top*blockSize);
         tmp.setRotation(rot);
     }
 }

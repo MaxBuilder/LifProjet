@@ -186,7 +186,8 @@ void TilesMap::draw(sf::RenderTarget& target, sf::RenderStates states) const{
         }
     }
     if (mDrawBuildings)
-        for( const auto &build : mBuildings)
-            target.draw(build.getConstSprite(),states);
+        for( const auto &build : mBuildings) {
+            target.draw(build.getConstSprite(), states);
+        }
 
 }
