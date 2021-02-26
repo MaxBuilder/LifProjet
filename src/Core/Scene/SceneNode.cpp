@@ -10,6 +10,8 @@
 
 #include <algorithm>
 #include <cassert>
+#include <iostream>
+
 SceneNode::SceneNode()
 : mChildren()
 , mParent(nullptr) {
@@ -37,7 +39,7 @@ void SceneNode::update(sf::Time dt) {
 }
 
 void SceneNode::updateCurrent(sf::Time dt) {
-    // Virtual
+    // To define in inheriting classes
 }
 
 void SceneNode::updateChildren(sf::Time dt) {
@@ -56,12 +58,12 @@ void SceneNode::draw(sf::RenderTarget &target, sf::RenderStates states) const {
 }
 
 void SceneNode::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const {
-    // Virtual
+    // To define in inheriting classes
 }
 
 void SceneNode::drawChildren(sf::RenderTarget &target, sf::RenderStates states) const {
     FOREACH(const Ptr& child, mChildren)
-        child->drawChildren(target, states);
+        child->draw(target, states);
 }
 
 sf::FloatRect SceneNode::getBoundingRect() const

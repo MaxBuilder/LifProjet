@@ -4,8 +4,10 @@
 
 #include "Entity.hpp"
 
+#include <iostream>
+
 Entity::Entity(int hitPoints)
-: mVelocity()
+: mVelocity(sf::Vector2i(0, 0))
 , mHitPoints(hitPoints)
 {}
 
@@ -47,8 +49,12 @@ void Entity::remove() {
     destroy();
 }
 
-bool Entity::isDestroyed() {
+bool Entity::isDestroyed() const {
     return mHitPoints > 0;
+}
+
+int Entity::getHitPoints() const {
+    return mHitPoints;
 }
 
 void Entity::updateCurrent(sf::Time dt) {

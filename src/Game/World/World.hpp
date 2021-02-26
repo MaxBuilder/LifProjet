@@ -8,6 +8,9 @@
 #include "../Map/TilesMap.hpp"
 #include "../../Core/Scene/SceneNode.hpp"
 #include "../../Core/Audio/SoundPlayer.hpp"
+#include "../Entities/Soldier.hpp"
+
+#include <array>
 
 class World {
 
@@ -26,14 +29,16 @@ private:
 
 private:
     sf::RenderTarget& mTarget;
+    TextureHolder& mTextures;
     FontHolder& mFonts;
     SoundPlayer& mSounds;
 
     // Scene
     TilesMap mMap;
     SceneNode mSceneGraph;
-    std::array<SceneNode*, LayerCount> mSceneLayers;
-
+    //std::array<SceneNode*, LayerCount> mSceneLayers;
+    std::vector<SceneNode*> mSceneLayers;
+    //Soldier soldier;
 
 };
 

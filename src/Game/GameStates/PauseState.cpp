@@ -30,8 +30,7 @@ PauseState::PauseState(StateStack &stack, Context& context)
     quitButton->setPosition(380, 460);
     quitButton->setText("Quit");
     quitButton->setCallback([this] () {
-        requestStackPop();
-        requestStackPop();
+        requestStackClear();
         requestStackPush(States::MainMenu);
         getContext().sounds.play(Sounds::Menu);
     });

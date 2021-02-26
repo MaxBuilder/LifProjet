@@ -37,6 +37,8 @@ bool GameState::update(sf::Time dt) {
     if(mScroll > 0) mView.zoom(0.5f);
     mScroll = 0;
 
+    mWorld.update(dt);
+
     return true;
 }
 

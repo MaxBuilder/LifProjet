@@ -15,28 +15,30 @@
 #include <memory>
 #include <utility>
 
-class SceneNode : public sf::Transformable, sf::Drawable, sf::NonCopyable {
+class SceneNode : public sf::Transformable, public sf::Drawable, private sf::NonCopyable {
 public:
     typedef std::unique_ptr<SceneNode> Ptr;
     typedef std::pair<SceneNode*, SceneNode*> Pair;
 
 public:
     explicit SceneNode();
+
     void attachChild(Ptr child);
     Ptr detachChild(const SceneNode& node);
 
     void update(sf::Time dt);
+
+    //sf::Vector2f getWorldPosition();
+    virtual sf::FloatRect getBoundingRect() const;
 
 private:
     virtual void updateCurrent(sf::Time dt);
     void updateChildren(sf::Time dt);
 
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-    void drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
+    virtual void drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
     void drawChildren(sf::RenderTarget& target, sf::RenderStates states) const;
     void drawBoundingRect(sf::RenderTarget& target, sf::RenderStates states) const;
-
-    virtual sf::FloatRect	getBoundingRect() const;
 
 private:
     std::vector<Ptr> mChildren;
