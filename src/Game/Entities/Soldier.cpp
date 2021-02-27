@@ -20,6 +20,11 @@ Soldier::Soldier(Team team, const TextureHolder& textures, const FontHolder& fon
 
 void Soldier::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const {
     target.draw(mSprite, states);
+    sf::Vertex line[] = {
+            sf::Vertex(sf::Vector2f(getPosition() + sf::Vector2f(10, 10)), sf::Color::Red),
+            sf::Vertex(sf::Vector2f(getPosition() + mDirection * 10.f) + sf::Vector2f(10, 10), sf::Color::Red)
+    };
+    target.draw(line, 2, sf::Lines);
 }
 
 void Soldier::updateCurrent(sf::Time dt) {

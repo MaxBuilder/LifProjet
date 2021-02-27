@@ -25,6 +25,8 @@ void centerOrigin(sf::Text& text);
 float toDegree(float radian);
 float toRadian(float degree);
 
-float norm(sf::Vector2f);
+float norm(const sf::Vector2f& vec);
+
+float distance(const sf::Vector2i& vec1, const sf::Vector2i& vec2);
 
 #endif //LIFPROJET_UTILITY_HPP
