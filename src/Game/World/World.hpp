@@ -25,6 +25,12 @@ public:
     void trackPrev();
     void untrack();
     sf::Vector2f trackedPos();
+    void trackedMove(sf::Vector2f direction);
+
+    // Entity functions
+    void checkCollision();
+    void adaptSpeed();
+
 
 private:
     enum Layer {

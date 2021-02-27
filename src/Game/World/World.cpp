@@ -68,3 +68,7 @@ void World::untrack() {
 sf::Vector2f World::trackedPos() {
     return mSoldiers[mTracked]->getPosition();
 }
+
+void World::trackedMove(sf::Vector2f direction) {
+    mSoldiers[mTracked]->setDirection(direction);
+}

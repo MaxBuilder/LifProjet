@@ -25,3 +25,7 @@ float toRadian(float degree)
 {
     return 3.141592653589793238462643383f / 180.f * degree;
 }
+
+float norm(sf::Vector2f vec) {
+    return std::sqrt(vec.x * vec.x + vec.y * vec.y);
+}

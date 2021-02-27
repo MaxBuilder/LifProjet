@@ -25,4 +25,6 @@ void centerOrigin(sf::Text& text);
 float toDegree(float radian);
 float toRadian(float degree);
 
+float norm(sf::Vector2f);
+
 #endif //LIFPROJET_UTILITY_HPP

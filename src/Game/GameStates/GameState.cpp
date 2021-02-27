@@ -48,6 +48,7 @@ bool GameState::update(sf::Time dt) {
     else {
         mView.setCenter(mWorld.trackedPos());
         mView.setSize(320, 180);
+        mWorld.trackedMove(mDirection * 15.f);
     }
 
     mWorld.update(dt);
@@ -56,15 +57,16 @@ bool GameState::update(sf::Time dt) {
 }
 
 bool GameState::handleEvent(const sf::Event &event) {
-    if(!mTracking) {
-        mDirection = sf::Vector2f(0.f, 0.f);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) mDirection += sf::Vector2f(0.f, -1.f);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) mDirection += sf::Vector2f(0.f, +1.f);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) mDirection += sf::Vector2f(-1.f, 0.f);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) mDirection += sf::Vector2f(1.f, 0.f);
+    // Temp to move entity
+    mDirection = sf::Vector2f(0.f, 0.f);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) mDirection += sf::Vector2f(0.f, -1.f);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) mDirection += sf::Vector2f(0.f, +1.f);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) mDirection += sf::Vector2f(-1.f, 0.f);
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) mDirection += sf::Vector2f(1.f, 0.f);
+    float norme = norm(mDirection);
+    if (norme > 0) mDirection = mDirection / norme;
 
-        float norme = std::sqrt(mDirection.x * mDirection.x + mDirection.y * mDirection.y);
-        if (norme > 0) mDirection = mDirection / norme;
+    if(!mTracking) {
         mSpeed = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ? 1500 : 800;
 
         mScroll = (int) event.mouseWheelScroll.delta;
@@ -77,17 +79,23 @@ bool GameState::handleEvent(const sf::Event &event) {
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
         if(!mTracking)
             mTracking = true;
+        else
+            mWorld.trackedMove(sf::Vector2f(1, 1));
         mWorld.trackPrev();
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
         if(!mTracking)
             mTracking = true;
+        else
+            mWorld.trackedMove(sf::Vector2f(1, 1));
         mWorld.trackNext();
     }
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
-        if(mTracking)
+        if(mTracking) {
+            mWorld.trackedMove(sf::Vector2f(1, 1));
             mWorld.untrack();
+        }
         mTracking = false;
     }
 

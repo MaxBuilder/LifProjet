@@ -9,8 +9,10 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/Graphics/Text.hpp>
+#include <SFML/System.hpp>
 
 #include "../../Core/StateStack/State.hpp"
+#include "../../Core/Util/Utility.hpp"
 #include "../World/World.hpp"
 
 class GameState : public State {
