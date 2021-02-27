@@ -8,6 +8,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
+#include <SFML/Graphics/Text.hpp>
 
 #include "../../Core/StateStack/State.hpp"
 #include "../World/World.hpp"
@@ -27,6 +28,8 @@ private:
     sf::Vector2f mDirection;
     float mSpeed;
     int mScroll;
+    bool mTracking;
+    sf::Text mTrackText;
 };
 
 

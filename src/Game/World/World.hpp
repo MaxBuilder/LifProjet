@@ -20,6 +20,12 @@ public:
     void update(sf::Time dt);
     void draw();
 
+    // Tracking functions
+    void trackNext();
+    void trackPrev();
+    void untrack();
+    sf::Vector2f trackedPos();
+
 private:
     enum Layer {
         Front,
@@ -36,10 +42,13 @@ private:
     // Scene
     TilesMap mMap;
     SceneNode mSceneGraph;
-    //std::array<SceneNode*, LayerCount> mSceneLayers;
     std::vector<SceneNode*> mSceneLayers;
-    //Soldier soldier;
 
+    // Entites
+    std::vector<Soldier*> mSoldiers;
+
+    // Tracking
+    int mTracked;
 };
 
 

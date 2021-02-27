@@ -52,6 +52,7 @@ namespace Textures {
         EditorRotateUpButton,
         EditorRotateRightButton,
 
+        EntitySoldier
     };
 
     namespace Ground {

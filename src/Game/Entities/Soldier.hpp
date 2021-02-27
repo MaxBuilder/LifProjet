@@ -12,6 +12,7 @@
 
 #include "Entity.hpp"
 #include "../Resources/ResourceIdentifiers.hpp"
+#include "../Resources/ResourceHolder.hpp"
 
 
 class Soldier : public Entity {
@@ -28,6 +29,14 @@ public:
 
     Team getTeam();
     //virtual sf::FloatRect getBoundingBox();
+
+    void setDirection(sf::Vector2f velocity);
+    void setDirection(float vx, float vy);
+    sf::Vector2f getDirection() const;
+
+    float getSpeed() const;
+    void setSpeed(float speed);
+
     void remove() override;
 
 private:
@@ -35,8 +44,9 @@ private:
     virtual void updateCurrent(sf::Time dt);
 
 private:
-    //sf::Sprite mSprite;
-    sf::CircleShape mTemp;
+    sf::Sprite mSprite;
+    //sf::CircleShape mTemp;
+    float mSpeed;
     sf::Vector2f mDirection;
     Team mTeam;
 

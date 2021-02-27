@@ -14,11 +14,14 @@ GameState::GameState(StateStack &stack, Context& context)
 , mDirection(0, 0)
 , mScroll(0)
 , mSpeed(0)
+, mTracking(false)
+, mTrackText("Tracking soldier", context.fonts.get(Fonts::Main))
 {
-    //mView.setViewport(sf::FloatRect(0, 0, 1, 1));
     mView.setSize(1280, 720);
     mView.setCenter(640, 360);
-    //context.window.setView(mView);
+
+    mTrackText.setPosition(2, 2);
+    mTrackText.setCharacterSize(25u);
 }
 
 void GameState::draw() {
@@ -27,15 +30,25 @@ void GameState::draw() {
     window.setView(mView);
 
     mWorld.draw();
-    //window.draw(mBackground);
+
+    if(mTracking) {
+        window.setView(window.getDefaultView());
+        window.draw(mTrackText);
+    }
 }
 
 bool GameState::update(sf::Time dt) {
-    mView.move(mDirection.x * mSpeed * dt.asSeconds(), mDirection.y * mSpeed * dt.asSeconds());
+    if(!mTracking) {
+        mView.move(mDirection.x * mSpeed * dt.asSeconds(), mDirection.y * mSpeed * dt.asSeconds());
 
-    if(mScroll < 0) mView.zoom(2.f);
-    if(mScroll > 0) mView.zoom(0.5f);
-    mScroll = 0;
+        if (mScroll < 0) mView.zoom(2.f);
+        if (mScroll > 0) mView.zoom(0.5f);
+        mScroll = 0;
+    }
+    else {
+        mView.setCenter(mWorld.trackedPos());
+        mView.setSize(320, 180);
+    }
 
     mWorld.update(dt);
 
@@ -43,20 +56,40 @@ bool GameState::update(sf::Time dt) {
 }
 
 bool GameState::handleEvent(const sf::Event &event) {
-    mDirection = sf::Vector2f(0.f, 0.f);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) mDirection += sf::Vector2f(0.f, -1.f);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) mDirection += sf::Vector2f(0.f, +1.f);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) mDirection += sf::Vector2f(-1.f, 0.f);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) mDirection += sf::Vector2f(1.f, 0.f);
+    if(!mTracking) {
+        mDirection = sf::Vector2f(0.f, 0.f);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) mDirection += sf::Vector2f(0.f, -1.f);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) mDirection += sf::Vector2f(0.f, +1.f);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) mDirection += sf::Vector2f(-1.f, 0.f);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) mDirection += sf::Vector2f(1.f, 0.f);
 
-    float norme = std::sqrt(mDirection.x * mDirection.x + mDirection.y * mDirection.y);
-    if(norme > 0) mDirection = mDirection / norme;
-    mSpeed = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ? 1500 : 800;
+        float norme = std::sqrt(mDirection.x * mDirection.x + mDirection.y * mDirection.y);
+        if (norme > 0) mDirection = mDirection / norme;
+        mSpeed = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ? 1500 : 800;
 
-    mScroll = (int)event.mouseWheelScroll.delta;
+        mScroll = (int) event.mouseWheelScroll.delta;
+    }
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
         requestStackPush(States::Pause);
+
+    // Tracking
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+        if(!mTracking)
+            mTracking = true;
+        mWorld.trackPrev();
+    }
+    else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+        if(!mTracking)
+            mTracking = true;
+        mWorld.trackNext();
+    }
+
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
+        if(mTracking)
+            mWorld.untrack();
+        mTracking = false;
+    }
 
     return false;
 }
