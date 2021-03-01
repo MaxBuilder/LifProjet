@@ -12,26 +12,27 @@ class Tile {
 public:
     Tile();
 
-    Textures::Ground::ID getGround() const;
+    sf::Vector2i getGround() const;
+    sf::Vector2i getTop() const;
 
     float getMoveSpeed() const;
     float getRotation() const;
     bool isCrossable() const;
 
-    void setGround(const Textures::Ground::ID &id);
+    void setGround(const sf::Vector2i &id);
 
     void setMoveSpeed(const float &speed);
 
-    void paint(const Textures::Ground::ID &id,const float &rotation );
+    void paint(const sf::Vector2i &id,const float &rotation);
     void setRotation(const float &rotation);
     void setcrossable(const bool &cross);
 
 private:
-    Textures::Ground::ID ground;
+    sf::Vector2i ground, top;
 
     float rotate;
-    float moveSpeed;
-    bool crossable;
+    float moveSpeed,topMoveSpeed;
+    bool crossable, topCrossable;
 
 };
 

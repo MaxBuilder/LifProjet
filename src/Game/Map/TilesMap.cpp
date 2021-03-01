@@ -12,8 +12,9 @@ TilesMap::TilesMap(const sf::Texture &texture, float blocSize)
     mBlockSize = blocSize;
 
     mSprite.setTexture(texture);
-    mSprite.setScale(float(mBlockSize) / 15.f, float(mBlockSize) / 15.f);
-    mSprite.setOrigin(15.f / 2.f, 15.f / 2.f);
+    mBounds = 16.f;
+    mSprite.setScale(float(mBlockSize) / mBounds, float(mBlockSize) / mBounds);
+    mSprite.setOrigin(mBounds / 2.f, mBounds / 2.f);
 
     //clear();
 }
@@ -21,7 +22,7 @@ TilesMap::TilesMap(const sf::Texture &texture, float blocSize)
 void TilesMap::clear() {
     for(auto & x : grid_id) {
         for (auto & t : x) {
-            t.paint(Textures::Ground::None,0);
+            t.paint(sf::Vector2i (0,0),0);
         }
     }
     mBuildings.clear();
@@ -48,16 +49,22 @@ void TilesMap::save(const std::string &file) const{
         return;
     }
 
-    Textures::Ground::ID tmpGround = Textures::Ground::None;
+    int tmpGroundx = 0,tmpGroundy = 0,tmpTopx = 0,tmpTopy = 0;
     float tmpRotate = 0;
 
     for(const auto & x : grid_id) {
         for (const auto & t : x) {
 
-            tmpGround = t.getGround();
+            tmpGroundx = t.getGround().x;
+            tmpGroundy = t.getGround().y;
+            tmpTopx = t.getTop().x;
+            tmpTopy = t.getTop().y;
             tmpRotate = t.getRotation();
 
-            wf.write((char *) &(tmpGround), sizeof(Textures::Ground::ID));
+            wf.write((char *) &(tmpGroundx), sizeof(int));
+            wf.write((char *) &(tmpGroundy), sizeof(int));
+            wf.write((char *) &(tmpTopx), sizeof(int));
+            wf.write((char *) &(tmpTopy), sizeof(int));
             wf.write((char *) &(tmpRotate), sizeof(float));
         }
     }
@@ -91,16 +98,22 @@ void TilesMap::load(const std::string &file) {
         return ;
     }
 
-    Textures::Ground::ID tmpGround = Textures::Ground::None;
+    int tmpGroundx = 0,tmpGroundy = 0,tmpTopx = 0,tmpTopy = 0;
     float tmpRotate = 0;
 
     for(auto & x : grid_id) {
         for (auto & t : x) {
 
-            rf.read((char *) &(tmpGround), sizeof(Textures::Ground::ID));
+            rf.read((char *) &(tmpGroundx), sizeof(int));
+            rf.read((char *) &(tmpGroundy), sizeof(int));
+            rf.read((char *) &(tmpTopx), sizeof(int));
+            rf.read((char *) &(tmpTopy), sizeof(int));
             rf.read((char *) &(tmpRotate), sizeof(float));
 
-            t.paint(tmpGround,tmpRotate);
+            t.paint(sf::Vector2i(tmpGroundx,tmpGroundy),tmpRotate);
+            if(not(tmpTopx == 0 and tmpTopy == 0)){
+                t.paint(sf::Vector2i(tmpTopx,tmpTopy),tmpRotate);
+            }
         }
     }
 
@@ -150,38 +163,16 @@ void TilesMap::draw(sf::RenderTarget& target, sf::RenderStates states) const{
         for (int x = 0; x < 64; x++) {
             const Tile t = grid_id[x][y];
 
-            switch (t.getGround()) {
-
-                case Textures::Ground::None :
-                    sprite.setTextureRect(sf::IntRect(0, 0, 15, 15));
-                    break;
-
-                case Textures::Ground::Grass :
-                    sprite.setTextureRect(sf::IntRect(15, 0, 15, 15));
-                    break;
-
-                case Textures::Ground::Sand :
-                    sprite.setTextureRect(sf::IntRect(30, 0, 15, 15));
-                    break;
-
-                case Textures::Ground::Wood :
-                    sprite.setTextureRect(sf::IntRect(45, 0, 15, 15));
-                    break;
-
-                case Textures::Ground::Water :
-                    sprite.setTextureRect(sf::IntRect(60, 0, 15, 15));
-                    break;
-
-                case Textures::Ground::Wall :
-                    sprite.setTextureRect(sf::IntRect(75, 0, 15, 15));
-                    break;
-            }
-
+            sprite.setTextureRect(sf::IntRect(mBounds*t.getGround().x, mBounds*t.getGround().y, mBounds, mBounds));
             sprite.setPosition( float(x) * mBlockSize + mBlockSize / 2,
                                 float(y) * mBlockSize + mBlockSize / 2);
             sprite.setRotation(t.getRotation());
-
             target.draw(sprite, states);
+
+            if (t.getTop() != sf::Vector2i(0,0)){
+                sprite.setTextureRect(sf::IntRect(mBounds*t.getTop().x, mBounds*t.getTop().y, mBounds, mBounds));
+                target.draw(sprite, states);
+            }
 
         }
     }

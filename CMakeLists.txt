@@ -19,6 +19,7 @@ add_executable(LifProjet src/main.cpp
         src/Game/GameStates/SettingsState.cpp src/Game/GameStates/SettingsState.hpp
         src/Core/GUI/Component.cpp src/Core/GUI/Component.hpp
         src/Core/GUI/Button.cpp src/Core/GUI/Button.hpp
+        src/Core/GUI/ButtonTexture.cpp src/Core/GUI/ButtonTexture.hpp
         src/Core/GUI/Container.cpp src/Core/GUI/Container.hpp
         src/Core/GUI/ScrollingContainer.cpp src/Core/GUI/ScrollingContainer.hpp
         src/Game/GameStates/MapEditorState.cpp src/Game/GameStates/MapEditorState.hpp

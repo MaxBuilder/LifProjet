@@ -4,67 +4,72 @@
 
 #include "Tile.hpp"
 #include <cassert>
+#include <iostream>
 
 Tile::Tile(){
-    ground = Textures::Ground::None;
+    ground = sf::Vector2i(0,0);
+    top = sf::Vector2i(0,0);
     rotate = 0;
     moveSpeed = 1;
+    topMoveSpeed = 1;
     crossable = false;
+    topCrossable = true;
 }
-void Tile::paint(const Textures::Ground::ID &id,const float &rotation ){
-    ground = id;
+void Tile::paint(const sf::Vector2i &id,const float &rotation ){
+    if( id.x == 0 and id.y == 0){
+        ground = id;
+        top = id;
+    }
+    else if (id.y < 21)
+        ground = id;
+    else {
+        std::cout<<"set Top : "<<id.x<<" "<<id.y<<std::endl;
+        top = id;
+    }
 
     if (rotation >= 0) rotate = rotation;
     else rotate = static_cast<float>((std::rand()%3)*90);
 
-    switch (id) {
-
-        case Textures::Ground::None :
-            moveSpeed = 1;
-            crossable = false;
-            break;
-
-        case Textures::Ground::Grass :
-            moveSpeed = 1;
-            crossable = true;
-            break;
-
-        case Textures::Ground::Sand :
-            moveSpeed = 0.6f;
-            crossable = true;
-            break;
-
-        case Textures::Ground::Wood :
-            moveSpeed = 1.2f;
-            crossable = true;
-            break;
-
-        case Textures::Ground::Water :
-            moveSpeed = 0.3f;
-            crossable = false;
-            break;
-
-        case Textures::Ground::Wall :
-            moveSpeed = 1;
-            crossable = false;
-            break;
+    if ( ground.x == 1 and ground.y == 0) {
+        moveSpeed = 1.f;
+        crossable = true;
+    }else if ( ground.y < 6){
+        moveSpeed = 0.7;
+        crossable = true;
+    }else if ( ground.y < 16){
+        moveSpeed = 1.3;
+        crossable = true;
+    }else if ( ground.y < 21){
+        moveSpeed = 1;
+        crossable = false;
+    }else if ( ground.y < 26){
+        topMoveSpeed = 1;
+        topCrossable = true;
+    }else if ( ground.y < 31){
+        topMoveSpeed = 0.3;
+        topCrossable = false;
     }
+
 }
 
 
-Textures::Ground::ID Tile::getGround() const{
+sf::Vector2i Tile::getGround() const{
     return ground;
 }
 
+sf::Vector2i Tile::getTop() const{
+    return top;
+}
+
 float Tile::getMoveSpeed() const{
-    return moveSpeed;
+    return moveSpeed*topMoveSpeed;
 }
 
 bool Tile::isCrossable() const{
-    return crossable;
+    return (crossable and topCrossable);
 }
 
-void Tile::setGround(const Textures::Ground::ID &id){
+void Tile::setGround(const sf::Vector2i &id){
     ground = id;
 }
 

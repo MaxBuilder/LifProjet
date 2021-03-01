@@ -9,6 +9,7 @@
 #include "../../Core/StateStack/State.hpp"
 #include "../../Core/GUI/Container.hpp"
 #include "../../Core/GUI/Button.hpp"
+#include "../../Core/GUI/ButtonTexture.hpp"
 
 #include "../../Game/Map/TilesMap.hpp"
 
@@ -34,6 +35,8 @@ public:
     void setBuildings();
     void supressBuildings(sf::Vector2i pos);
 
+    void addButtonTexture(sf::Vector2i id, sf::Vector2i pos);
+
 private :
     sf::Sprite background;
     sf::Sprite subBackground;
@@ -55,8 +58,8 @@ private :
     //std::string mMapPath;
 
     Textures::Building::ID mBuild_selection;
-    Textures::Ground::ID ground_selection;
-    Textures::Ground::ID lastGround;
+    sf::Vector2i ground_selection;
+    sf::Vector2i lastGround;
     sf::Vector2i lastTileUpdate;
     Editor::Tool tool;
 

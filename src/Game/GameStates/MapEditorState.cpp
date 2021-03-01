@@ -7,7 +7,7 @@
 MapEditorState::MapEditorState(StateStack &stack, Context context)
         : State(stack, context)
         , map(context.textures.get(Textures::MapGround), 16.f)
-        , mPaletteBar(sf::IntRect(1130,100,150,550),20)
+        , mPaletteBar(sf::IntRect(1130,100,150,550),40)
         , subBackground(getContext().textures.get(Textures::SubBackground))
 {
 
@@ -21,8 +21,8 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
 
     rotate = 0.f;
     MapEditorState::mMapPath = "Unsaved";
-    ground_selection = Textures::Ground::Grass;
-    lastGround = Textures::Ground::None;
+    ground_selection = sf::Vector2i (0,0);
+    lastGround = sf::Vector2i (0,0);
     lastTileUpdate = {-1,-1};
 
     tool = Editor::Tool::standard;
@@ -149,86 +149,12 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
 
     // Texture selection buttons :
 
-    auto grassButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorGrassButton);
-    grassButton->setPosition(1134, 100);
-    grassButton->setToggle(true);
-    grassButton->activate();
-    grassButton->setCallback([this](){
-        ground_selection = Textures::Ground::Grass;
-        mBuild_selection = Textures::Building::None;
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mPaletteBar.pack(grassButton);
+    for(int y(0); y < 46; y++){
+        for (int x(0); x < 3;x++){
 
-    auto sandButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorSandButton);
-    sandButton->setPosition(1202, 100);
-    sandButton->setToggle(true);
-    sandButton->setCallback([this](){
-        ground_selection = Textures::Ground::Sand;
-        mBuild_selection = Textures::Building::None;
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mPaletteBar.pack(sandButton);
-
-    auto woodButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorWoodButton);
-    woodButton->setPosition(1134, 168);
-    woodButton->setToggle(true);
-    woodButton->setCallback([this](){
-        ground_selection = Textures::Ground::Wood;
-        mBuild_selection = Textures::Building::None;
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mPaletteBar.pack(woodButton);
-
-    auto waterButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorWaterButton);
-    waterButton->setPosition(1202, 168);
-    waterButton->setToggle(true);
-    waterButton->setCallback([this](){
-        ground_selection = Textures::Ground::Water;
-        mBuild_selection = Textures::Building::None;
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mPaletteBar.pack(waterButton);
-
-    auto stoneButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorStoneButton);
-    stoneButton->setPosition(1134, 234);
-    stoneButton->setToggle(true);
-    stoneButton->setCallback([this](){
-        ground_selection = Textures::Ground::Wall;
-        mBuild_selection = Textures::Building::None;
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mPaletteBar.pack(stoneButton);
-
-    auto barrierButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorBarrierButton);
-    barrierButton->setPosition(1134, 300);
-    barrierButton->setToggle(true);
-    barrierButton->setCallback([this](){
-        ground_selection = Textures::Ground::None;
-        mBuild_selection = Textures::Building::Barrier;
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mPaletteBar.pack(barrierButton);
-
-    auto homeButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorHomeButton);
-    homeButton->setPosition(1202, 300);
-    homeButton->setToggle(true);
-    homeButton->setCallback([this](){
-        ground_selection = Textures::Ground::None;
-        mBuild_selection = Textures::Building::Home;
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mPaletteBar.pack(homeButton);
-
-    auto castleButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorCastleButton);
-    castleButton->setPosition(1134, 366);
-    castleButton->setToggle(true);
-    castleButton->setCallback([this](){
-        ground_selection = Textures::Ground::None;
-        mBuild_selection = Textures::Building::Castle;
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mPaletteBar.pack(castleButton);
+            addButtonTexture(sf::Vector2i(x,y), sf::Vector2i(1134+44*x,100+44*y));
+        }
+    }
 
     // Boutons du sous-menu :
 
@@ -355,7 +281,7 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
                 else if (event.mouseButton.button == sf::Mouse::Right)
                     supressBuildings(pos);
             }
-            else if (sf::Mouse::isButtonPressed(sf::Mouse::Left) and ground_selection !=Textures::Ground::None) {
+            else if (sf::Mouse::isButtonPressed(sf::Mouse::Left) and ground_selection != sf::Vector2i(0,0)) {
 
                 if (lastTileUpdate == pos and lastGround == ground_selection)
                     return false;
@@ -383,7 +309,7 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
                         break;
 
                     case Editor::Tool::eraser :
-                        map.getTile(pos.x,pos.y).paint(Textures::Ground::None,0);
+                        map.getTile(pos.x,pos.y).paint(sf::Vector2i (0,0),0);
 
                     default :
                         break;
@@ -392,6 +318,20 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
         }
     }
     return false;
+}
+
+void MapEditorState::addButtonTexture(sf::Vector2i id, sf::Vector2i pos){
+
+    auto button = std::make_shared<GUI::ButtonTexture>(getContext(), 40, 40, Textures::MapGround,id);
+    button->setPosition(pos.x, pos.y);
+    button->setToggle(true);
+    button->setCallback([this](sf::Vector2i bId){
+        ground_selection = bId;
+        mBuild_selection = Textures::Building::None;
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mPaletteBar.pack(button);
+
 }
 
 void MapEditorState::paintSquare3(sf::Vector2i pos){
