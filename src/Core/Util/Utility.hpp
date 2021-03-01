@@ -26,7 +26,7 @@ float toDegree(float radian);
 float toRadian(float degree);
 
 float norm(const sf::Vector2f& vec);
-
-float distance(const sf::Vector2i& vec1, const sf::Vector2i& vec2);
+float distance(const sf::Vector2f& vec1, const sf::Vector2f& vec2);
+void display(sf::Vector2f vec);
 
 #endif //LIFPROJET_UTILITY_HPP

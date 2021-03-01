@@ -27,16 +27,18 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
     // Construction de la scène (à bouger dans une fonction)
     std::unique_ptr<Soldier> soldier1 = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts);
     soldier1->setPosition(100, 100);
+    mBlueTeam.push_back(soldier1.get());
     mSoldiers.push_back(soldier1.get());
     mSceneLayers[Front]->attachChild(std::move(soldier1));
 
-    std::unique_ptr<Soldier> soldier2 = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts);
+    std::unique_ptr<Soldier> soldier2 = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts);
     soldier2->setPosition(100, 200);
+    mRedTeam.push_back(soldier2.get());
     mSoldiers.push_back(soldier2.get());
     mSceneLayers[Front]->attachChild(std::move(soldier2));
 
-    mSoldiers[0]->setDirection(1, 1);
-    mSoldiers[1]->setDirection(2, 3);
+    mBlueTeam[0]->setDirection(1, 1);
+    mRedTeam[0]->setDirection(2, 3);
 }
 
 void World::draw() {
@@ -46,7 +48,32 @@ void World::draw() {
 
 void World::update(sf::Time dt) {
     mSceneGraph.update(dt);
+    updateTargets();
+}
 
+void World::updateTargets() {
+    for(int i = 0 ; i < mBlueTeam.size() ; i++) {
+        for(int j = 0 ; j < mRedTeam.size() ; j++) {
+            if(distance(mBlueTeam[i]->getPosition(), mRedTeam[j]->getPosition()) < 100) {
+                mBlueTeam[i]->setTarget(mRedTeam[j]);
+                //std::cout << "Target acquired !" << std::endl;
+            }
+            else mBlueTeam[i]->setTarget(nullptr);
+        }
+
+    }
+
+    /*
+    display(mSoldiers[0]->getPosition()); std::cout << " "; display(mSoldiers[1]->getPosition()); std::cout << std::endl;
+    if(distance(mSoldiers[0]->getPosition(), mSoldiers[1]->getPosition()) < 100) {
+        mSoldiers[0]->setTarget(mSoldiers[1]);
+        std::cout << "Target acquired !" << std::endl;
+    }
+
+    if(mSoldiers[0]->getTarget() != nullptr) {
+        std::cout << " Target "; display(mSoldiers[0]->getTarget()->getPosition());  std::cout << std::endl;
+    }
+     */
 }
 
 void World::trackNext() {

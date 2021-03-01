@@ -3,6 +3,7 @@
 //
 
 #include "Utility.hpp"
+#include <iostream>
 
 void centerOrigin(sf::Sprite& sprite)
 {
@@ -30,6 +31,10 @@ float norm(const sf::Vector2f& vec) {
     return std::sqrt(vec.x * vec.x + vec.y * vec.y);
 }
 
-float distance(const sf::Vector2i& vec1, const sf::Vector2i& vec2) {
+float distance(const sf::Vector2f& vec1, const sf::Vector2f& vec2) {
     return std::sqrt((vec2.x - vec1.x) * (vec2.x - vec1.x) + (vec2.y - vec1.y) * (vec2.y - vec1.y));
+}
+
+void display(sf::Vector2f vec) {
+    std::cout << vec.x << "," << vec.y;
 }

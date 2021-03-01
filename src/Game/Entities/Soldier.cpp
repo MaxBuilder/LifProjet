@@ -13,8 +13,9 @@ Soldier::Soldier(Team team, const TextureHolder& textures, const FontHolder& fon
 , mSprite(textures.get(Textures::EntitySoldier))
 , mTeam(team)
 , mSpeed(10)
+, mTargeted(nullptr)
 {
-
+    mTeam == BlueTeam ? mSprite.setTextureRect(sf::IntRect(20, 0, 20, 20)) : mSprite.setTextureRect(sf::IntRect(40, 0, 20, 20));
 
 }
 
@@ -29,6 +30,31 @@ void Soldier::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) con
 
 void Soldier::updateCurrent(sf::Time dt) {
     move(mDirection * dt.asSeconds() * mSpeed);
+    fleeTarget();
+}
+
+void Soldier::seekTarget() {
+    if(mTargeted != nullptr) {
+        std::cout << "Oui";
+        sf::Vector2f target = mTargeted->getPosition();
+        target = target - getPosition();
+        mDirection = target / norm(target);
+        mSpeed = 40;
+    }
+    else
+        mSpeed = 10;
+}
+
+void Soldier::fleeTarget() {
+    if(mTargeted != nullptr) {
+        std::cout << "Oui";
+        sf::Vector2f target = mTargeted->getPosition();
+        target = getPosition() - target;
+        mDirection = target / norm(target);
+        mSpeed = 40;
+    }
+    else
+        mSpeed = 10;
 }
 
 Soldier::Team Soldier::getTeam() {
@@ -39,9 +65,6 @@ sf::FloatRect Soldier::getBoundingBox() {
     return getTransform().transformRect(mSprite.getGlobalBounds());
 }
 */
-void Soldier::remove() {
-    Entity::remove();
-}
 
 void Soldier::setDirection(sf::Vector2f velocity) {
     mDirection = velocity;
@@ -62,4 +85,16 @@ float Soldier::getSpeed() const {
 
 void Soldier::setSpeed(float speed) {
     mSpeed = speed;
+}
+
+void Soldier::setTarget(Soldier* target) {
+    mTargeted = target;
+}
+
+void Soldier::dropTarget() {
+    mTargeted = nullptr;
+}
+
+Soldier* Soldier::getTarget() {
+    return mTargeted;
 }

@@ -11,6 +11,7 @@
 #include <SFML/Graphics/RenderStates.hpp>
 
 #include "Entity.hpp"
+#include "../../Core/Util/Utility.hpp"
 #include "../Resources/ResourceIdentifiers.hpp"
 #include "../Resources/ResourceHolder.hpp"
 
@@ -37,18 +38,25 @@ public:
     float getSpeed() const;
     void setSpeed(float speed);
 
-    void remove() override;
+    void setTarget(Soldier* target);
+    void dropTarget();
+    Soldier* getTarget();
+
+    void seekTarget();
+    void fleeTarget();
 
 private:
     virtual void drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
-    virtual void updateCurrent(sf::Time dt);
+    virtual void updateCurrent(sf::Time dt); // Defines behavior of entity (before specialization)
 
 private:
     sf::Sprite mSprite;
-    //sf::CircleShape mTemp;
+
     float mSpeed;
     sf::Vector2f mDirection;
     Team mTeam;
+
+    Soldier * mTargeted;
 
 };
 

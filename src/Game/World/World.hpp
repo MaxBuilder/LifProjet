@@ -8,6 +8,7 @@
 #include "../Map/TilesMap.hpp"
 #include "../../Core/Scene/SceneNode.hpp"
 #include "../../Core/Audio/SoundPlayer.hpp"
+#include "../../Core/Util/Utility.hpp"
 #include "../Entities/Soldier.hpp"
 
 #include <array>
@@ -20,17 +21,17 @@ public:
     void update(sf::Time dt);
     void draw();
 
-    // Tracking functions
+    // Tracking functions :
     void trackNext();
     void trackPrev();
     void untrack();
     sf::Vector2f trackedPos();
     void trackedMove(sf::Vector2f direction);
 
-    // Entity functions
-    void checkCollision();
-    void adaptSpeed();
-
+    // Entity functions :
+    void checkCollision(); // Checks and adapt position of entities relative to environment
+    void updateTargets(); // Updates entity target from perspective
+    void adaptSpeed(); // Adapts speed of entities relative to environment
 
 private:
     enum Layer {
@@ -51,7 +52,10 @@ private:
     std::vector<SceneNode*> mSceneLayers;
 
     // Entites
-    std::vector<Soldier*> mSoldiers;
+    std::vector<Soldier*> mBlueTeam;
+    std::vector<Soldier*> mRedTeam;
+
+    std::vector<Soldier*> mSoldiers; // Provisoire
 
     // Tracking
     int mTracked;
