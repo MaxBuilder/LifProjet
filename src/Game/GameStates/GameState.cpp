@@ -48,7 +48,7 @@ bool GameState::update(sf::Time dt) {
     else {
         mView.setCenter(mWorld.trackedPos());
         mView.setSize(640, 360);
-        mWorld.trackedMove(mDirection * 15.f);
+        mWorld.trackedMove(mDirection);
     }
 
     mWorld.update(dt);
@@ -79,21 +79,17 @@ bool GameState::handleEvent(const sf::Event &event) {
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
         if(!mTracking)
             mTracking = true;
-        else
-            mWorld.trackedMove(sf::Vector2f(1, 1));
         mWorld.trackPrev();
     }
     else if(sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
         if(!mTracking)
             mTracking = true;
-        else
-            mWorld.trackedMove(sf::Vector2f(1, 1));
         mWorld.trackNext();
     }
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
         if(mTracking) {
-            mWorld.trackedMove(sf::Vector2f(1, 1) / norm(sf::Vector2f(1, 1)));
+            mWorld.trackedReset();
             mWorld.untrack();
         }
         mTracking = false;

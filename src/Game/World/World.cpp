@@ -11,7 +11,7 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
 , mFonts(fonts)
 , mSceneLayers()
 , mSoldiers()
-, mTracked(0)
+, mTracked(-1)
 , mMap(textures.get(Textures::MapGround), 20.f)
 {
     mMap.load("data/Maps/demo1.map");
@@ -54,7 +54,7 @@ void World::update(sf::Time dt) {
 void World::updateTargets() {
     for(int i = 0 ; i < mBlueTeam.size() ; i++) {
         for(int j = 0 ; j < mRedTeam.size() ; j++) {
-            if(distance(mBlueTeam[i]->getPosition(), mRedTeam[j]->getPosition()) < 100) {
+            if(distance(mBlueTeam[i]->getPosition(), mRedTeam[j]->getPosition()) < 100 and !mRedTeam[j]->isDestroyed()) {
                 mBlueTeam[i]->setTarget(mRedTeam[j]);
                 //std::cout << "Target acquired !" << std::endl;
             }
@@ -77,18 +77,23 @@ void World::updateTargets() {
 }
 
 void World::trackNext() {
+    trackedReset();
     mTracked++;
     if(mTracked > mSoldiers.size() - 1)
         mTracked = 0;
+    mSoldiers[mTracked]->setAction(Soldier::Action::Override);
 }
 
 void World::trackPrev() {
+    trackedReset();
     mTracked--;
     if(mTracked < 0)
         mTracked = mSoldiers.size() - 1;
+    mSoldiers[mTracked]->setAction(Soldier::Action::Override);
 }
 
 void World::untrack() {
+    trackedReset();
     mTracked = -1;
 }
 
@@ -98,4 +103,9 @@ sf::Vector2f World::trackedPos() {
 
 void World::trackedMove(sf::Vector2f direction) {
     mSoldiers[mTracked]->setDirection(direction);
+}
+
+void World::trackedReset() {
+    if(mTracked != -1)
+        mSoldiers[mTracked]->setAction(Soldier::Action::Move);
 }

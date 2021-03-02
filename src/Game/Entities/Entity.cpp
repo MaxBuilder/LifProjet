@@ -27,7 +27,7 @@ void Entity::remove() {
 }
 
 bool Entity::isDestroyed() const {
-    return mHitPoints > 0;
+    return mHitPoints <= 0;
 }
 
 int Entity::getHitPoints() const {

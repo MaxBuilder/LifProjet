@@ -27,6 +27,7 @@ public:
     void untrack();
     sf::Vector2f trackedPos();
     void trackedMove(sf::Vector2f direction);
+    void trackedReset();
 
     // Entity functions :
     void checkCollision(); // Checks and adapt position of entities relative to environment

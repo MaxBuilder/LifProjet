@@ -25,11 +25,23 @@ public:
         TypeCount
     };
 
+    enum Action {
+        None,
+        Move,
+        Seek,
+        Flee,
+        Attack,
+        Override
+    };
+
 public:
     Soldier(Team team, const TextureHolder& textures, const FontHolder& fonts);
 
     Team getTeam();
-    //virtual sf::FloatRect getBoundingBox();
+    Action getAction();
+    void setAction(Action act);
+
+
 
     void setDirection(sf::Vector2f velocity);
     void setDirection(float vx, float vy);
@@ -45,6 +57,11 @@ public:
     void seekTarget();
     void fleeTarget();
 
+    void remove() override;
+
+    // Testing functions
+    void dontMove() { mAction = None; }
+
 private:
     virtual void drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
     virtual void updateCurrent(sf::Time dt); // Defines behavior of entity (before specialization)
@@ -55,6 +72,7 @@ private:
     float mSpeed;
     sf::Vector2f mDirection;
     Team mTeam;
+    Action mAction;
 
     Soldier * mTargeted;
 
