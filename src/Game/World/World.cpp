@@ -16,7 +16,7 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
 {
     mMap.load("data/Maps/demo1.map");
 
-    // Construction de la scène
+    // Scene building based on 2 plans (back and front)
     for(std::size_t i = 0 ; i < LayerCount ; i++) {
         SceneNode::Ptr layer(new SceneNode());
         mSceneLayers.push_back(layer.get());
@@ -24,7 +24,7 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
         mSceneGraph.attachChild(std::move(layer));
     }
 
-    // Construction de la scène (à bouger dans une fonction)
+    // Adding entities (to move in separate function)
     std::unique_ptr<Soldier> soldier1 = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts);
     soldier1->setPosition(100, 100);
     mBlueTeam.push_back(soldier1.get());
@@ -32,13 +32,16 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
     mSceneLayers[Front]->attachChild(std::move(soldier1));
 
     std::unique_ptr<Soldier> soldier2 = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts);
-    soldier2->setPosition(100, 200);
+    soldier2->setPosition(100, 300);
     mRedTeam.push_back(soldier2.get());
     mSoldiers.push_back(soldier2.get());
     mSceneLayers[Front]->attachChild(std::move(soldier2));
 
     mBlueTeam[0]->setDirection(1, 1);
     mRedTeam[0]->setDirection(2, 3);
+
+    for(auto &soldier : mSoldiers) // Init of defense positions
+        soldier->init();
 }
 
 void World::draw() {
@@ -59,6 +62,12 @@ void World::updateTargets() {
                 //std::cout << "Target acquired !" << std::endl;
             }
             else mBlueTeam[i]->setTarget(nullptr);
+
+            if(distance(mRedTeam[i]->getPosition(), mBlueTeam[j]->getPosition()) < 100 and !mBlueTeam[j]->isDestroyed()) {
+                mRedTeam[i]->setTarget(mBlueTeam[j]);
+                //std::cout << "Target acquired !" << std::endl;
+            }
+            else mRedTeam[i]->setTarget(nullptr);
         }
 
     }
@@ -106,6 +115,8 @@ void World::trackedMove(sf::Vector2f direction) {
 }
 
 void World::trackedReset() {
-    if(mTracked != -1)
+    if(mTracked != -1) {
         mSoldiers[mTracked]->setAction(Soldier::Action::Move);
+        if(mSoldiers[mTracked]->getTeam() == Soldier::BlueTeam) mSoldiers[mTracked]->resetTravelledDistance();
+    }
 }

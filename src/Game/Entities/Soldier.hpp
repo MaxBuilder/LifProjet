@@ -12,6 +12,7 @@
 
 #include "Entity.hpp"
 #include "../../Core/Util/Utility.hpp"
+#include "../../Core/Util/Rand.hpp"
 #include "../Resources/ResourceIdentifiers.hpp"
 #include "../Resources/ResourceHolder.hpp"
 
@@ -27,7 +28,7 @@ public:
 
     enum Action {
         None,
-        Move,
+        Move, // Attackers -> go to objective | Defenders -> roam defended zone
         Seek,
         Flee,
         Attack,
@@ -41,7 +42,8 @@ public:
     Action getAction();
     void setAction(Action act);
 
-
+    void updateAttack(sf::Time dt);
+    void updateDefense(sf::Time dt);
 
     void setDirection(sf::Vector2f velocity);
     void setDirection(float vx, float vy);
@@ -56,8 +58,12 @@ public:
 
     void seekTarget();
     void fleeTarget();
+    void attackTarget();
+    void roam(sf::Time dt);
 
     void remove() override;
+    void init(); // Initiate mOrigin variable (for defense reference)
+    void resetTravelledDistance();
 
     // Testing functions
     void dontMove() { mAction = None; }
@@ -66,11 +72,18 @@ private:
     virtual void drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
     virtual void updateCurrent(sf::Time dt); // Defines behavior of entity (before specialization)
 
+    sf::Vector2f randomDirection(); // Helper to roam();
+
 private:
+    // Needs adding of personal stats (atk, def, per, sp)
+
     sf::Sprite mSprite;
 
     float mSpeed;
     sf::Vector2f mDirection;
+    sf::Vector2f mOrigin; // Point where entity is instantiated
+    float mTravelled;
+    int mDistance;
     Team mTeam;
     Action mAction;
 

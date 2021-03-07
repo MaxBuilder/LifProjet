@@ -15,9 +15,9 @@ Soldier::Soldier(Team team, const TextureHolder& textures, const FontHolder& fon
 , mSpeed(15)
 , mTargeted(nullptr)
 , mAction(Move)
+, mTravelled(0.f)
 {
     mTeam == BlueTeam ? mSprite.setTextureRect(sf::IntRect(20, 0, 20, 20)) : mSprite.setTextureRect(sf::IntRect(40, 0, 20, 20));
-
 }
 
 void Soldier::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const {
@@ -29,7 +29,11 @@ void Soldier::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) con
     target.draw(line, 2, sf::Lines);
 }
 
-void Soldier::updateCurrent(sf::Time dt) { // Needs to get moved in specific IA class
+void Soldier::updateCurrent(sf::Time dt) {
+    mTeam == BlueTeam ? updateDefense(dt) : updateAttack(dt);
+}
+
+void Soldier::updateAttack(sf::Time dt) {
     if(mAction == None or isDestroyed()) return;
     else if(mAction == Override) {
         move(mDirection * dt.asSeconds() * 80.f);
@@ -64,14 +68,78 @@ void Soldier::updateCurrent(sf::Time dt) { // Needs to get moved in specific IA 
         if(mTargeted->isDestroyed())
             mAction = Move;
     }
+}
 
+void Soldier::updateDefense(sf::Time dt) {
+    if(mAction == None or isDestroyed()) return;
+    else if(mAction == Override) {
+        move(mDirection * dt.asSeconds() * 80.f);
+        return;
+    }
+    if(mAction == Move) {
+        if(mTravelled == 0)
+            setDirection(randomDirection());
+
+        if(mTargeted == nullptr) {
+            roam(dt);
+        }
+        else {
+            mAction = Seek;
+            mTravelled = 0;
+        }
+    }
+    else if(mAction == Seek) {
+        if(mTargeted == nullptr) {
+            mAction = Move;
+            mSpeed = 15;
+            return;
+        }
+
+        if(distance(getPosition(), mTargeted->getPosition()) < 20) {
+            mAction = Attack;
+            return;
+        }
+
+        if(distance(mOrigin, mTargeted->getPosition()) < 100) {
+            mAction = Move;
+            return;
+        }
+
+        seekTarget();
+        move(mDirection * dt.asSeconds() * mSpeed);
+    }
+    else if(mAction == Attack) {
+        mDirection = sf::Vector2f(0, 0);
+        mTargeted->remove();
+
+        if(mTargeted->isDestroyed()) {
+            mAction = Move;
+        }
+    }
+}
+
+void Soldier::roam(sf::Time dt) {
+    if(mTravelled < (float)mDistance) {
+        sf::Vector2f prev = getPosition();
+        sf::Vector2f toMove = mDirection * dt.asSeconds() * 10.f;
+        move(toMove);
+        mTravelled += distance(prev, getPosition());
+        return;
+    }
+    mTravelled = 0;
+    setDirection(randomDirection());
+}
+
+sf::Vector2f Soldier::randomDirection() {
+    mDistance = Random::Generate(10.f, 50.f);
+    return sf::Vector2f(Random::Generate(-10.f, 10.f), Random::Generate(-10.f, 10.f));
 }
 
 void Soldier::seekTarget() {
-        sf::Vector2f target = mTargeted->getPosition();
-        target = target - getPosition();
-        mDirection = target / norm(target);
-        mSpeed = 30;
+    sf::Vector2f target = mTargeted->getPosition();
+    target = target - getPosition();
+    mDirection = target / norm(target);
+    mSpeed = 30;
 }
 
 void Soldier::fleeTarget() {
@@ -133,4 +201,12 @@ void Soldier::dropTarget() {
 
 Soldier* Soldier::getTarget() {
     return mTargeted;
+}
+
+void Soldier::init() {
+    //mOrigin = getPosition();
+}
+
+void Soldier::resetTravelledDistance() {
+    mTravelled = 0;
 }

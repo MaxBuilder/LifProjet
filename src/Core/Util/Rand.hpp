@@ -25,8 +25,6 @@ namespace {
     };
 }
 
-#endif //LIFPROJET_RAND_HPP
-
 std::default_random_engine Random::generator = std::default_random_engine(std::chrono::steady_clock::now().time_since_epoch().count()); // à modifier
 
 int Random::Generate(int p_min, int p_max) {
@@ -44,4 +42,4 @@ bool Random::TryPercentage(float p_percentage) {
     return distribution(generator);
 }
 
-
+#endif //LIFPROJET_RAND_HPP
