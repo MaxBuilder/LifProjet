@@ -42,11 +42,20 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
 
     for(auto &soldier : mSoldiers) // Init of defense positions
         soldier->init();
+
+    // Debug
+    zone.setRadius(50);
+    zone.setPosition( mBlueTeam[0]->getOrigin() - sf::Vector2f(50, 50));
+    zone.setOutlineColor(sf::Color::Cyan);
+    zone.setOutlineThickness(1);
+    zone.setFillColor(sf::Color::Transparent);
+    //mBlueTeam[0]->setAction(Soldier::None);
 }
 
 void World::draw() {
     mTarget.draw(mMap);
     mTarget.draw(mSceneGraph);
+    mTarget.draw(zone);
 }
 
 void World::update(sf::Time dt) {

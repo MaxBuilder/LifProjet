@@ -9,6 +9,7 @@
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/System/Clock.hpp>
 
 #include "Entity.hpp"
 #include "../../Core/Util/Utility.hpp"
@@ -49,6 +50,8 @@ public:
     void setDirection(float vx, float vy);
     sf::Vector2f getDirection() const;
 
+    sf::Vector2f getOrigin();
+
     float getSpeed() const;
     void setSpeed(float speed);
 
@@ -69,8 +72,8 @@ public:
     void dontMove() { mAction = None; }
 
 private:
-    virtual void drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const;
-    virtual void updateCurrent(sf::Time dt); // Defines behavior of entity (before specialization)
+    void drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const override;
+    void updateCurrent(sf::Time dt) override; // Defines behavior of entity (before specialization)
 
     sf::Vector2f randomDirection(); // Helper to roam();
 
@@ -78,12 +81,15 @@ private:
     // Needs adding of personal stats (atk, def, per, sp)
 
     sf::Sprite mSprite;
+    sf::Text mLife;
 
     float mSpeed;
     sf::Vector2f mDirection;
     sf::Vector2f mOrigin; // Point where entity is instantiated
-    float mTravelled;
-    int mDistance;
+    float mTravelled; // Distance travelled
+    int mDistance; // Distance to travel
+    sf::Time mAttackCd;
+    sf::Clock mEntityClock;
     Team mTeam;
     Action mAction;
 

@@ -9,7 +9,8 @@
 // A faire : ajouter les tables de données pour les entités
 Soldier::Soldier(Team team, const TextureHolder& textures, const FontHolder& fonts)
 : Entity(100)
-, mDirection(sf::Vector2i(0, 0))
+, mDirection(sf::Vector2f(0, 0))
+, mOrigin(sf::Vector2f(0, 0))
 , mSprite(textures.get(Textures::EntitySoldier))
 , mTeam(team)
 , mSpeed(15)
@@ -17,20 +18,29 @@ Soldier::Soldier(Team team, const TextureHolder& textures, const FontHolder& fon
 , mAction(Move)
 , mTravelled(0.f)
 {
+    setOrigin(getPosition().x + 10, getPosition().y + 10);
     mTeam == BlueTeam ? mSprite.setTextureRect(sf::IntRect(20, 0, 20, 20)) : mSprite.setTextureRect(sf::IntRect(40, 0, 20, 20));
+
+    mLife.setFont(fonts.get(Fonts::Main));
+    mLife.setFillColor(sf::Color::Black);
+    mLife.setCharacterSize(10u);
 }
 
 void Soldier::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const {
     target.draw(mSprite, states);
     sf::Vertex line[] = {
-            sf::Vertex(sf::Vector2f(getPosition() + sf::Vector2f(10, 10)), sf::Color::Red),
-            sf::Vertex(sf::Vector2f(getPosition() + mDirection * 10.f) + sf::Vector2f(10, 10), sf::Color::Red)
+            sf::Vertex(sf::Vector2f(getPosition()), sf::Color::Red),
+            sf::Vertex(sf::Vector2f(getPosition() + mDirection * 10.f), sf::Color::Red)
     };
     target.draw(line, 2, sf::Lines);
+    target.draw(mLife);
 }
 
 void Soldier::updateCurrent(sf::Time dt) {
     mTeam == BlueTeam ? updateDefense(dt) : updateAttack(dt);
+    mLife.setString(std::to_string(getHitPoints()));
+    mLife.setPosition(getPosition());
+    centerOrigin(mLife);
 }
 
 void Soldier::updateAttack(sf::Time dt) {
@@ -55,6 +65,8 @@ void Soldier::updateAttack(sf::Time dt) {
 
         if(distance(getPosition(), mTargeted->getPosition()) < 20) {
             mAction = Attack;
+            mDirection = sf::Vector2f(0, 0);
+            mEntityClock.restart();
             return;
         }
 
@@ -62,8 +74,7 @@ void Soldier::updateAttack(sf::Time dt) {
         move(mDirection * dt.asSeconds() * mSpeed);
     }
     else if(mAction == Attack) {
-        mDirection = sf::Vector2f(0, 0);
-        mTargeted->remove();
+        attackTarget();
 
         if(mTargeted->isDestroyed())
             mAction = Move;
@@ -97,41 +108,60 @@ void Soldier::updateDefense(sf::Time dt) {
 
         if(distance(getPosition(), mTargeted->getPosition()) < 20) {
             mAction = Attack;
+            mDirection = sf::Vector2f(0, 0);
+            mEntityClock.restart();
             return;
         }
-
-        if(distance(mOrigin, mTargeted->getPosition()) < 100) {
+        /*
+        if(distance(mOrigin, mTargeted->getPosition()) > 100) {
             mAction = Move;
             return;
-        }
+        }*/
 
         seekTarget();
         move(mDirection * dt.asSeconds() * mSpeed);
     }
     else if(mAction == Attack) {
-        mDirection = sf::Vector2f(0, 0);
-        mTargeted->remove();
+        attackTarget();
 
+        // Add leave condition here (flee or stay)
         if(mTargeted->isDestroyed()) {
             mAction = Move;
         }
     }
 }
 
+void Soldier::attackTarget() {
+    if(mEntityClock.getElapsedTime().asSeconds() > 1) {
+        mTargeted->damage(20);
+        mEntityClock.restart();
+    }
+    if(mTargeted->isDestroyed())
+        mTargeted->remove();
+}
+
 void Soldier::roam(sf::Time dt) {
-    if(mTravelled < (float)mDistance) {
+    if(distance(getPosition(), mOrigin) > 50) { // If too far from origin, go back
+        mDistance = 10;
+        mTravelled = 0;
+        setDirection(mOrigin - getPosition());
+        move(mDirection * dt.asSeconds() * 10.f);
+        return;
+    }
+    if(mTravelled < (float)mDistance) { // If there is still distance to travel
         sf::Vector2f prev = getPosition();
         sf::Vector2f toMove = mDirection * dt.asSeconds() * 10.f;
         move(toMove);
         mTravelled += distance(prev, getPosition());
         return;
     }
+    // If distance has been travelled, find a new one
     mTravelled = 0;
     setDirection(randomDirection());
 }
 
 sf::Vector2f Soldier::randomDirection() {
-    mDistance = Random::Generate(10.f, 50.f);
+    mDistance = Random::Generate(10.f, 60.f);
     return sf::Vector2f(Random::Generate(-10.f, 10.f), Random::Generate(-10.f, 10.f));
 }
 
@@ -204,9 +234,13 @@ Soldier* Soldier::getTarget() {
 }
 
 void Soldier::init() {
-    //mOrigin = getPosition();
+    mOrigin = getPosition();
 }
 
 void Soldier::resetTravelledDistance() {
     mTravelled = 0;
+}
+
+sf::Vector2f Soldier::getOrigin() {
+    return mOrigin;
 }

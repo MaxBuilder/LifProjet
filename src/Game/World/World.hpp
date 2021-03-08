@@ -60,6 +60,9 @@ private:
 
     // Tracking
     int mTracked;
+
+    // Debug
+    sf::CircleShape zone;
 };
 
 
