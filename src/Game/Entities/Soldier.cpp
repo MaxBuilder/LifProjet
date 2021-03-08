@@ -67,6 +67,7 @@ void Soldier::updateAttack(sf::Time dt) {
             mAction = Attack;
             mDirection = sf::Vector2f(0, 0);
             mEntityClock.restart();
+            mSpeed = 15;
             return;
         }
 
