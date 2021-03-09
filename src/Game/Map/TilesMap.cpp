@@ -22,7 +22,7 @@ TilesMap::TilesMap(const sf::Texture &texture, float blocSize)
 void TilesMap::clear() {
     for(auto & x : grid_id) {
         for (auto & t : x) {
-            t.paint(sf::Vector2i (0,0),0);
+            t.paint(sf::Vector2i (-1,-1),0);
         }
     }
     mBuildings.clear();
@@ -50,17 +50,20 @@ void TilesMap::save(const std::string &file) const{
     }
 
     int tmpGroundx = 0,tmpGroundy = 0,tmpTopx = 0,tmpTopy = 0;
+    bool havetop = false;
     float tmpRotate = 0;
 
     for(const auto & x : grid_id) {
         for (const auto & t : x) {
 
+            havetop = t.haveTop();
             tmpGroundx = t.getGround().x;
             tmpGroundy = t.getGround().y;
             tmpTopx = t.getTop().x;
             tmpTopy = t.getTop().y;
             tmpRotate = t.getRotation();
 
+            wf.write((char *) &(havetop), sizeof(int));
             wf.write((char *) &(tmpGroundx), sizeof(int));
             wf.write((char *) &(tmpGroundy), sizeof(int));
             wf.write((char *) &(tmpTopx), sizeof(int));
@@ -69,20 +72,24 @@ void TilesMap::save(const std::string &file) const{
         }
     }
 
-    int left, top;
-    Textures::Building::ID buildID;
+    int left, top, width, height;
+    Buildings::ID buildID;
+
     std::size_t size = mBuildings.size();
     wf.write((char *) &(size), sizeof(std::size_t));
 
     for (const auto &b : mBuildings){
         left = b.getPosition().left;
         top = b.getPosition().top;
+        width = b.getPosition().width;
+        height = b.getPosition().height;
         buildID = b.getID();
 
-        wf.write((char *) &(buildID), sizeof(Textures::Building::ID));
+        wf.write((char *) &(buildID), sizeof(Buildings::ID));
         wf.write((char *) &(left), sizeof(int));
         wf.write((char *) &(top), sizeof(int));
-        wf.write((char *) &(b.mRotation), sizeof(float));
+        wf.write((char *) &(width), sizeof(int));
+        wf.write((char *) &(height), sizeof(int));
     }
 
     wf.close();
@@ -92,6 +99,7 @@ void TilesMap::save(const std::string &file) const{
 void TilesMap::load(const std::string &file) {
 
     mBuildings.clear();
+    clear();
     std::ifstream rf(file, std::ios::out | std::ios::binary);
     if(!rf) {
         std::cout << "Cannot open file!" << std::endl;
@@ -99,11 +107,13 @@ void TilesMap::load(const std::string &file) {
     }
 
     int tmpGroundx = 0,tmpGroundy = 0,tmpTopx = 0,tmpTopy = 0;
+    bool havetop = false;
     float tmpRotate = 0;
 
     for(auto & x : grid_id) {
         for (auto & t : x) {
 
+            rf.read((char *) &(havetop), sizeof(int));
             rf.read((char *) &(tmpGroundx), sizeof(int));
             rf.read((char *) &(tmpGroundy), sizeof(int));
             rf.read((char *) &(tmpTopx), sizeof(int));
@@ -111,29 +121,28 @@ void TilesMap::load(const std::string &file) {
             rf.read((char *) &(tmpRotate), sizeof(float));
 
             t.paint(sf::Vector2i(tmpGroundx,tmpGroundy),tmpRotate);
-            if(not(tmpTopx == 0 and tmpTopy == 0)){
+            if(havetop){
                 t.paint(sf::Vector2i(tmpTopx,tmpTopy),tmpRotate);
             }
         }
     }
 
     std::size_t nb_buildings = 0;
-    int left, top;
-    float rot;
-    Textures::Building::ID buildID = Textures::Building::None;
+    int left, top, width, height;
+    Buildings::ID buildID = Buildings::None;
 
     rf.read((char *) &(nb_buildings), sizeof(std::size_t));
     for (std::size_t i(0); i<nb_buildings; i++){
 
-        rf.read((char *) &(buildID), sizeof(Textures::Building::ID));
+        rf.read((char *) &(buildID), sizeof(Buildings::ID));
         rf.read((char *) &(left), sizeof(int));
         rf.read((char *) &(top), sizeof(int));
-        rf.read((char *) &(rot), sizeof(float));
+        rf.read((char *) &(width), sizeof(int));
+        rf.read((char *) &(height), sizeof(int));
 
-        sf::IntRect rect1 ={left, top, 0, 0};
+        sf::IntRect rect1 ={left, top, width, height};
 
-        Building build(buildID, rect1, rot);
-        addBuildings(build);
+        addBuildings( Building(buildID, rect1));
 
     }
 
@@ -147,7 +156,7 @@ std::pair<std::vector<Building>::iterator,
 }
 
 void TilesMap::addBuildings(Building build){
-    mBuildings.push_back(std::move(build));
+    mBuildings.push_back(build);
 }
 
 void TilesMap::supBuildings(std::vector<Building>::iterator it){
@@ -169,16 +178,11 @@ void TilesMap::draw(sf::RenderTarget& target, sf::RenderStates states) const{
             sprite.setRotation(t.getRotation());
             target.draw(sprite, states);
 
-            if (t.getTop() != sf::Vector2i(0,0)){
+            if (t.haveTop()){
                 sprite.setTextureRect(sf::IntRect(mBounds*t.getTop().x, mBounds*t.getTop().y, mBounds, mBounds));
                 target.draw(sprite, states);
             }
 
         }
     }
-    if (mDrawBuildings)
-        for( const auto &build : mBuildings) {
-            target.draw(build.getConstSprite(), states);
-        }
-
 }

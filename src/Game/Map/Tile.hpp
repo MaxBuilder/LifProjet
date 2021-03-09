@@ -15,24 +15,21 @@ public:
     sf::Vector2i getGround() const;
     sf::Vector2i getTop() const;
 
+    bool haveTop() const;
+
     float getMoveSpeed() const;
     float getRotation() const;
     bool isCrossable() const;
 
-    void setGround(const sf::Vector2i &id);
-
-    void setMoveSpeed(const float &speed);
-
     void paint(const sf::Vector2i &id,const float &rotation);
     void setRotation(const float &rotation);
-    void setcrossable(const bool &cross);
 
 private:
     sf::Vector2i ground, top;
 
     float rotate;
     float moveSpeed,topMoveSpeed;
-    bool crossable, topCrossable;
+    bool crossable, topCrossable, mHaveTop;
 
 };
 

@@ -4,7 +4,6 @@
 
 #include "Tile.hpp"
 #include <cassert>
-#include <iostream>
 
 Tile::Tile(){
     ground = sf::Vector2i(0,0);
@@ -13,40 +12,51 @@ Tile::Tile(){
     moveSpeed = 1;
     topMoveSpeed = 1;
     crossable = false;
-    topCrossable = true;
+    topCrossable = false;
+    mHaveTop = false;
 }
 void Tile::paint(const sf::Vector2i &id,const float &rotation ){
-    if( id.x == 0 and id.y == 0){
-        ground = id;
-        top = id;
+
+    setRotation(rotation);
+
+    if(id.x < 0 or id.y < 0 ){
+        mHaveTop = false;
+        ground = sf::Vector2i(0,0);
+        top  = sf::Vector2i(0,0);
+    }
+    else if( id.x == 0 and id.y == 0){
+        if (mHaveTop)
+            mHaveTop = false;
+        else
+            ground = id;
     }
     else if (id.y < 21)
         ground = id;
     else {
-        std::cout<<"set Top : "<<id.x<<" "<<id.y<<std::endl;
         top = id;
+        mHaveTop = true;
     }
 
-    if (rotation >= 0) rotate = rotation;
-    else rotate = static_cast<float>((std::rand()%3)*90);
-
-    if ( ground.x == 1 and ground.y == 0) {
+    if (ground.x <= 0 and ground.y <= 0){ // pas de texture
+        moveSpeed = 0.f;
+        crossable = false;
+    }
+    else if ( ground == sf::Vector2i(0,1) or ground == sf::Vector2i(0,2) or
+              ground == sf::Vector2i(1,4) or ground == sf::Vector2i(1,10) or
+              ground == sf::Vector2i(0,13)) { // chemin de terre
+        moveSpeed = 1.3f;
+        crossable = true;
+    }else if ( ground.x == 2 and (ground.y < 3 or ground.y == 20 or ground.y == 19) ){ // eau
+        moveSpeed = 0.2f;
+        crossable = false;
+    }else if (ground.y < 21 ){ // reste sol ( terre / transition )
         moveSpeed = 1.f;
         crossable = true;
-    }else if ( ground.y < 6){
-        moveSpeed = 0.7;
-        crossable = true;
-    }else if ( ground.y < 16){
-        moveSpeed = 1.3;
-        crossable = true;
-    }else if ( ground.y < 21){
-        moveSpeed = 1;
-        crossable = false;
-    }else if ( ground.y < 26){
-        topMoveSpeed = 1;
+    }else if( ground.y < 26 ){ // ponts, contour forets
+        topMoveSpeed = 0.85f;
         topCrossable = true;
-    }else if ( ground.y < 31){
-        topMoveSpeed = 0.3;
+    }else{ // batiment + montagnes + foret
+        topMoveSpeed = 0.2f;
         topCrossable = false;
     }
 
@@ -61,26 +71,22 @@ sf::Vector2i Tile::getTop() const{
     return top;
 }
 
+bool Tile::haveTop() const {
+    return mHaveTop;
+}
+
 float Tile::getMoveSpeed() const{
-    return moveSpeed*topMoveSpeed;
+    if (mHaveTop)
+        return moveSpeed*topMoveSpeed;
+    else
+        return moveSpeed;
 }
 
 bool Tile::isCrossable() const{
-    return (crossable and topCrossable);
-}
-
-void Tile::setGround(const sf::Vector2i &id){
-    ground = id;
-}
-
-void Tile::setMoveSpeed(const float &speed){
-    assert(speed >= 0);
-    moveSpeed = speed;
-}
-
-void Tile::setcrossable(const bool &cross){
-    crossable = cross;
-
+    if(mHaveTop)
+        return topCrossable;
+    else
+        return crossable;
 }
 
 float Tile::getRotation() const{
@@ -88,6 +94,6 @@ float Tile::getRotation() const{
 }
 
 void Tile::setRotation(const float &rotation){
-    assert(rotation == 0 or rotation == 90 or rotation == 180 or rotation == 270);
-    rotate = rotation;
+    if (rotation >= 0) rotate = rotation;
+    else rotate = static_cast<float>((std::rand()%3)*90);
 }

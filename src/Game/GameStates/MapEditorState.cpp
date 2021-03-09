@@ -7,7 +7,7 @@
 MapEditorState::MapEditorState(StateStack &stack, Context context)
         : State(stack, context)
         , map(context.textures.get(Textures::MapGround), 16.f)
-        , mPaletteBar(sf::IntRect(1130,100,150,550),40)
+        , mPaletteBar(sf::IntRect(1130,100,150,550),4)
         , subBackground(getContext().textures.get(Textures::SubBackground))
 {
 
@@ -167,7 +167,6 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
         if(saveload) map.save(MapEditorState::mMapPath);
         else {
             map.load(MapEditorState::mMapPath);
-            setBuildings();
         }
         getContext().sounds.play(Sounds::Menu);
     });
@@ -182,7 +181,6 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
         if(saveload) map.save(MapEditorState::mMapPath);
         else {
             map.load(MapEditorState::mMapPath);
-            setBuildings();
         }
         getContext().sounds.play(Sounds::Menu);
     });
@@ -197,7 +195,6 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
         if(saveload) map.save(MapEditorState::mMapPath);
         else {
             map.load(MapEditorState::mMapPath);
-            setBuildings();
         }
         getContext().sounds.play(Sounds::Menu);
     });
@@ -256,6 +253,13 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
         return false;
     }
 
+    if (event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::L){
+        auto build = map.getBuildingsIt();
+        for (; build.first != build.second; build.first++)
+            std::cout<<build.first->getID();
+        std::cout<<std::endl;
+    }
+
     mEditBar.handleEvent(event, getContext().window);
     mToolBar.handleEvent(event, getContext().window);
     mPaletteBar.handleEvent(event, getContext().window);
@@ -275,7 +279,7 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
             pos.y = pos.y/caseSize;
             pos.x = pos.x/caseSize;
 
-            if (mBuild_selection != Textures::Building::None and event.type == sf::Event::MouseButtonPressed ){
+            if (mBuild_selection != Buildings::None){
                 if (event.mouseButton.button == sf::Mouse::Left)
                     createBuildings(pos);
                 else if (event.mouseButton.button == sf::Mouse::Right)
@@ -322,12 +326,38 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
 
 void MapEditorState::addButtonTexture(sf::Vector2i id, sf::Vector2i pos){
 
+
     auto button = std::make_shared<GUI::ButtonTexture>(getContext(), 40, 40, Textures::MapGround,id);
     button->setPosition(pos.x, pos.y);
     button->setToggle(true);
     button->setCallback([this](sf::Vector2i bId){
+
+        Buildings::ID buildId = Buildings::None;
+        if ((bId.y == 37 or bId.y == 36) and (bId.x == 0 or bId.x == 1)) {
+            bId.y = 36; bId.x = 0;
+            buildId = Buildings::RedVillage;
+        }
+        else if ((bId.y == 36 or bId.y == 37) and bId.x == 2) {
+            buildId = Buildings::RedBarrier;
+        }
+        else if ((bId.y == 39 or bId.y == 38) and (bId.x == 0 or bId.x == 1)){
+            bId.y = 38; bId.x = 0;
+            buildId = Buildings::BlueVillage;
+        }
+        else if ((bId.y == 39 or bId.y == 38) and bId.x == 2) {
+            buildId = Buildings::BlueBarrier;
+        }
+        else if(bId.y >= 40 and bId.y <= 42) {
+            bId.y = 40; bId.x = 0;
+            buildId = Buildings::RedCastle;
+        }
+        else if(bId.y >= 43) {
+            bId.y = 43; bId.x = 0;
+            buildId = Buildings::BlueCastle;
+        }
+
         ground_selection = bId;
-        mBuild_selection = Textures::Building::None;
+        mBuild_selection = buildId;
         getContext().sounds.play(Sounds::Menu);
     });
     mPaletteBar.pack(button);
@@ -396,63 +426,46 @@ void MapEditorState::recPaintFill(sf::Vector2i co, bool* isPaint){
 }
 
 void MapEditorState::createBuildings(sf::Vector2i pos){
-    bool isConstructible = true;
     sf::IntRect rect1 = {pos.x, pos.y, 0, 0};
-    sf::IntRect spritePos;
+    bool construtible = true;
 
-    switch(mBuild_selection){
-        case Textures::Building::Castle : rect1.width = 3; rect1.height = 3;
-            spritePos = {0,0,90,90};
-            break;
-
-        case Textures::Building::Home : rect1.width = 2; rect1.height = 2;
-            spritePos = {90,0,60,60};
-            break;
-
-        case Textures::Building::Barrier :
-            spritePos = {90,60,60,30};
-            if (rotate == 0 or rotate == -1){
-                rect1.width = 2;
-                rect1.height = 1;
-            }
-            else{
-                rect1.width = 1;
-                rect1.height = 2;
-            }
-            break;
-
-        default : return;
+    if (mBuild_selection == Buildings::RedBarrier or mBuild_selection == Buildings::BlueBarrier){
+        rect1.height = 1;
+        rect1.width = 1;
+    }else if (mBuild_selection == Buildings::RedVillage or mBuild_selection == Buildings::BlueVillage){
+        rect1.height = 2;
+        rect1.width = 2;
+    }else if (mBuild_selection == Buildings::RedCastle or mBuild_selection == Buildings::BlueCastle){
+        rect1.height = 3;
+        rect1.width = 3;
     }
-
-    sf::IntRect rect2;
-    auto b = map.getBuildingsIt();
-    for(; b.first !=  b.second; b.first++){
-        rect2 = b.first->getPosition();
-        if (rect1.left < rect2.left + rect2.width &&
-            rect1.left + rect1.width > rect2.left &&
-            rect1.top < rect2.top + rect2.height &&
-            rect1.height + rect1.top > rect2.top) {
-            isConstructible = false;
-            break;
+    for (int y(pos.y); y < pos.y+rect1.height;y++){
+        for (int x(pos.x); x < pos.x+rect1.width;x++){
+            if (x >= 64 or y >= 36) {
+                std::cout<<" hors limite\n";
+                construtible = false;
+                break;
+            }else if (map.getTile(x, y).haveTop()) {
+                construtible = false;
+                break;
+            }
         }
+        if(!construtible)
+            break;
     }
 
-    if (!isConstructible) return;
-    float r = rotate;
-    if (r == -1) r = 0;
+    if (construtible){
 
-    Building build(mBuild_selection, rect1, r);
-    float blockSize = map.getBlockSize();
-    if(r == 90) rect1.left += rect1.width;
-    sf::Sprite &tmp = build.getSprite();
-    tmp.setTexture(getContext().textures.get(Textures::MapBuildings));
-    tmp.setTextureRect(spritePos);
-    tmp.setScale(blockSize/30.f,blockSize/30.f);
-    tmp.setPosition(rect1.left*blockSize,rect1.top*blockSize);
-    tmp.setRotation(r);
+        for (int y(0); y < rect1.height;y++){
+            for (int x(0); x <rect1.width;x++){
+                map.getTile(x+pos.x,y+pos.y).paint(sf::Vector2i(ground_selection.x+x,ground_selection.y+y),0);
+            }
+        }
 
-    map.addBuildings(build);
+        map.addBuildings(Building(mBuild_selection,rect1));
+    }
 }
+
 
 void MapEditorState::supressBuildings(sf::Vector2i pos) {
     sf::IntRect rect2;
@@ -463,52 +476,15 @@ void MapEditorState::supressBuildings(sf::Vector2i pos) {
             pos.x >= rect2.left &&
             pos.y < rect2.top + rect2.height &&
             pos.y >= rect2.top) {
+
+            for (int y(0); y < b.first->getPosition().height;y++){
+                for (int x(0); x <b.first->getPosition().width;x++){
+                    map.getTile(x+b.first->getPosition().left,y+b.first->getPosition().top).paint(sf::Vector2i(0,0),0);
+                }
+            }
+
             map.supBuildings(b.first);
             break;
         }
-    }
-}
-
-void MapEditorState::setBuildings(){
-    auto b = map.getBuildingsIt();
-    sf::IntRect spritePos;
-    sf::IntRect rect;
-    float rot;
-    for(;b.first != b.second; b.first++){
-        rect = b.first->getPosition();
-        rot = b.first->mRotation;
-        switch(b.first->getID()){
-            case Textures::Building::Castle : rect.width = 3; rect.height = 3;
-                spritePos = {0,0,90,90};
-                break;
-
-            case Textures::Building::Home : rect.width = 2; rect.height = 2;
-                spritePos = {90,0,60,60};
-                break;
-
-            case Textures::Building::Barrier :
-                spritePos = {90,60,60,30};
-                if (rot == 0 or rot == -1){
-                    rect.width = 2;
-                    rect.height = 1;
-                }
-                else{
-                    rect.width = 1;
-                    rect.height = 2;
-                }
-                break;
-
-            default : return;
-        }
-        b.first->setPosition(rect);
-
-        if(rot == 90) rect.left += rect.width;
-        sf::Sprite &tmp = b.first->getSprite();
-        float blockSize = map.getBlockSize();
-        tmp.setTexture(getContext().textures.get(Textures::MapBuildings));
-        tmp.setTextureRect(spritePos);
-        tmp.setScale(blockSize/30.f,blockSize/30.f);
-        tmp.setPosition(rect.left*blockSize,rect.top*blockSize);
-        tmp.setRotation(rot);
     }
 }

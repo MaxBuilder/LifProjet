@@ -32,7 +32,6 @@ public:
     void recPaintFill(sf::Vector2i coordinate, bool* isPaint);
 
     void createBuildings(sf::Vector2i pos);
-    void setBuildings();
     void supressBuildings(sf::Vector2i pos);
 
     void addButtonTexture(sf::Vector2i id, sf::Vector2i pos);
@@ -57,7 +56,7 @@ private :
     float rotate;
     //std::string mMapPath;
 
-    Textures::Building::ID mBuild_selection;
+    Buildings::ID mBuild_selection;
     sf::Vector2i ground_selection;
     sf::Vector2i lastGround;
     sf::Vector2i lastTileUpdate;

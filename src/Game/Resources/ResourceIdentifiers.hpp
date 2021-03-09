@@ -53,19 +53,14 @@ namespace Textures {
         EditorRotateRightButton,
 
     };
-
-    namespace Ground {
-        enum ID {
-            None, Grass, Wood, Sand, Wall, Water
-        };
-    }
-
-    namespace Building {
-        enum ID {
-            None, Barrier, Castle, Home
-        };
-    }
 }
+
+namespace Buildings {
+    enum ID {
+        None, RedCastle, BlueCastle, RedVillage, BlueVillage, RedBarrier, BlueBarrier
+    };
+}
+
 
 namespace Fonts {
     enum ID {
