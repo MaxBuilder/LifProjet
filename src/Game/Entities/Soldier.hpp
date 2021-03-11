@@ -29,15 +29,17 @@ public:
 
     enum Action {
         None,
-        Move, // Attackers -> go to objective | Defenders -> roam defended zone
-        Seek,
-        Flee,
-        Attack,
+        Moving, // Attackers -> go to objective | Defenders -> roam defended zone
+        Seeking,
+        Fleeing,
+        Attacking,
+        Calling,
+        Helping,
         Override
     };
 
 public:
-    Soldier(Team team, const TextureHolder& textures, const FontHolder& fonts);
+    Soldier(Team team, const TextureHolder& textures, const FontHolder& fonts, bool big = false);
 
     Team getTeam();
     Action getAction();
@@ -63,6 +65,8 @@ public:
     void fleeTarget();
     void attackTarget();
     void roam(sf::Time dt);
+    void helpAlly(Soldier * ally);
+    void helpRequested(Soldier * ally);
 
     void remove() override;
     void init(); // Initiate mOrigin variable (for defense reference)
@@ -77,8 +81,12 @@ private:
 
     sf::Vector2f randomDirection(); // Helper to roam();
 
+public:
+    bool isAvailable;
+
 private:
     // Needs adding of personal stats (atk, def, per, sp)
+    bool isBigBitch; // Temporary
 
     sf::Sprite mSprite;
     sf::Text mLife;
@@ -88,7 +96,6 @@ private:
     sf::Vector2f mOrigin; // Point where entity is instantiated
     float mTravelled; // Distance travelled
     int mDistance; // Distance to travel
-    sf::Time mAttackCd;
     sf::Clock mEntityClock;
     Team mTeam;
     Action mAction;

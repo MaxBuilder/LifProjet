@@ -25,20 +25,30 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
     }
 
     // Adding entities (to move in separate function)
-    std::unique_ptr<Soldier> soldier1 = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts);
-    soldier1->setPosition(100, 100);
+    std::unique_ptr<Soldier> soldier1 = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts, true);
+    soldier1->setPosition(600, 100);
     mBlueTeam.push_back(soldier1.get());
     mSoldiers.push_back(soldier1.get());
     mSceneLayers[Front]->attachChild(std::move(soldier1));
+    /*
+    std::unique_ptr<Soldier> soldier4 = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts);
+    soldier4->setPosition(600, 400);
+    mBlueTeam.push_back(soldier4.get());
+    mSoldiers.push_back(soldier4.get());
+    mSceneLayers[Front]->attachChild(std::move(soldier4));
+     */
 
     std::unique_ptr<Soldier> soldier2 = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts);
-    soldier2->setPosition(100, 300);
+    soldier2->setPosition(100, 100);
     mRedTeam.push_back(soldier2.get());
     mSoldiers.push_back(soldier2.get());
     mSceneLayers[Front]->attachChild(std::move(soldier2));
 
-    mBlueTeam[0]->setDirection(1, 1);
-    mRedTeam[0]->setDirection(2, 3);
+    std::unique_ptr<Soldier> soldier3 = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts);
+    soldier3->setPosition(100, 300);
+    mRedTeam.push_back(soldier3.get());
+    mSoldiers.push_back(soldier3.get());
+    mSceneLayers[Front]->attachChild(std::move(soldier3));
 
     for(auto &soldier : mSoldiers) // Init of defense positions
         soldier->init();
@@ -63,35 +73,36 @@ void World::update(sf::Time dt) {
     updateTargets();
 }
 
-void World::updateTargets() {
+void World::updateTargets() { // A MODIFIER, GIGA BUGGED
     for(int i = 0 ; i < mBlueTeam.size() ; i++) {
         for(int j = 0 ; j < mRedTeam.size() ; j++) {
+            if(!mRedTeam[j]->isAvailable) continue;
             if(distance(mBlueTeam[i]->getPosition(), mRedTeam[j]->getPosition()) < 100 and !mRedTeam[j]->isDestroyed()) {
                 mBlueTeam[i]->setTarget(mRedTeam[j]);
-                //std::cout << "Target acquired !" << std::endl;
+                //Soldier * test = mBlueTeam[i];
+                //Soldier * test2 = mRedTeam[j];
             }
             else mBlueTeam[i]->setTarget(nullptr);
 
-            if(distance(mRedTeam[i]->getPosition(), mBlueTeam[j]->getPosition()) < 100 and !mBlueTeam[j]->isDestroyed()) {
-                mRedTeam[i]->setTarget(mBlueTeam[j]);
-                //std::cout << "Target acquired !" << std::endl;
+            if(distance(mRedTeam[j]->getPosition(), mBlueTeam[i]->getPosition()) < 200 and !mBlueTeam[i]->isDestroyed()) {
+                mRedTeam[j]->setTarget(mBlueTeam[i]);
             }
-            else mRedTeam[i]->setTarget(nullptr);
+            else mRedTeam[j]->setTarget(nullptr);
         }
-
     }
 
-    /*
-    display(mSoldiers[0]->getPosition()); std::cout << " "; display(mSoldiers[1]->getPosition()); std::cout << std::endl;
-    if(distance(mSoldiers[0]->getPosition(), mSoldiers[1]->getPosition()) < 100) {
-        mSoldiers[0]->setTarget(mSoldiers[1]);
-        std::cout << "Target acquired !" << std::endl;
+    // Calls for help (to put in separate function)
+    for(auto & soldier : mRedTeam) {
+        if(soldier->getAction() == Soldier::Calling) {
+            for(auto & soldier2 : mRedTeam) {
+                if(soldier != soldier2 and soldier->isAvailable and soldier2->isAvailable) {
+                    soldier->helpRequested(soldier2);
+                    soldier2->helpAlly(soldier);
+                }
+            }
+        }
     }
 
-    if(mSoldiers[0]->getTarget() != nullptr) {
-        std::cout << " Target "; display(mSoldiers[0]->getTarget()->getPosition());  std::cout << std::endl;
-    }
-     */
 }
 
 void World::trackNext() {
@@ -125,7 +136,7 @@ void World::trackedMove(sf::Vector2f direction) {
 
 void World::trackedReset() {
     if(mTracked != -1) {
-        mSoldiers[mTracked]->setAction(Soldier::Action::Move);
+        mSoldiers[mTracked]->setAction(Soldier::Action::Moving);
         if(mSoldiers[mTracked]->getTeam() == Soldier::BlueTeam) mSoldiers[mTracked]->resetTravelledDistance();
     }
 }

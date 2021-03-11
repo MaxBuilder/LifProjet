@@ -7,7 +7,7 @@
 #include <iostream>
 
 // A faire : ajouter les tables de données pour les entités
-Soldier::Soldier(Team team, const TextureHolder& textures, const FontHolder& fonts)
+Soldier::Soldier(Team team, const TextureHolder& textures, const FontHolder& fonts, bool big)
 : Entity(100)
 , mDirection(sf::Vector2f(0, 0))
 , mOrigin(sf::Vector2f(0, 0))
@@ -15,11 +15,19 @@ Soldier::Soldier(Team team, const TextureHolder& textures, const FontHolder& fon
 , mTeam(team)
 , mSpeed(15)
 , mTargeted(nullptr)
-, mAction(Move)
+, mAction(Moving)
 , mTravelled(0.f)
+, isBigBitch(big)
+, isAvailable(true)
 {
+    // Fix origin and texture selection
     setOrigin(getPosition().x + 10, getPosition().y + 10);
-    mTeam == BlueTeam ? mSprite.setTextureRect(sf::IntRect(20, 0, 20, 20)) : mSprite.setTextureRect(sf::IntRect(40, 0, 20, 20));
+    mTeam == BlueTeam ?
+    (isBigBitch ? mSprite.setTextureRect(sf::IntRect(60, 0, 20, 20)) : mSprite.setTextureRect(sf::IntRect(20, 0, 20, 20)))
+    :
+    (isBigBitch ? mSprite.setTextureRect(sf::IntRect(80, 0, 0, 0)) : mSprite.setTextureRect(sf::IntRect(40, 0, 20, 20)));
+
+    if(isBigBitch) heal(100); // HP to 200 for big entities
 
     mLife.setFont(fonts.get(Fonts::Main));
     mLife.setFillColor(sf::Color::Black);
@@ -49,22 +57,27 @@ void Soldier::updateAttack(sf::Time dt) {
         move(mDirection * dt.asSeconds() * 80.f);
         return;
     }
-    if(mAction == Move) {
+    if(mAction == Moving) {
         if(mTargeted == nullptr) {
             setDirection(sf::Vector2f(1, 0));
             move(mDirection * dt.asSeconds() * mSpeed);
         }
-        else mAction = Seek;
+        else {
+            if(mTargeted->isBigBitch) {
+                mAction = Calling;
+            }
+            else mAction = Seeking;
+        }
     }
-    else if(mAction == Seek) {
+    else if(mAction == Seeking) {
         if(mTargeted == nullptr) {
-            mAction = Move;
+            mAction = Moving;
             mSpeed = 15;
             return;
         }
 
         if(distance(getPosition(), mTargeted->getPosition()) < 20) {
-            mAction = Attack;
+            mAction = Attacking;
             mDirection = sf::Vector2f(0, 0);
             mEntityClock.restart();
             mSpeed = 15;
@@ -74,11 +87,31 @@ void Soldier::updateAttack(sf::Time dt) {
         seekTarget();
         move(mDirection * dt.asSeconds() * mSpeed);
     }
-    else if(mAction == Attack) {
+    else if(mAction == Attacking) {
+        if(distance(getPosition(), mTargeted->getPosition()) >= 30) {
+            mAction = Seeking;
+            return;
+        }
+
         attackTarget();
 
         if(mTargeted->isDestroyed())
-            mAction = Move;
+            mAction = Moving;
+    }
+    else if(mAction == Calling) {
+
+    }
+    else if(mAction == Helping) {
+        // Dès l'arrivée près de l'alliée, adaptation de la cible
+        if(distance(getPosition(), mTargeted->getPosition()) > 30) {
+            seekTarget();
+            move(mDirection * dt.asSeconds() * mSpeed);
+        }
+        else {
+            mAction = Attacking;
+            mTargeted->setAction(Attacking);
+            mTargeted = mTargeted->getTarget();
+        }
     }
 }
 
@@ -88,7 +121,7 @@ void Soldier::updateDefense(sf::Time dt) {
         move(mDirection * dt.asSeconds() * 80.f);
         return;
     }
-    if(mAction == Move) {
+    if(mAction == Moving) {
         if(mTravelled == 0)
             setDirection(randomDirection());
 
@@ -96,40 +129,57 @@ void Soldier::updateDefense(sf::Time dt) {
             roam(dt);
         }
         else {
-            mAction = Seek;
+            mAction = Seeking;
             mTravelled = 0;
         }
     }
-    else if(mAction == Seek) {
+    else if(mAction == Seeking) {
         if(mTargeted == nullptr) {
-            mAction = Move;
+            mAction = Moving;
             mSpeed = 15;
             return;
         }
 
         if(distance(getPosition(), mTargeted->getPosition()) < 20) {
-            mAction = Attack;
+            mAction = Attacking;
             mDirection = sf::Vector2f(0, 0);
             mEntityClock.restart();
             return;
         }
         /*
         if(distance(mOrigin, mTargeted->getPosition()) > 100) {
-            mAction = Move;
+            mAction = Moving;
             return;
         }*/
 
         seekTarget();
         move(mDirection * dt.asSeconds() * mSpeed);
     }
-    else if(mAction == Attack) {
+    else if(mAction == Attacking) {
+        if(distance(getPosition(), mTargeted->getPosition()) >= 30) {
+            mAction = Seeking;
+            return;
+        }
+
         attackTarget();
 
         // Add leave condition here (flee or stay)
         if(mTargeted->isDestroyed()) {
-            mAction = Move;
+            mAction = Moving;
         }
     }
+}
+
+void Soldier::helpRequested(Soldier * ally) {
+    //mTargeted = ally;
+    mDirection = sf::Vector2f(0, 0);
+    isAvailable = false;
+}
+
+void Soldier::helpAlly(Soldier * ally) {
+    mAction = Helping;
+    mTargeted = ally;
+    isAvailable = false;
 }
 
 void Soldier::attackTarget() {
