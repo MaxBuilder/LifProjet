@@ -36,6 +36,14 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
     mBlueTeam.push_back(soldier4.get());
     mSoldiers.push_back(soldier4.get());
     mSceneLayers[Front]->attachChild(std::move(soldier4));
+    */
+    /*
+    std::unique_ptr<Soldier> soldier5 = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts);
+    soldier5->setPosition(100, 500);
+    mRedTeam.push_back(soldier5.get());
+    mSoldiers.push_back(soldier5.get());
+    soldier5->heal(100);
+    mSceneLayers[Front]->attachChild(std::move(soldier5));
      */
 
     std::unique_ptr<Soldier> soldier2 = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts);
@@ -71,37 +79,39 @@ void World::draw() {
 void World::update(sf::Time dt) {
     mSceneGraph.update(dt);
     updateTargets();
+    updateCalls();
 }
 
-void World::updateTargets() { // A MODIFIER, GIGA BUGGED
-    for(int i = 0 ; i < mBlueTeam.size() ; i++) {
-        for(int j = 0 ; j < mRedTeam.size() ; j++) {
-            if(distance(mBlueTeam[i]->getPosition(), mRedTeam[j]->getPosition()) < 100 and !mRedTeam[j]->isDestroyed()) {
-                mBlueTeam[i]->setTarget(mRedTeam[j]);
-                //Soldier * test = mBlueTeam[i];
-                //Soldier * test2 = mRedTeam[j];
-            }
-            else mBlueTeam[i]->setTarget(nullptr);
-
-            if(distance(mRedTeam[j]->getPosition(), mBlueTeam[i]->getPosition()) < 200 and !mBlueTeam[i]->isDestroyed() and mRedTeam[j]->isAvailable) {
-                mRedTeam[j]->setTarget(mBlueTeam[i]);
-            }
-            else if(mRedTeam[j]->isAvailable) mRedTeam[j]->setTarget(nullptr);
-        }
-    }
-
-    // Calls for help (to put in separate function)
+void World::updateCalls() {
+    // Calls for help : to modify so if unit is already helped, it doesn't enter the loop (and limit to one entity)
     for(auto & soldier : mRedTeam) {
         if(soldier->getAction() == Soldier::Calling) {
             for(auto & soldier2 : mRedTeam) {
-                if(soldier != soldier2 and soldier->isAvailable and soldier2->isAvailable) {
+                if(soldier != soldier2 and soldier2->isAvailable) {
                     soldier->helpRequested(soldier2);
                     soldier2->helpAlly(soldier);
                 }
             }
         }
     }
+}
 
+void World::updateTargets() { // A MODIFIER, GIGA BUGGED
+    for(auto & i : mBlueTeam) {
+        for(auto & j : mRedTeam) {
+            if(distance(i->getPosition(), j->getPosition()) < 100 and !j->isDestroyed()) {
+                i->setTarget(j);
+                //Soldier * test = mBlueTeam[i];
+                //Soldier * test2 = mRedTeam[j];
+            }
+            else i->setTarget(nullptr);
+
+            if(distance(j->getPosition(), i->getPosition()) < 200 and !i->isDestroyed() and j->isAvailable) {
+                j->setTarget(i);
+            }
+            else if(j->isAvailable) j->setTarget(nullptr);
+        }
+    }
 }
 
 void World::trackNext() {

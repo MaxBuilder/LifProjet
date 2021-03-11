@@ -64,15 +64,20 @@ void Soldier::updateAttack(sf::Time dt) {
         }
         else {
             if(mTargeted->isBigBitch) {
+                isAvailable = false;
                 mAction = Calling;
             }
-            else mAction = Seeking;
+            else {
+                mAction = Seeking;
+                isAvailable = false;
+            }
         }
     }
     else if(mAction == Seeking) {
         if(mTargeted == nullptr) {
             mAction = Moving;
             mSpeed = 15;
+            isAvailable = true;
             return;
         }
 
@@ -95,11 +100,17 @@ void Soldier::updateAttack(sf::Time dt) {
 
         attackTarget();
 
-        if(mTargeted->isDestroyed())
+        if(mTargeted->isDestroyed()) {
             mAction = Moving;
+            isAvailable = true;
+        }
     }
     else if(mAction == Calling) {
-
+        if(mTargeted->isDestroyed()) {
+            isAvailable = true;
+            mAction = Moving;
+            mTargeted = nullptr;
+        }
     }
     else if(mAction == Helping) {
         if(distance(getPosition(), mTargeted->getPosition()) > 30) {

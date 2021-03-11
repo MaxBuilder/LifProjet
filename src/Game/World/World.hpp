@@ -33,6 +33,7 @@ public:
     void checkCollision(); // Checks and adapt position of entities relative to environment
     void updateTargets(); // Updates entity target from perspective
     void adaptSpeed(); // Adapts speed of entities relative to environment
+    void updateCalls(); // Updates entities calling for help
 
 private:
     enum Layer {
