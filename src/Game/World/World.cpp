@@ -76,7 +76,6 @@ void World::update(sf::Time dt) {
 void World::updateTargets() { // A MODIFIER, GIGA BUGGED
     for(int i = 0 ; i < mBlueTeam.size() ; i++) {
         for(int j = 0 ; j < mRedTeam.size() ; j++) {
-            if(!mRedTeam[j]->isAvailable) continue;
             if(distance(mBlueTeam[i]->getPosition(), mRedTeam[j]->getPosition()) < 100 and !mRedTeam[j]->isDestroyed()) {
                 mBlueTeam[i]->setTarget(mRedTeam[j]);
                 //Soldier * test = mBlueTeam[i];
@@ -84,10 +83,10 @@ void World::updateTargets() { // A MODIFIER, GIGA BUGGED
             }
             else mBlueTeam[i]->setTarget(nullptr);
 
-            if(distance(mRedTeam[j]->getPosition(), mBlueTeam[i]->getPosition()) < 200 and !mBlueTeam[i]->isDestroyed()) {
+            if(distance(mRedTeam[j]->getPosition(), mBlueTeam[i]->getPosition()) < 200 and !mBlueTeam[i]->isDestroyed() and mRedTeam[j]->isAvailable) {
                 mRedTeam[j]->setTarget(mBlueTeam[i]);
             }
-            else mRedTeam[j]->setTarget(nullptr);
+            else if(mRedTeam[j]->isAvailable) mRedTeam[j]->setTarget(nullptr);
         }
     }
 

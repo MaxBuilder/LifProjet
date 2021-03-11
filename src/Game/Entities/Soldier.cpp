@@ -102,7 +102,6 @@ void Soldier::updateAttack(sf::Time dt) {
 
     }
     else if(mAction == Helping) {
-        // Dès l'arrivée près de l'alliée, adaptation de la cible
         if(distance(getPosition(), mTargeted->getPosition()) > 30) {
             seekTarget();
             move(mDirection * dt.asSeconds() * mSpeed);
