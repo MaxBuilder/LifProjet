@@ -30,21 +30,21 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
     mBlueTeam.push_back(soldier1.get());
     mSoldiers.push_back(soldier1.get());
     mSceneLayers[Front]->attachChild(std::move(soldier1));
-    /*
+
     std::unique_ptr<Soldier> soldier4 = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts);
     soldier4->setPosition(600, 400);
     mBlueTeam.push_back(soldier4.get());
     mSoldiers.push_back(soldier4.get());
     mSceneLayers[Front]->attachChild(std::move(soldier4));
-    */
-    /*
+
+
     std::unique_ptr<Soldier> soldier5 = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts);
     soldier5->setPosition(100, 500);
     mRedTeam.push_back(soldier5.get());
     mSoldiers.push_back(soldier5.get());
     soldier5->heal(100);
     mSceneLayers[Front]->attachChild(std::move(soldier5));
-     */
+
 
     std::unique_ptr<Soldier> soldier2 = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts);
     soldier2->setPosition(100, 100);
@@ -97,21 +97,42 @@ void World::updateCalls() {
 }
 
 void World::updateTargets() { // A MODIFIER, GIGA BUGGED
+    bool *redHaveTarget = new bool[mRedTeam.size()];
+    for(int i(0);i<mRedTeam.size();i++) redHaveTarget[i] = false;
+    int countRedTeam = 0;
+
     for(auto & i : mBlueTeam) {
+        bool blueHaveTarget = false;
+        float distMin = 100;
+        float dist;
+        countRedTeam = 0;
         for(auto & j : mRedTeam) {
-            if(distance(i->getPosition(), j->getPosition()) < 100 and !j->isDestroyed()) {
-                i->setTarget(j);
+            dist = distance(i->getPosition(), j->getPosition());
+            if( dist < 100 and !j->isDestroyed() ) {
+                if( dist < distMin ){
+                    i->setTarget(j);
+                    distMin = dist;
+                }
+                blueHaveTarget = true;
                 //Soldier * test = mBlueTeam[i];
                 //Soldier * test2 = mRedTeam[j];
             }
-            else i->setTarget(nullptr);
 
             if(distance(j->getPosition(), i->getPosition()) < 200 and !i->isDestroyed() and j->isAvailable) {
                 j->setTarget(i);
+                redHaveTarget[countRedTeam] = true;
             }
-            else if(j->isAvailable) j->setTarget(nullptr);
+            countRedTeam++;
+        }
+        if (!blueHaveTarget) i->dropTarget();
+    }
+
+    for(int i(0);i<mRedTeam.size();i++){
+        if (!redHaveTarget[i] and mRedTeam[i]->getTarget() != nullptr){
+            if(mRedTeam[i]->getTarget()->getTeam() == Soldier::BlueTeam and mRedTeam[i]->isAvailable) mRedTeam[i]->dropTarget();
         }
     }
+
 }
 
 void World::trackNext() {
