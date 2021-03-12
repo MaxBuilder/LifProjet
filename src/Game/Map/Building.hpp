@@ -10,23 +10,16 @@
 
 class Building {
 public:
-    Building(Textures::Building::ID ID, sf::IntRect position, float rotation );
+    Building(Buildings::ID ID, sf::IntRect position);
 
-    Textures::Building::ID getID() const;
+    Buildings::ID getID() const;
     sf::IntRect getPosition() const;
     void setPosition(sf::IntRect rect);
 
-    sf::Sprite& getSprite();
-    sf::Sprite getConstSprite() const;
-
-    float mRotation;
-
 private:
-    Textures::Building::ID mId;
+    Buildings::ID mId;
 
     sf::IntRect mPosition;
-    sf::Sprite mSprite;
-
 };
 
 

@@ -27,7 +27,7 @@ namespace GUI{
 
             if (event.type == sf::Event::MouseWheelMoved)
             {
-                scroll += static_cast<float>(event.mouseWheel.delta)*mScrollSpeed;
+                scroll += static_cast<float>(event.mouseWheel.delta*(mChildren.at(0)->getHeight()+mScrollSpeed));
                 if (scroll > 0)
                     scroll = 0;
                 if (scroll < -scrollLimit)

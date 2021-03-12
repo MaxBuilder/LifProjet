@@ -49,6 +49,7 @@ private:
     sf::Sprite mSprite;
 
     float mBlockSize;
+    float mBounds;
 
     bool mDrawBuildings;
 

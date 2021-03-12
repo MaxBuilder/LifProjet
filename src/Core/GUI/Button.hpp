@@ -34,7 +34,7 @@ namespace GUI {
     public:
         Button(State::Context context, float width, float height, Textures::ID textureID);
 
-        void setCallback(Callback callback);
+        virtual void setCallback(Callback callback);
         void setText(const std::string& text);
         void setToggle(bool flag);
 
@@ -52,7 +52,7 @@ namespace GUI {
         virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
         void changeTexture(Type buttonType);
 
-    private:
+    protected:
         Callback mCallback;
         sf::Sprite mSprite;
         sf::Text mText;
