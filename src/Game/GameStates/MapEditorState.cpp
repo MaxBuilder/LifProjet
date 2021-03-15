@@ -462,7 +462,7 @@ void MapEditorState::createBuildings(sf::Vector2i pos){
             }
         }
 
-        map.addBuildings(Building(mBuild_selection,rect1));
+        map.addBuildings(BuildInfo(mBuild_selection, rect1));
     }
 }
 

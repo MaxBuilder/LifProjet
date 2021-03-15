@@ -2,15 +2,15 @@
 // Created by 33771 on 18/02/2021.
 //
 
-#ifndef LIFPROJET_BUILDING_HPP
-#define LIFPROJET_BUILDING_HPP
+#ifndef LIFPROJET_BUILDINFO_HPP
+#define LIFPROJET_BUILDINFO_HPP
 
 #include "../../Game/Resources/ResourceIdentifiers.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 
-class Building {
+class BuildInfo {
 public:
-    Building(Buildings::ID ID, sf::IntRect position);
+    BuildInfo(Buildings::ID ID, sf::IntRect position);
 
     Buildings::ID getID() const;
     sf::IntRect getPosition() const;
@@ -23,4 +23,4 @@ private:
 };
 
 
-#endif //LIFPROJET_BUILDING_HPP
+#endif //LIFPROJET_BUILDINFO_HPP

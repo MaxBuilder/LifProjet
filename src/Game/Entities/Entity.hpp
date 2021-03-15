@@ -11,8 +11,22 @@
 class Entity : public SceneNode {
 
 public:
-    explicit Entity(int hitPoints);
 
+    enum Team {
+        BlueTeam,
+        RedTeam,
+        TypeCount
+    };
+
+    enum Bonus{
+        None,
+        Castle,
+        Village
+    };
+
+    explicit Entity(int hitPoints, Team team);
+
+    Team getTeam();
     int getHitPoints() const;
     void heal(int points);
     void damage(int points);
@@ -23,8 +37,9 @@ public:
 protected:
     virtual void updateCurrent(sf::Time dt);
 
-private:
+protected:
     int mHitPoints;
+    Team mTeam;
 
 };
 

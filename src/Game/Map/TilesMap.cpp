@@ -142,7 +142,7 @@ void TilesMap::load(const std::string &file) {
 
         sf::IntRect rect1 ={left, top, width, height};
 
-        addBuildings( Building(buildID, rect1));
+        addBuildings(BuildInfo(buildID, rect1));
 
     }
 
@@ -150,16 +150,16 @@ void TilesMap::load(const std::string &file) {
 
 }
 
-std::pair<std::vector<Building>::iterator,
-        std::vector<Building>::iterator> TilesMap::getBuildingsIt(){
+std::pair<std::vector<BuildInfo>::iterator,
+        std::vector<BuildInfo>::iterator> TilesMap::getBuildingsIt(){
     return std::make_pair(mBuildings.begin(),mBuildings.end());
 }
 
-void TilesMap::addBuildings(Building build){
+void TilesMap::addBuildings(BuildInfo build){
     mBuildings.push_back(build);
 }
 
-void TilesMap::supBuildings(std::vector<Building>::iterator it){
+void TilesMap::supBuildings(std::vector<BuildInfo>::iterator it){
     mBuildings.erase(it);
 }
 

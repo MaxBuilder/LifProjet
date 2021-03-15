@@ -6,8 +6,9 @@
 
 #include <iostream>
 
-Entity::Entity(int hitPoints)
-: mHitPoints(hitPoints)
+Entity::Entity(int hitPoints, Team team)
+: mHitPoints(hitPoints),
+  mTeam(team)
 {}
 
 void Entity::heal(int points) {
@@ -32,6 +33,10 @@ bool Entity::isDestroyed() const {
 
 int Entity::getHitPoints() const {
     return mHitPoints;
+}
+
+Entity::Team Entity::getTeam() {
+    return mTeam;
 }
 
 void Entity::updateCurrent(sf::Time dt) {

@@ -21,11 +21,6 @@
 class Soldier : public Entity {
 
 public:
-    enum Team {
-        BlueTeam,
-        RedTeam,
-        TypeCount
-    };
 
     enum Action {
         None,
@@ -41,7 +36,9 @@ public:
 public:
     Soldier(Team team, const TextureHolder& textures, const FontHolder& fonts, bool big = false);
 
-    Team getTeam();
+    void changeBonus(Entity::Bonus bonus);
+    Entity::Bonus getBonus();
+
     Action getAction();
     void setAction(Action act);
 
@@ -87,17 +84,20 @@ public:
 private:
     // Needs adding of personal stats (atk, def, per, sp)
     bool isBigBitch; // Temporary
-
+    Entity::Bonus mBonus;
     sf::Sprite mSprite;
+    sf::Sprite mGlow;
     sf::Text mLife;
+    sf::IntRect mSpriteRect;
+    sf::Time mSpriteTime;
 
-    float mSpeed;
+    float mSpeedBonus, mSpeedBase;
+    float mDamages;
     sf::Vector2f mDirection;
     sf::Vector2f mOrigin; // Point where entity is instantiated
     float mTravelled; // Distance travelled
     int mDistance; // Distance to travel
     sf::Clock mEntityClock;
-    Team mTeam;
     Action mAction;
 
     Soldier * mTargeted;

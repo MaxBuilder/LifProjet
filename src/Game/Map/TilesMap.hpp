@@ -6,7 +6,7 @@
 #define LIFPROJET_TILESMAP_HPP
 
 #include "Tile.hpp"
-#include "Building.hpp"
+#include "BuildInfo.hpp"
 #include "../../Game/Resources/ResourceIdentifiers.hpp"
 
 #include "SFML/Graphics/Drawable.hpp"
@@ -31,11 +31,11 @@ public:
     void setDrawBuildings(bool draw);
 
     Tile& getTile(int x, int y);
-    std::pair<std::vector<Building>::iterator,
-            std::vector<Building>::iterator> getBuildingsIt();
+    std::pair<std::vector<BuildInfo>::iterator,
+            std::vector<BuildInfo>::iterator> getBuildingsIt();
 
-    void addBuildings(Building build);
-    void supBuildings(std::vector<Building>::iterator it);
+    void addBuildings(BuildInfo build);
+    void supBuildings(std::vector<BuildInfo>::iterator it);
 
     float getBlockSize() const;
 
@@ -44,7 +44,7 @@ public:
 private:
 
     Tile grid_id[64][36];
-    std::vector<Building> mBuildings;
+    std::vector<BuildInfo> mBuildings;
     sf::Texture texture;
     sf::Sprite mSprite;
 

@@ -142,7 +142,8 @@ void Application::loadTextures() {
     mTextures.load(Textures::EditorRotateUpButton, "data/Editor/up.png");
     mTextures.load(Textures::EditorRotateRightButton, "data/Editor/right.png");
     mTextures.load(Textures::SubBackground, "data/Editor/subBackground.png");
-    mTextures.load(Textures::EntitySoldier, "data/Soldier.png");
+    mTextures.load(Textures::EntitySoldier, "data/SpritesSoldiers.png");
+    mTextures.load(Textures::EntityGlow, "data/glow.png");
 }
 
 void Application::registerStates() {

@@ -10,6 +10,8 @@
 #include "../../Core/Audio/SoundPlayer.hpp"
 #include "../../Core/Util/Utility.hpp"
 #include "../Entities/Soldier.hpp"
+#include "../Entities/Building.hpp"
+
 
 #include <array>
 
@@ -34,6 +36,7 @@ public:
     void updateTargets(); // Updates entity target from perspective
     void adaptSpeed(); // Adapts speed of entities relative to environment
     void updateCalls(); // Updates entities calling for help
+    void updateBonus(); // check if entities are in range of buildings
 
 private:
     enum Layer {
@@ -58,6 +61,7 @@ private:
     std::vector<Soldier*> mRedTeam;
 
     std::vector<Soldier*> mSoldiers; // Provisoire
+    std::vector<Building*> mBuildings;
 
     // Tracking
     int mTracked;

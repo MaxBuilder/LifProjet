@@ -26,23 +26,22 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
 
     // Adding entities (to move in separate function)
     std::unique_ptr<Soldier> soldier1 = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts, true);
-    soldier1->setPosition(600, 100);
+    soldier1->setPosition(650, 200);
     mBlueTeam.push_back(soldier1.get());
     mSoldiers.push_back(soldier1.get());
     mSceneLayers[Front]->attachChild(std::move(soldier1));
 
     std::unique_ptr<Soldier> soldier4 = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts);
-    soldier4->setPosition(600, 400);
+    soldier4->setPosition(600, 300);
     mBlueTeam.push_back(soldier4.get());
     mSoldiers.push_back(soldier4.get());
     mSceneLayers[Front]->attachChild(std::move(soldier4));
 
 
     std::unique_ptr<Soldier> soldier5 = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts);
-    soldier5->setPosition(100, 500);
+    soldier5->setPosition(100, 300);
     mRedTeam.push_back(soldier5.get());
     mSoldiers.push_back(soldier5.get());
-    soldier5->heal(100);
     mSceneLayers[Front]->attachChild(std::move(soldier5));
 
 
@@ -53,7 +52,7 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
     mSceneLayers[Front]->attachChild(std::move(soldier2));
 
     std::unique_ptr<Soldier> soldier3 = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts);
-    soldier3->setPosition(100, 300);
+    soldier3->setPosition(200, 300);
     mRedTeam.push_back(soldier3.get());
     mSoldiers.push_back(soldier3.get());
     mSceneLayers[Front]->attachChild(std::move(soldier3));
@@ -68,18 +67,27 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
     zone.setOutlineThickness(1);
     zone.setFillColor(sf::Color::Transparent);
     //mBlueTeam[0]->setAction(Soldier::None);
+
+    auto builds = mMap.getBuildingsIt();
+    for (;builds.first != builds.second;builds.first++){
+        std::unique_ptr<Building> build = std::make_unique<Building>(builds.first->getID(),(builds.first->getPosition()));
+        mBuildings.push_back(build.get());
+        mSceneLayers[Back]->attachChild(std::move(build));
+    }
 }
 
 void World::draw() {
     mTarget.draw(mMap);
     mTarget.draw(mSceneGraph);
     mTarget.draw(zone);
+
 }
 
 void World::update(sf::Time dt) {
     mSceneGraph.update(dt);
     updateTargets();
     updateCalls();
+    updateBonus();
 }
 
 void World::updateCalls() {
@@ -133,6 +141,22 @@ void World::updateTargets() { // A MODIFIER, GIGA BUGGED
         }
     }
 
+}
+
+void World::updateBonus(){
+    bool entityHaveBonus = false;
+    for (auto &entity : mSoldiers){
+        entityHaveBonus = false;
+        for (const auto &build : mBuildings ){
+            if(entity->getTeam() != build->getTeam()) continue;
+            if (distance(build->getPosition(),entity->getPosition()) <= build->getRange()) {
+                entity->changeBonus(build->getBonusFlag());
+                entityHaveBonus = true;
+            }
+        }
+        if (!entityHaveBonus)
+            entity->changeBonus(Entity::None);
+    }
 }
 
 void World::trackNext() {

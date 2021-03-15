@@ -52,7 +52,8 @@ namespace Textures {
         EditorRotateUpButton,
         EditorRotateRightButton,
 
-        EntitySoldier
+        EntitySoldier,
+        EntityGlow
     };
 }
 
