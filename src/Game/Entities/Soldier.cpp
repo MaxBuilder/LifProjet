@@ -7,7 +7,7 @@
 #include <iostream>
 
 // A faire : ajouter les tables de données pour les entités
-Soldier::Soldier(Team team, const TextureHolder& textures, const FontHolder& fonts, bool big)
+Soldier::Soldier(Team team, const TextureHolder& textures, const FontHolder& fonts, TilesMap &map, bool big)
 : Entity(100,team)
 , mDirection(sf::Vector2f(0, 0))
 , mOrigin(sf::Vector2f(0, 0))
@@ -23,11 +23,13 @@ Soldier::Soldier(Team team, const TextureHolder& textures, const FontHolder& fon
 , isBigBitch(big)
 , isAvailable(true)
 {
+    mMap = std::make_shared<TilesMap>(map);
     // Fix origin and texture selection
     mGlow.setTextureRect(sf::IntRect(0,0,32,32));
-    setOrigin(getPosition().x + 10, getPosition().y + 10);
+    // setOrigin(getPosition().x + 10, getPosition().y + 10);
     mTeam == BlueTeam ? mSpriteRect= sf::IntRect(32,0,32,32) : mSpriteRect = sf::IntRect(32,32,32,32);
     mSprite.setTextureRect(mSpriteRect);
+    setOrigin(mSprite.getLocalBounds().width/2.f,mSprite.getLocalBounds().height/2.f);
     mSpriteTime = sf::milliseconds(0);
 
     if(isBigBitch) heal(100); // HP to 200 for big entities
@@ -77,13 +79,13 @@ void Soldier::updateCurrent(sf::Time dt) {
 void Soldier::updateAttack(sf::Time dt) {
     if(mAction == None or isDestroyed()) return;
     else if(mAction == Override) {
-        move(mDirection * dt.asSeconds() * (80.f+mSpeedBonus));
+        moveIt(mDirection * dt.asSeconds() * (80.f+mSpeedBonus));
         return;
     }
     if(mAction == Moving) {
         if(mTargeted == nullptr) {
             setDirection(sf::Vector2f(1, 0));
-            move(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
+            moveIt(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
         }
         else {
             if(mTargeted->isBigBitch) {
@@ -113,7 +115,7 @@ void Soldier::updateAttack(sf::Time dt) {
         }
 
         seekTarget();
-        move(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
+        moveIt(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
     }
     else if(mAction == Attacking) {
         if(distance(getPosition(), mTargeted->getPosition()) >= 30) {
@@ -138,7 +140,7 @@ void Soldier::updateAttack(sf::Time dt) {
     else if(mAction == Helping) {
         if(distance(getPosition(), mTargeted->getPosition()) > 30) {
             seekTarget();
-            move(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
+            moveIt(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
         }
         else {
             mAction = Attacking;
@@ -151,7 +153,7 @@ void Soldier::updateAttack(sf::Time dt) {
 void Soldier::updateDefense(sf::Time dt) {
     if(mAction == None or isDestroyed()) return;
     else if(mAction == Override) {
-        move(mDirection * dt.asSeconds() * (80.f+mSpeedBonus));
+        moveIt(mDirection * dt.asSeconds() * (80.f+mSpeedBonus));
         return;
     }
     if(mAction == Moving) {
@@ -186,7 +188,7 @@ void Soldier::updateDefense(sf::Time dt) {
         }*/
 
         seekTarget();
-        move(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
+        moveIt(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
     }
     else if(mAction == Attacking) {
         if(distance(getPosition(), mTargeted->getPosition()) >= 30) {
@@ -229,13 +231,13 @@ void Soldier::roam(sf::Time dt) {
         mDistance = 10;
         mTravelled = 0;
         setDirection(mOrigin - getPosition());
-        move(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
+        moveIt(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
         return;
     }
     if(mTravelled < (float)mDistance) { // If there is still distance to travel
         sf::Vector2f prev = getPosition();
-        sf::Vector2f toMove = mDirection * dt.asSeconds() * (10.f+mSpeedBonus);
-        move(toMove);
+        sf::Vector2f tomoveIt = mDirection * dt.asSeconds() * (10.f+mSpeedBonus);
+        moveIt(tomoveIt);
         mTravelled += distance(prev, getPosition());
         return;
     }
@@ -345,4 +347,37 @@ void Soldier::changeBonus(Entity::Bonus bonus) {
 }
 Entity::Bonus Soldier::getBonus(){
     return mBonus;
+}
+
+void Soldier::moveIt(sf::Vector2f dpl){
+    sf::Vector2f point = (getPosition()+dpl);
+    if(mDirection.x > 0)
+        point.x += mSprite.getLocalBounds().width/4.f;
+    else
+        point.x -= mSprite.getLocalBounds().width/4.f;
+
+    if(mDirection.y > 0)
+        point.y += mSprite.getLocalBounds().height/4.f;
+    else
+        point.y -= mSprite.getLocalBounds().height/4.f;
+
+    sf::Vector2i pos = sf::Vector2i(point.x/20, point.y/20);
+    if (mMap->getTile(pos.x,pos.y).isCrossable())
+        move(dpl);
+    else{
+        sf::Vector2i pos1 = sf::Vector2i(point.x/20, (point.y-dpl.y)/20);
+        sf::Vector2i pos2 = sf::Vector2i((point.x-dpl.x)/20, point.y/20);
+        if (mMap->getTile(pos1.x,pos1.y).isCrossable())
+            move(dpl.x,0);
+        else if(mMap->getTile(pos2.x,pos2.y).isCrossable())
+            move(0,dpl.y);
+        else {
+            // mDirection = -mDirection;
+            // moveIt(-dpl);
+        }
+    }
+
+
+
+
 }

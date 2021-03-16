@@ -12,7 +12,7 @@ Tile::Tile(){
     moveSpeed = 1;
     topMoveSpeed = 1;
     crossable = false;
-    topCrossable = false;
+    topCrossable = true;
     mHaveTop = false;
 }
 void Tile::paint(const sf::Vector2i &id,const float &rotation ){
@@ -37,22 +37,28 @@ void Tile::paint(const sf::Vector2i &id,const float &rotation ){
         mHaveTop = true;
     }
 
-    if (ground.x <= 0 and ground.y <= 0){ // pas de texture
+    if (id.x <= 0 and id.y <= 0){ // pas de texture
         moveSpeed = 0.f;
         crossable = false;
     }
-    else if ( ground == sf::Vector2i(0,1) or ground == sf::Vector2i(0,2) or
-              ground == sf::Vector2i(1,4) or ground == sf::Vector2i(1,10) or
-              ground == sf::Vector2i(0,13)) { // chemin de terre
+    else if ( id == sf::Vector2i(0,1) or id == sf::Vector2i(0,2) or
+            id == sf::Vector2i(1,4) or id == sf::Vector2i(1,10) or
+            id == sf::Vector2i(0,13)) { // chemin de terre
         moveSpeed = 1.3f;
         crossable = true;
-    }else if ( ground.x == 2 and (ground.y < 3 or ground.y == 20 or ground.y == 19) ){ // eau
+    }else if ( id.x == 2 and (id.y < 3 or id.y == 20 or id.y == 19) ) { // eau
         moveSpeed = 0.2f;
         crossable = false;
-    }else if (ground.y < 21 ){ // reste sol ( terre / transition )
+    }else if(id.y<6) {
         moveSpeed = 1.f;
         crossable = true;
-    }else if( ground.y < 26 ){ // ponts, contour forets
+    }else if((id.y == 15 or id.y ==16) and (id.x == 0 or id.x == 1)){
+        moveSpeed = 1.f;
+        crossable = true;
+    }else if (id.y < 21 ){ // reste sol ( terre / transition )
+        moveSpeed = 1.f;
+        crossable = false;
+    }else if( id.y < 26 ){ // ponts, contour forets
         topMoveSpeed = 0.85f;
         topCrossable = true;
     }else{ // batiment + montagnes + foret

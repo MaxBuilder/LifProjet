@@ -16,6 +16,7 @@
 #include "../../Core/Util/Rand.hpp"
 #include "../Resources/ResourceIdentifiers.hpp"
 #include "../Resources/ResourceHolder.hpp"
+#include "../Map/TilesMap.hpp"
 
 
 class Soldier : public Entity {
@@ -34,7 +35,7 @@ public:
     };
 
 public:
-    Soldier(Team team, const TextureHolder& textures, const FontHolder& fonts, bool big = false);
+    Soldier(Team team, const TextureHolder& textures, const FontHolder& fonts, TilesMap& map, bool big = false);
 
     void changeBonus(Entity::Bonus bonus);
     Entity::Bonus getBonus();
@@ -77,11 +78,13 @@ private:
     void updateCurrent(sf::Time dt) override; // Defines behavior of entity (before specialization)
 
     sf::Vector2f randomDirection(); // Helper to roam();
+    void moveIt(sf::Vector2f dpl);
 
 public:
     bool isAvailable;
 
 private:
+    std::shared_ptr<TilesMap> mMap;
     // Needs adding of personal stats (atk, def, per, sp)
     bool isBigBitch; // Temporary
     Entity::Bonus mBonus;

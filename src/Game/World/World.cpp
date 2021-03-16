@@ -25,33 +25,33 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
     }
 
     // Adding entities (to move in separate function)
-    std::unique_ptr<Soldier> soldier1 = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts, true);
+    std::unique_ptr<Soldier> soldier1 = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts,mMap, true);
     soldier1->setPosition(650, 200);
     mBlueTeam.push_back(soldier1.get());
     mSoldiers.push_back(soldier1.get());
     mSceneLayers[Front]->attachChild(std::move(soldier1));
 
-    std::unique_ptr<Soldier> soldier4 = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts);
+    std::unique_ptr<Soldier> soldier4 = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts,mMap);
     soldier4->setPosition(600, 300);
     mBlueTeam.push_back(soldier4.get());
     mSoldiers.push_back(soldier4.get());
     mSceneLayers[Front]->attachChild(std::move(soldier4));
 
 
-    std::unique_ptr<Soldier> soldier5 = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts);
+    std::unique_ptr<Soldier> soldier5 = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts,mMap);
     soldier5->setPosition(100, 300);
     mRedTeam.push_back(soldier5.get());
     mSoldiers.push_back(soldier5.get());
     mSceneLayers[Front]->attachChild(std::move(soldier5));
 
 
-    std::unique_ptr<Soldier> soldier2 = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts);
+    std::unique_ptr<Soldier> soldier2 = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts,mMap);
     soldier2->setPosition(100, 100);
     mRedTeam.push_back(soldier2.get());
     mSoldiers.push_back(soldier2.get());
     mSceneLayers[Front]->attachChild(std::move(soldier2));
 
-    std::unique_ptr<Soldier> soldier3 = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts);
+    std::unique_ptr<Soldier> soldier3 = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts,mMap);
     soldier3->setPosition(200, 300);
     mRedTeam.push_back(soldier3.get());
     mSoldiers.push_back(soldier3.get());
