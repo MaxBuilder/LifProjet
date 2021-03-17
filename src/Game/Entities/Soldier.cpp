@@ -9,6 +9,7 @@
 // A faire : ajouter les tables de données pour les entités
 Soldier::Soldier(Team team, const TextureHolder& textures, const FontHolder& fonts, TilesMap &map, bool big)
 : Entity(100,team)
+, Astar(map)
 , mDirection(sf::Vector2f(0, 0))
 , mOrigin(sf::Vector2f(0, 0))
 , mSprite(textures.get(Textures::EntitySoldier))
@@ -77,6 +78,10 @@ void Soldier::updateCurrent(sf::Time dt) {
 }
 
 void Soldier::updateAttack(sf::Time dt) {
+
+    if(mAction != Moving)
+        mPath.clear();
+
     if(mAction == None or isDestroyed()) return;
     else if(mAction == Override) {
         moveIt(mDirection * dt.asSeconds() * (80.f+mSpeedBonus));
@@ -84,7 +89,15 @@ void Soldier::updateAttack(sf::Time dt) {
     }
     if(mAction == Moving) {
         if(mTargeted == nullptr) {
-            setDirection(sf::Vector2f(1, 0));
+            if(mPath.empty()) {
+                mAstarDuration.restart();
+                Astar.getPath(mMap,getPosition().x/mMap->getBlockSize(),getPosition().y/mMap->getBlockSize(),63,2,mPath,2) ;
+                std::cout << "Astar Duration :" << mAstarDuration.getElapsedTime().asMicroseconds() << std::endl;
+            }
+            sf::Vector2f &target = mPath.back();
+            if (distance(getPosition(), target) < 2 )
+                mPath.pop_back();
+            setDirection((target-getPosition())/norm(target-getPosition()));
             moveIt(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
         }
         else {
@@ -351,6 +364,7 @@ Entity::Bonus Soldier::getBonus(){
 
 void Soldier::moveIt(sf::Vector2f dpl){
     sf::Vector2f point = (getPosition()+dpl);
+    /*
     if(mDirection.x > 0)
         point.x += mSprite.getLocalBounds().width/4.f;
     else
@@ -360,6 +374,7 @@ void Soldier::moveIt(sf::Vector2f dpl){
         point.y += mSprite.getLocalBounds().height/4.f;
     else
         point.y -= mSprite.getLocalBounds().height/4.f;
+        */
 
     sf::Vector2i pos = sf::Vector2i(point.x/20, point.y/20);
     if (mMap->getTile(pos.x,pos.y).isCrossable())

@@ -11,6 +11,7 @@
 #include <list>
 #include <cmath>
 #include <cstdlib>
+#include <memory>
 #include <SFML/Graphics.hpp>
 #include "AstarTile.hpp"
 
@@ -56,7 +57,7 @@ class AstarAlgo : public sf::Transformable{
          * @param ltarget et wTarget les coordonnées de la cible
          * @param path le Vector<sf::Vector2f> contenant le chemin jusqu'a la cible
          */
-        void getPath(TilesMap &map,int lSelf,int wSelf, int ltarget, int wTarget, std::vector<sf::Vector2f> &path);
+        void getPath(std::shared_ptr<TilesMap> &map,int lSelf,int wSelf, int ltarget, int wTarget, std::vector<sf::Vector2f> &path,int poid = 2);
         void resetGraph();
 
 

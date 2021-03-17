@@ -12,6 +12,7 @@
 #include <SFML/System/Clock.hpp>
 
 #include "Entity.hpp"
+#include "../Astar/AstarAlgo.hpp"
 #include "../../Core/Util/Utility.hpp"
 #include "../../Core/Util/Rand.hpp"
 #include "../Resources/ResourceIdentifiers.hpp"
@@ -84,6 +85,7 @@ public:
     bool isAvailable;
 
 private:
+    AstarAlgo Astar;
     std::shared_ptr<TilesMap> mMap;
     // Needs adding of personal stats (atk, def, per, sp)
     bool isBigBitch; // Temporary
@@ -94,13 +96,14 @@ private:
     sf::IntRect mSpriteRect;
     sf::Time mSpriteTime;
 
+    std::vector<sf::Vector2f> mPath;
     float mSpeedBonus, mSpeedBase;
     float mDamages;
     sf::Vector2f mDirection;
     sf::Vector2f mOrigin; // Point where entity is instantiated
     float mTravelled; // Distance travelled
     int mDistance; // Distance to travel
-    sf::Clock mEntityClock;
+    sf::Clock mEntityClock,mAstarDuration;
     Action mAction;
 
     Soldier * mTargeted;

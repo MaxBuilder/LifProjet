@@ -105,15 +105,15 @@ bool AstarAlgo::Voronoi(){
 
 
 
-void AstarAlgo::getPath(TilesMap &map,int lSelf,int wSelf, int ltarget, int wTarget, std::vector<sf::Vector2f> &path) {
-    setPoids(2);
+void AstarAlgo::getPath(std::shared_ptr<TilesMap> &map,int lSelf,int wSelf, int ltarget, int wTarget, std::vector<sf::Vector2f> &path, int poid) {
+    setPoids(poid);
     initVoronoi(lSelf, wSelf, ltarget, wTarget);
     //partie qui run l'algo Astar
     while(Voronoi());
 
     AstarTile* tmp = &Astar_grid[objectif.x][objectif.y];
     while (tmp != nullptr){
-        path.push_back(sf::Vector2f(tmp->coordNoeud.x,tmp->coordNoeud.y));
+        path.push_back(sf::Vector2f(tmp->coordNoeud.x,tmp->coordNoeud.y)*map->getBlockSize()+sf::Vector2f(1,1)*map->getBlockSize()/2.f);
         tmp = tmp->parent;
     }
     resetGraph();

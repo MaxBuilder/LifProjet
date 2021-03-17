@@ -14,7 +14,9 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
 , mTracked(-1)
 , mMap(textures.get(Textures::MapGround), 20.f)
 {
-    mMap.load("data/Maps/demo1.map");
+    //mMap.load("data/Maps/demo1.map");
+    mMap.load("data/Maps/demo2.map");
+    //mMap.load("data/Maps/demo3.map");
 
     // Scene building based on 2 plans (back and front)
     for(std::size_t i = 0 ; i < LayerCount ; i++) {
@@ -23,20 +25,21 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
 
         mSceneGraph.attachChild(std::move(layer));
     }
-
+    /*
     // Adding entities (to move in separate function)
     std::unique_ptr<Soldier> soldier1 = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts,mMap, true);
     soldier1->setPosition(650, 200);
     mBlueTeam.push_back(soldier1.get());
     mSoldiers.push_back(soldier1.get());
     mSceneLayers[Front]->attachChild(std::move(soldier1));
+     */
 
-    std::unique_ptr<Soldier> soldier4 = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts,mMap);
+   /* std::unique_ptr<Soldier> soldier4 = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts,mMap);
     soldier4->setPosition(600, 300);
     mBlueTeam.push_back(soldier4.get());
     mSoldiers.push_back(soldier4.get());
     mSceneLayers[Front]->attachChild(std::move(soldier4));
-
+*/
 
     std::unique_ptr<Soldier> soldier5 = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts,mMap);
     soldier5->setPosition(100, 300);
@@ -52,17 +55,25 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
     mSceneLayers[Front]->attachChild(std::move(soldier2));
 
     std::unique_ptr<Soldier> soldier3 = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts,mMap);
-    soldier3->setPosition(200, 300);
+    soldier3->setPosition(180, 300);
     mRedTeam.push_back(soldier3.get());
     mSoldiers.push_back(soldier3.get());
     mSceneLayers[Front]->attachChild(std::move(soldier3));
+
+
+    std::unique_ptr<Soldier> soldier4 = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts,mMap);
+    soldier4->setPosition(400, 650);
+    mRedTeam.push_back(soldier4.get());
+    mSoldiers.push_back(soldier4.get());
+    mSceneLayers[Front]->attachChild(std::move(soldier4));
+
 
     for(auto &soldier : mSoldiers) // Init of defense positions
         soldier->init();
 
     // Debug
     zone.setRadius(50);
-    zone.setPosition( mBlueTeam[0]->getOrigin() - sf::Vector2f(50, 50));
+    // zone.setPosition( mBlueTeam[0]->getOrigin() - sf::Vector2f(50, 50));
     zone.setOutlineColor(sf::Color::Cyan);
     zone.setOutlineThickness(1);
     zone.setFillColor(sf::Color::Transparent);
