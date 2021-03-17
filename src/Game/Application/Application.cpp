@@ -7,6 +7,7 @@
 #include "../GameStates/PauseState.hpp"
 
 const sf::Time Application::TimePerFrame = sf::seconds(1.f/60.f);
+const sf::Time Accelerate = sf::seconds(1.f/6.f);
 
 Application::Application()
 : mTextures()
@@ -16,6 +17,7 @@ Application::Application()
 , mStatisticsText()
 , mStatisticsUpdateTime()
 , mStatisticsNumFrames(0)
+, mAccelerate(false)
 {
     loadSettings();
 
@@ -54,7 +56,11 @@ void Application::run() {
             timeSinceLastUpdate -= TimePerFrame;
 
             processInput();
-            update(TimePerFrame);
+            if (mAccelerate)
+                update(Accelerate);
+            else
+                update(TimePerFrame);
+
 
             // Check inside this loop, because stack might be empty before update() call
             if (mStateStack.isEmpty())
@@ -74,6 +80,8 @@ void Application::processInput() {
 
         if (event.type == sf::Event::Closed)
             mWindow.close();
+        if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Space)
+            mAccelerate = not mAccelerate;
     }
 }
 

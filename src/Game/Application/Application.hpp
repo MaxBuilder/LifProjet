@@ -50,6 +50,7 @@ private:
 
     sf::VideoMode mVideoMode;
     int mWindowStyle;
+    bool mAccelerate;
 };
 
 #endif //LIFPROJET_APPLICATION_HPP
