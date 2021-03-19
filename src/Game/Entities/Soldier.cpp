@@ -30,7 +30,9 @@ Soldier::Soldier(Team team, const TextureHolder& textures, const FontHolder& fon
     // setOrigin(getPosition().x + 10, getPosition().y + 10);
     mTeam == BlueTeam ? mSpriteRect= sf::IntRect(32,0,32,32) : mSpriteRect = sf::IntRect(32,32,32,32);
     mSprite.setTextureRect(mSpriteRect);
-    setOrigin(mSprite.getLocalBounds().width/2.f,mSprite.getLocalBounds().height/2.f);
+    mSprite.setScale(map.getBlockSize()/mSprite.getLocalBounds().width,map.getBlockSize()/mSprite.getLocalBounds().height);
+    mGlow.setScale(map.getBlockSize()/mSprite.getLocalBounds().width,map.getBlockSize()/mSprite.getLocalBounds().height);
+    setOrigin(map.getBlockSize()/2.f,map.getBlockSize()/2.f);
     mSpriteTime = sf::milliseconds(0);
 
     if(isBigBitch) heal(100); // HP to 200 for big entities
@@ -91,7 +93,7 @@ void Soldier::updateAttack(sf::Time dt) {
         if(mTargeted == nullptr) {
             if(mPath.empty()) {
                 mAstarDuration.restart();
-                Astar.getPath(mMap,getPosition().x/mMap->getBlockSize(),getPosition().y/mMap->getBlockSize(),63,2,mPath,2) ;
+                Astar.getPath(mMap,getPosition().x/mMap->getBlockSize(),getPosition().y/mMap->getBlockSize(),57,5,mPath,2) ;
                 std::cout << "Astar Duration :" << mAstarDuration.getElapsedTime().asMicroseconds() << std::endl;
             }
             sf::Vector2f &target = mPath.back();
@@ -345,12 +347,12 @@ void Soldier::changeBonus(Entity::Bonus bonus) {
         mGlow.setTextureRect(sf::IntRect(64,0,32,32));
         mBonus = bonus;
         mSpeedBonus = 15;
-        mDamages = 50;
+        mDamages = 25;
     }else if(bonus == Entity::Village and mBonus == Entity::None){
         mGlow.setTextureRect(sf::IntRect(32,0,32,32));
         mBonus = bonus;
         mSpeedBonus = 15;
-        mDamages = 40;
+        mDamages = 25;
     }else if(bonus == Entity::None){
         mGlow.setTextureRect(sf::IntRect(0,0,32,32));
         mBonus = bonus;
@@ -363,36 +365,35 @@ Entity::Bonus Soldier::getBonus(){
 }
 
 void Soldier::moveIt(sf::Vector2f dpl){
+
+    dpl *= mMap->getTile(getPosition()/20.f).getMoveSpeed();
     sf::Vector2f point = (getPosition()+dpl);
-    /*
+
     if(mDirection.x > 0)
-        point.x += mSprite.getLocalBounds().width/4.f;
-    else
-        point.x -= mSprite.getLocalBounds().width/4.f;
+        point.x += 5.f;
+    else if(mDirection.x < 0)
+        point.x -= 5.f;
 
     if(mDirection.y > 0)
-        point.y += mSprite.getLocalBounds().height/4.f;
-    else
-        point.y -= mSprite.getLocalBounds().height/4.f;
-        */
+        point.y += 10.f;
 
     sf::Vector2i pos = sf::Vector2i(point.x/20, point.y/20);
-    if (mMap->getTile(pos.x,pos.y).isCrossable())
+    if (mMap->getTile(pos.x,pos.y).isCrossable() and inMap(point))
         move(dpl);
     else{
         sf::Vector2i pos1 = sf::Vector2i(point.x/20, (point.y-dpl.y)/20);
         sf::Vector2i pos2 = sf::Vector2i((point.x-dpl.x)/20, point.y/20);
-        if (mMap->getTile(pos1.x,pos1.y).isCrossable())
+        if (mMap->getTile(pos1.x,pos1.y).isCrossable() and inMap(point))
             move(dpl.x,0);
-        else if(mMap->getTile(pos2.x,pos2.y).isCrossable())
+        else if(mMap->getTile(pos2.x,pos2.y).isCrossable() and inMap(point))
             move(0,dpl.y);
         else {
             // mDirection = -mDirection;
             // moveIt(-dpl);
         }
     }
+}
 
-
-
-
+bool Soldier::inMap(sf::Vector2f dpl){
+    return (dpl.x > 0 and dpl.x < 1280 and dpl.y > 0 and dpl.y < 720);
 }

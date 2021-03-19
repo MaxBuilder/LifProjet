@@ -80,6 +80,7 @@ private:
 
     sf::Vector2f randomDirection(); // Helper to roam();
     void moveIt(sf::Vector2f dpl);
+    bool inMap(sf::Vector2f dpl);
 
 public:
     bool isAvailable;

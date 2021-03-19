@@ -31,6 +31,7 @@ public:
     void setDrawBuildings(bool draw);
 
     Tile& getTile(int x, int y);
+    Tile& getTile(sf::Vector2f position);
     std::pair<std::vector<BuildInfo>::iterator,
             std::vector<BuildInfo>::iterator> getBuildingsIt();
 

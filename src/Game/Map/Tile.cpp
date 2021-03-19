@@ -44,16 +44,16 @@ void Tile::paint(const sf::Vector2i &id,const float &rotation ){
     else if ( id == sf::Vector2i(0,1) or id == sf::Vector2i(0,2) or
             id == sf::Vector2i(1,4) or id == sf::Vector2i(1,10) or
             id == sf::Vector2i(0,13)) { // chemin de terre
-        moveSpeed = 1.3f;
+        moveSpeed = 1.1f;
         crossable = true;
     }else if ( id.x == 2 and (id.y < 3 or id.y == 20 or id.y == 19) ) { // eau
         moveSpeed = 0.2f;
         crossable = false;
     }else if(id.y<6) {
-        moveSpeed = 1.f;
+        moveSpeed = 0.85f;
         crossable = true;
     }else if((id.y == 15 or id.y ==16) and (id.x == 0 or id.x == 1)){
-        moveSpeed = 1.f;
+        moveSpeed = 0.85f;
         crossable = true;
     }else if (id.y < 21 ){ // reste sol ( terre / transition )
         moveSpeed = 1.f;
@@ -83,7 +83,7 @@ bool Tile::haveTop() const {
 
 float Tile::getMoveSpeed() const{
     if (mHaveTop)
-        return moveSpeed*topMoveSpeed;
+        return topMoveSpeed;
     else
         return moveSpeed;
 }

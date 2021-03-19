@@ -15,28 +15,28 @@ Building::Building(Buildings::ID ID, sf::IntRect position) :
         case Buildings::BlueCastle :
             mHitPoints = 500;
             mTeam = Entity::BlueTeam;
-            mRange = 200;
+            mRange = 150;
             mBonusFlag = Entity::Castle;
             break;
 
         case Buildings::RedCastle :
             mHitPoints = 500;
             mTeam = Entity::RedTeam;
-            mRange = 200;
+            mRange = 150;
             mBonusFlag = Entity::Castle;
             break;
 
         case Buildings::BlueVillage :
             mHitPoints = 300;
             mTeam = Entity::BlueTeam;
-            mRange = 150;
+            mRange = 100;
             mBonusFlag = Entity::Village;
             break;
 
         case Buildings::RedVillage :
             mHitPoints = 300;
             mTeam = Entity::RedTeam;
-            mRange = 150;
+            mRange = 100;
             mBonusFlag = Entity::Village;
             break;
 

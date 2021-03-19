@@ -82,6 +82,10 @@ void Application::processInput() {
             mWindow.close();
         if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Space)
             mAccelerate = not mAccelerate;
+        if(event.type ==sf::Event::MouseButtonPressed) {
+            sf::Vector2i mouse = sf::Mouse::getPosition(mWindow);
+            std::cout << mouse.x << " " << mouse.y<<std::endl;
+        }
     }
 }
 
