@@ -7,9 +7,7 @@
 
 #include "../Map/TilesMap.hpp"
 
-struct coordinate{
-    int x,y;
-};
+
 
 class AstarTile{
 private:
@@ -20,7 +18,7 @@ public:
     double dist;
     float moveSpeed;
     bool isCrossable;
-    coordinate coordNoeud;
+    sf::Vector2i coordNoeud;
     AstarTile *parent;
 
     float getMoveSpeed() const;

@@ -54,7 +54,7 @@ void AstarAlgo::addObjectif(int x,int y){
     objectif.y = y;
 }
 
-coordinate AstarAlgo::getObjectif() {
+sf::Vector2i AstarAlgo::getObjectif() {
     return objectif;
 }
 
@@ -68,7 +68,9 @@ void AstarAlgo::setPoids(int p) {
 
 
 //l et w les coordonnées de self et lt et wt les coordonnées de la target
-void AstarAlgo::initVoronoi(int lSelf,int wSelf, int lTarget, int wTarget){
+void AstarAlgo::initVoronoi(sf::Vector2f self, sf::Vector2f target){
+    int lSelf = self.x;
+    int wSelf = self.y;
     Astar_grid[lSelf][wSelf].color = 'g';
     Astar_grid[lSelf][wSelf].dist = 0;
     Astar_grid[lSelf][wSelf].coordNoeud.x = lSelf;
@@ -76,7 +78,7 @@ void AstarAlgo::initVoronoi(int lSelf,int wSelf, int lTarget, int wTarget){
     //pour commencer depuis self
     knots.push_back(&Astar_grid[lSelf][wSelf]);
 
-    addObjectif(lTarget,wTarget);
+    addObjectif(target.x,target.y);
 
 }
 
@@ -105,18 +107,38 @@ bool AstarAlgo::Voronoi(){
 
 
 
-void AstarAlgo::getPath(std::shared_ptr<TilesMap> &map,int lSelf,int wSelf, int ltarget, int wTarget, std::vector<sf::Vector2f> &path, int poid) {
+void AstarAlgo::getPath(std::shared_ptr<TilesMap> &map,sf::Vector2f self, sf::Vector2f target, std::vector<sf::Vector2f> &path, int poid) {
     setPoids(poid);
-    initVoronoi(lSelf, wSelf, ltarget, wTarget);
+    self = self/map->getBlockSize();
+    //potencielement utile si on fait un algo pour chercher sur la map où est l'objectif
+    //target = target/map->getBlockSize();
+    initVoronoi(self, target);
     //partie qui run l'algo Astar
     while(Voronoi());
-
     AstarTile* tmp = &Astar_grid[objectif.x][objectif.y];
     while (tmp != nullptr){
         path.push_back(sf::Vector2f(tmp->coordNoeud.x,tmp->coordNoeud.y)*map->getBlockSize()+sf::Vector2f(1,1)*map->getBlockSize()/2.f);
         tmp = tmp->parent;
     }
     resetGraph();
+}
+
+std::vector<sf::Vector2f> AstarAlgo::getPath(std::shared_ptr<TilesMap> &map,sf::Vector2f self, sf::Vector2f target, int poid) {
+    setPoids(poid);
+    self = self/map->getBlockSize();
+    //potencielement utile si on fait un algo pour chercher
+    //target = target/map->getBlockSize();
+    initVoronoi(self, target);
+    //partie qui run l'algo Astar
+    while(Voronoi());
+    std::vector<sf::Vector2f> path;
+    AstarTile* tmp = &Astar_grid[objectif.x][objectif.y];
+    while (tmp != nullptr){
+        path.push_back(sf::Vector2f(tmp->coordNoeud.x,tmp->coordNoeud.y)*map->getBlockSize()+sf::Vector2f(1,1)*map->getBlockSize()/2.f);
+        tmp = tmp->parent;
+    }
+    resetGraph();
+    return path;
 }
 
 
@@ -135,7 +157,7 @@ int AstarAlgo::minimum(std::vector<AstarTile*> knots)const{
 
 
 
-double AstarAlgo::distance(coordinate ind)const {
+double AstarAlgo::distance(sf::Vector2i ind)const {
     //heuristique Euclidean distance
     //double num = std::sqrt(std::pow(ind.y-objectif.y,double(2))+ std::pow(ind.x-objectif.x,double(2)));
     //heuristique chebyshev distance
@@ -148,7 +170,7 @@ double AstarAlgo::distance(coordinate ind)const {
 
 void AstarAlgo::setNeighbour(AstarTile* knot) {
     cardinal c[8] = {South, North, Est, West, NorthEst, NorthWest, SouthEst, SouthWest};
-    coordinate neiIndex;
+    sf::Vector2i neiIndex;
     double dist;
     for(auto card : c){
         neiIndex = getNeighbourIndex(knot->coordNoeud.x,knot->coordNoeud.y,card);
@@ -174,8 +196,8 @@ void AstarAlgo::setNeighbour(AstarTile* knot) {
     }
 }
 
-coordinate AstarAlgo::getNeighbourIndex(int l,int w,cardinal c)const {
-    coordinate coordNei;
+sf::Vector2i AstarAlgo::getNeighbourIndex(int l,int w,cardinal c)const {
+    sf::Vector2i coordNei;
 
     switch (c) {
         case cardinal::South : l++; if((unsigned int)l >= length){ l = -1; w = -1;} break;
@@ -206,8 +228,8 @@ coordinate AstarAlgo::getNeighbourIndex(int l,int w,cardinal c)const {
 
 
 
-bool AstarAlgo::crossCorner(coordinate ind, cardinal card) {
-    coordinate coord, coord2;
+bool AstarAlgo::crossCorner(sf::Vector2i ind, cardinal card) {
+    sf::Vector2i coord, coord2;
     switch (card) {
         case NorthEst :
             coord = getNeighbourIndex(ind.x,ind.y,South);
@@ -234,7 +256,7 @@ bool AstarAlgo::crossCorner(coordinate ind, cardinal card) {
     else return false;
 }
 
-bool AstarAlgo::indIsValid(coordinate ind) {
+bool AstarAlgo::indIsValid(sf::Vector2i ind) {
     return ( ind.x >= 0 && ind.y >= 0);
 }
 

@@ -93,7 +93,7 @@ void Soldier::updateAttack(sf::Time dt) {
         if(mTargeted == nullptr) {
             if(mPath.empty()) {
                 mAstarDuration.restart();
-                Astar.getPath(mMap,getPosition().x/mMap->getBlockSize(),getPosition().y/mMap->getBlockSize(),57,5,mPath,2) ;
+                Astar.getPath(mMap,getPosition(),sf::Vector2f(57,5),mPath,2) ;
                 std::cout << "Astar Duration :" << mAstarDuration.getElapsedTime().asMicroseconds() << std::endl;
             }
             sf::Vector2f &target = mPath.back();

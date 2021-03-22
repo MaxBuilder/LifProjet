@@ -32,16 +32,16 @@ class AstarAlgo : public sf::Transformable{
         //fonction à intégret dans le projet
         int poids;
         //a rename probablement ou supprimer
-        coordinate objectif;
+        sf::Vector2i objectif;
 
-        double distance(coordinate ind)const;
+        double distance(sf::Vector2i ind)const;
         //fonction pas obligatoir et qui peut etre supprimer
-        bool indIsValid(coordinate ind);
+        bool indIsValid(sf::Vector2i ind);
 
         int minimum(std::vector<AstarTile*> knots)const;
         void setNeighbour(AstarTile* knot);
-        coordinate getNeighbourIndex(int x,int y,cardinal c)const;
-        bool crossCorner(coordinate ind, cardinal card);
+        sf::Vector2i getNeighbourIndex(int x,int y,cardinal c)const;
+        bool crossCorner(sf::Vector2i ind, cardinal card);
 
     public :
         void afficherGraph();
@@ -49,7 +49,7 @@ class AstarAlgo : public sf::Transformable{
         AstarAlgo(TilesMap &map);
         ~AstarAlgo();
         void addObjectif(int x,int y);
-        coordinate getObjectif();
+        sf::Vector2i getObjectif();
 
         /** Execute la recherche et retourne le chemin complet de l'entité à la target
          *
@@ -57,16 +57,15 @@ class AstarAlgo : public sf::Transformable{
          * @param ltarget et wTarget les coordonnées de la cible
          * @param path le Vector<sf::Vector2f> contenant le chemin jusqu'a la cible
          */
-        void getPath(std::shared_ptr<TilesMap> &map,int lSelf,int wSelf, int ltarget, int wTarget, std::vector<sf::Vector2f> &path,int poid = 2);
+        void getPath(std::shared_ptr<TilesMap> &map,sf::Vector2f self, sf::Vector2f target, std::vector<sf::Vector2f> &path,int poid = 2);
+        std::vector<sf::Vector2f> getPath(std::shared_ptr<TilesMap> &map,sf::Vector2f self, sf::Vector2f target,int poid = 2);
         void resetGraph();
 
 
 
         void setPoids(int p);
         //l et w les coordonnées de self et lt et wt les coordonnées de la target
-        void initVoronoi(int l, int w, int lt, int wt);
-        //2eme version pas implémenté
-        void initVoronoi(coordinate self, coordinate target);
+        void initVoronoi(sf::Vector2f self, sf::Vector2f target);
         bool Voronoi();
 
 };
