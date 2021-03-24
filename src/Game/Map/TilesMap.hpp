@@ -32,6 +32,7 @@ public:
 
     Tile& getTile(int x, int y);
     Tile& getTile(sf::Vector2f position);
+    Tile& getTile(sf::Vector2i position);
     std::pair<std::vector<BuildInfo>::iterator,
             std::vector<BuildInfo>::iterator> getBuildingsIt();
 

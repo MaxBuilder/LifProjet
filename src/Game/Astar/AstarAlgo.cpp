@@ -18,15 +18,14 @@ AstarAlgo::AstarAlgo() {
 }
 
 
-AstarAlgo::AstarAlgo(TilesMap &map) {
+void AstarAlgo::setMap(TilesMap &map){
+    mMap = std::make_shared<TilesMap>(map);
     length = 64;
     width = 32;
     for (unsigned int x(0); x < length; x++) {
         for (unsigned int y(0); y < width; y++) {
             //il faut copier la map
-            Astar_grid[x][y].moveSpeed = map.getTile(x, y).getMoveSpeed();
-            Astar_grid[x][y].isCrossable = map.getTile(x, y).isCrossable();
-            Astar_grid[x][y].setCoordinate(x, y);
+            Astar_grid[x][y].setCoordinate(float(x), float(y));
         }
     }
 }
@@ -94,9 +93,6 @@ bool AstarAlgo::Voronoi(){
         }
         knots[min]->color = 'b';
         setNeighbour(knots[min]);
-        /*
-        for (long unsigned int k(0);k<knots.size();k++) map.drawColor(knots[k]->coordNoeud);
-        map.drawColor(knots[min]->coordNoeud);*/
         knots.erase(knots.begin()+min);
         return true;
     }
@@ -107,9 +103,9 @@ bool AstarAlgo::Voronoi(){
 
 
 
-void AstarAlgo::getPath(std::shared_ptr<TilesMap> &map,sf::Vector2f self, sf::Vector2f target, std::vector<sf::Vector2f> &path, int poid) {
+void AstarAlgo::getPath(sf::Vector2f self, sf::Vector2f target, std::vector<sf::Vector2f> &path, int poid) {
     setPoids(poid);
-    self = self/map->getBlockSize();
+    self = self/mMap->getBlockSize();
     //potencielement utile si on fait un algo pour chercher sur la map où est l'objectif
     //target = target/map->getBlockSize();
     initVoronoi(self, target);
@@ -117,12 +113,13 @@ void AstarAlgo::getPath(std::shared_ptr<TilesMap> &map,sf::Vector2f self, sf::Ve
     while(Voronoi());
     AstarTile* tmp = &Astar_grid[objectif.x][objectif.y];
     while (tmp != nullptr){
-        path.push_back(sf::Vector2f(tmp->coordNoeud.x,tmp->coordNoeud.y)*map->getBlockSize()+sf::Vector2f(1,1)*map->getBlockSize()/2.f);
+        path.push_back(sf::Vector2f(tmp->coordNoeud.x,tmp->coordNoeud.y)*mMap->getBlockSize()+sf::Vector2f(1,1)*mMap->getBlockSize()/2.f);
         tmp = tmp->parent;
     }
     resetGraph();
 }
 
+/*
 std::vector<sf::Vector2f> AstarAlgo::getPath(std::shared_ptr<TilesMap> &map,sf::Vector2f self, sf::Vector2f target, int poid) {
     setPoids(poid);
     self = self/map->getBlockSize();
@@ -140,7 +137,7 @@ std::vector<sf::Vector2f> AstarAlgo::getPath(std::shared_ptr<TilesMap> &map,sf::
     resetGraph();
     return path;
 }
-
+*/
 
 
 int AstarAlgo::minimum(std::vector<AstarTile*> knots)const{
@@ -174,10 +171,11 @@ void AstarAlgo::setNeighbour(AstarTile* knot) {
     double dist;
     for(auto card : c){
         neiIndex = getNeighbourIndex(knot->coordNoeud.x,knot->coordNoeud.y,card);
-        if (!indIsValid(neiIndex) || (Astar_grid[neiIndex.x][neiIndex.y].color == 'b') || !Astar_grid[neiIndex.x][neiIndex.y].isCrossable
+        if (!indIsValid(neiIndex) || (Astar_grid[neiIndex.x][neiIndex.y].color == 'b') || !mMap->getTile(neiIndex.x,neiIndex.y).isCrossable()
             || crossCorner(neiIndex,card)) continue;
         //pour le calcule du cout d'un
-        dist = (distance(neiIndex)/knot->getMoveSpeed())*poids+knot->cout;
+        float moveSpeed = mMap->getTile(knot->coordNoeud).getMoveSpeed();
+        dist = distance(neiIndex)*poids+static_cast<float>(knot->cout)/moveSpeed;
         if (Astar_grid[neiIndex.x][neiIndex.y].color == 'g'){
             if (dist < Astar_grid[neiIndex.x][neiIndex.y].dist ){
                 Astar_grid[neiIndex.x][neiIndex.y].dist = dist;
@@ -251,7 +249,7 @@ bool AstarAlgo::crossCorner(sf::Vector2i ind, cardinal card) {
             return false;
     }
 
-    if (!Astar_grid[coord.x][coord.y].isCrossable || !Astar_grid[coord2.x][coord2.y].isCrossable)
+    if (!mMap->getTile(coord.x,coord.y).isCrossable() || !mMap->getTile(coord2.x,coord2.y).isCrossable())
         return true;
     else return false;
 }

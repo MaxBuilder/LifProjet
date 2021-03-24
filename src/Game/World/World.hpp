@@ -33,10 +33,14 @@ public:
 
     // Entity functions :
     void checkCollision(); // Checks and adapt position of entities relative to environment
+    void updateMovement();
     void updateTargets(); // Updates entity target from perspective
     void adaptSpeed(); // Adapts speed of entities relative to environment
     void updateCalls(); // Updates entities calling for help
     void updateBonus(); // check if entities are in range of buildings
+
+    //aide
+    bool inMap(sf::Vector2f dpl);
 
 private:
     enum Layer {
@@ -62,6 +66,9 @@ private:
 
     std::vector<Soldier*> mSoldiers; // Provisoire
     std::vector<Building*> mBuildings;
+
+    //Astar
+    AstarAlgo mAstar;
 
     // Tracking
     int mTracked;

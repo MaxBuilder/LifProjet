@@ -38,6 +38,11 @@ Tile& TilesMap::getTile(sf::Vector2f position){
     return grid_id[pos.x][pos.y];
 }
 
+Tile& TilesMap::getTile(sf::Vector2i position){
+    assert(position.x >= 0 and position.y >= 0 and position.x < 64 and position.y < 36 );
+    return grid_id[position.x][position.y];
+}
+
 float TilesMap::getBlockSize() const{
     return mBlockSize;
 }

@@ -25,6 +25,7 @@ class AstarAlgo : public sf::Transformable{
         unsigned int length;
         unsigned int width;
         AstarTile Astar_grid[64][36];
+        std::shared_ptr<TilesMap> mMap;
 
         //vetor qui contien les noeuds a check
         std::vector<AstarTile*>knots;
@@ -46,9 +47,9 @@ class AstarAlgo : public sf::Transformable{
     public :
         void afficherGraph();
         AstarAlgo();
-        AstarAlgo(TilesMap &map);
         ~AstarAlgo();
         void addObjectif(int x,int y);
+        void setMap(TilesMap& map);
         sf::Vector2i getObjectif();
 
         /** Execute la recherche et retourne le chemin complet de l'entité à la target
@@ -57,8 +58,8 @@ class AstarAlgo : public sf::Transformable{
          * @param ltarget et wTarget les coordonnées de la cible
          * @param path le Vector<sf::Vector2f> contenant le chemin jusqu'a la cible
          */
-        void getPath(std::shared_ptr<TilesMap> &map,sf::Vector2f self, sf::Vector2f target, std::vector<sf::Vector2f> &path,int poid = 2);
-        std::vector<sf::Vector2f> getPath(std::shared_ptr<TilesMap> &map,sf::Vector2f self, sf::Vector2f target,int poid = 2);
+        void getPath(sf::Vector2f self, sf::Vector2f target, std::vector<sf::Vector2f> &path,int poid = 2);
+        // std::vector<sf::Vector2f> getPath(std::shared_ptr<TilesMap> &map,sf::Vector2f self, sf::Vector2f target,int poid = 2);
         void resetGraph();
 
 

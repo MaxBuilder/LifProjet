@@ -7,7 +7,7 @@
 #include "../GameStates/PauseState.hpp"
 
 const sf::Time Application::TimePerFrame = sf::seconds(1.f/60.f);
-const sf::Time Accelerate = sf::seconds(1.f/6.f);
+const sf::Time Accelerate = sf::seconds(1.f/12.f);
 
 Application::Application()
 : mTextures()
@@ -83,8 +83,8 @@ void Application::processInput() {
         if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Space)
             mAccelerate = not mAccelerate;
         if(event.type ==sf::Event::MouseButtonPressed) {
-            sf::Vector2i mouse = sf::Mouse::getPosition(mWindow);
-            std::cout << mouse.x << " " << mouse.y<<std::endl;
+            // sf::Vector2i mouse = sf::Mouse::getPosition(mWindow);
+            // std::cout << mouse.x << " " << mouse.y<<std::endl;
         }
     }
 }

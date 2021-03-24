@@ -9,7 +9,6 @@ AstarTile::AstarTile(){
     dist = 0;
     color = 'w';
     parent = nullptr;
-    moveSpeed = 1;
 }
 
 void AstarTile::setCoordinate(int x, int y) {
@@ -17,7 +16,3 @@ void AstarTile::setCoordinate(int x, int y) {
     coordNoeud.y = y;
 }
 
-
-float AstarTile::getMoveSpeed() const {
-    return moveSpeed;
-}

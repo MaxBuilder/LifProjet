@@ -36,7 +36,7 @@ public:
     };
 
 public:
-    Soldier(Team team, const TextureHolder& textures, const FontHolder& fonts, TilesMap& map, bool big = false);
+    Soldier(Team team, const TextureHolder& textures, const FontHolder& fonts, AstarAlgo& Astar, bool big = false);
 
     void changeBonus(Entity::Bonus bonus);
     Entity::Bonus getBonus();
@@ -56,10 +56,14 @@ public:
     float getSpeed() const;
     void setSpeed(float speed);
 
+    sf::Vector2f getVelocity();
+    void setVelocity(sf::Vector2f dpl);
+
     void setTarget(Soldier* target);
     void dropTarget();
     Soldier* getTarget();
 
+    void travel();
     void seekTarget();
     void fleeTarget();
     void attackTarget();
@@ -79,15 +83,12 @@ private:
     void updateCurrent(sf::Time dt) override; // Defines behavior of entity (before specialization)
 
     sf::Vector2f randomDirection(); // Helper to roam();
-    void moveIt(sf::Vector2f dpl);
-    bool inMap(sf::Vector2f dpl);
 
 public:
     bool isAvailable;
 
 private:
-    AstarAlgo Astar;
-    std::shared_ptr<TilesMap> mMap;
+    std::shared_ptr<AstarAlgo> mAstar;
     // Needs adding of personal stats (atk, def, per, sp)
     bool isBigBitch; // Temporary
     Entity::Bonus mBonus;
@@ -101,6 +102,7 @@ private:
     float mSpeedBonus, mSpeedBase;
     float mDamages;
     sf::Vector2f mDirection;
+    sf::Vector2f mVelocity;
     sf::Vector2f mOrigin; // Point where entity is instantiated
     float mTravelled; // Distance travelled
     int mDistance; // Distance to travel
