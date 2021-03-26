@@ -64,8 +64,6 @@ bool GameState::handleEvent(const sf::Event &event) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) mDirection += sf::Vector2f(-1.f, 0.f);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) mDirection += sf::Vector2f(1.f, 0.f);
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) std::cout<<sf::Mouse::getPosition(getContext().window).x<<" "<<sf::Mouse::getPosition(getContext().window).y<<std::endl;
-
     float norme = norm(mDirection);
     if (norme > 0) mDirection = mDirection / norme;
 

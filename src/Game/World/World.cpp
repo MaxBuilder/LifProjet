@@ -141,16 +141,6 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
     for(auto &soldier : mSoldiers) // Init of defense positions
         soldier->init();
 
-    // Debug
-    /*
-    zone.setRadius(50);
-    zone.setPosition( mBlueTeam[0]->getOrigin() - sf::Vector2f(50, 50));
-    zone.setOutlineColor(sf::Color::Cyan);
-    zone.setOutlineThickness(1);
-    zone.setFillColor(sf::Color::Transparent);
-    */
-    //mBlueTeam[0]->setAction(Soldier::None);
-
     auto builds = mMap.getBuildingsIt();
     for (;builds.first != builds.second;builds.first++){
         std::unique_ptr<Building> build = std::make_unique<Building>(builds.first->getID(),(builds.first->getPosition()));
@@ -162,7 +152,6 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
 void World::draw() {
     mTarget.draw(mMap);
     mTarget.draw(mSceneGraph);
-    // mTarget.draw(zone);
 
 }
 
@@ -170,7 +159,6 @@ void World::update(sf::Time dt) {
     mSceneGraph.update(dt);
     updateMovement();
     updateTargets();
-    //updateCalls();
     updateBonus();
     onCommand();
 
@@ -221,22 +209,6 @@ void World::onCommand() {
     }
 }
 
-void World::updateCalls() {
-    /*
-    // Calls for help : to modify so if unit is already helped, it doesn't enter the loop (and limit to one entity)
-    for(auto & soldier : mRedTeam) {
-        if(soldier->getAction() == Soldier::Calling) {
-            for(auto & soldier2 : mRedTeam) {
-                if(soldier != soldier2 and soldier2->isAvailable) {
-                    soldier->helpRequested(soldier2);
-                    soldier2->helpAlly(soldier);
-                }
-            }
-        }
-    }
-     */
-}
-
 void World::updateTargets() {
     // Cibles des attaquants
     for(auto &red : mRedTeam) {
@@ -264,8 +236,6 @@ void World::updateTargets() {
             if (ally != red and distance(ally->getPosition(), red->getPosition()) < 150)
                 red->mAllyInSight++;
         }
-        //std::cout << "Ennemies in sight : " << red->mTargetInSight << " Allies in sight : " << red->mAllyInSight << std::endl;
-        // Défenseurs : 100
     }
 
     // Cibles des défenseurs
@@ -285,43 +255,6 @@ void World::updateTargets() {
             blue->setTarget(nullptr);
     }
 }
-/*
-void World::updateTargets() { // A MODIFIER, GIGA BUGGED
-    bool *redHaveTarget = new bool[mRedTeam.size()];
-    for(int i(0);i<mRedTeam.size();i++) redHaveTarget[i] = false;
-    int countRedTeam = 0;
-
-    for(auto & i : mBlueTeam) {
-        bool blueHaveTarget = false;
-        float distMin = 60;
-        float dist;
-        countRedTeam = 0;
-        for(auto & j : mRedTeam) {
-            dist = distance(i->getPosition(), j->getPosition());
-            if( dist < 60 and !j->isDestroyed() ) {
-                if( dist < distMin ){
-                    i->setTarget(j);
-                    distMin = dist;
-                }
-                blueHaveTarget = true;
-            }
-
-            if(distance(j->getPosition(), i->getPosition()) < 100 and !i->isDestroyed() and j->isAvailable) {
-                j->setTarget(i);
-                redHaveTarget[countRedTeam] = true;
-            }
-            countRedTeam++;
-        }
-        if (!blueHaveTarget) i->dropTarget();
-    }
-
-    for(int i(0);i<mRedTeam.size();i++){
-        if (!redHaveTarget[i] and mRedTeam[i]->getTarget() != nullptr){
-            if(mRedTeam[i]->getTarget()->getTeam() == Soldier::BlueTeam and mRedTeam[i]->isAvailable) mRedTeam[i]->dropTarget();
-        }
-    }
-
-}*/
 
 void World::updateBonus(){
     bool entityHaveBonus = false;

@@ -32,7 +32,6 @@ public:
         Fleeing,
         Attacking,
         Calling,
-        //Helping,
         Leading,
         WithSquad,
         Assaulting,
@@ -40,9 +39,9 @@ public:
     };
 
 public:
-    Soldier(int id, Team team, const TextureHolder& textures, const FontHolder& fonts, AstarAlgo& Astar, CommandQueue& commandQueue, bool big = false);
+    Soldier(int id, Team team, const TextureHolder& textures, const FontHolder& fonts, AstarAlgo& Astar, CommandQueue& commandQueue);
 
-    int getId();
+    int getId() const;
 
     void changeBonus(Entity::Bonus bonus);
     Entity::Bonus getBonus();
@@ -78,15 +77,10 @@ public:
     void attackTarget();
     void roam(sf::Time dt);
     void createTeam(int senderId);
-    //void helpAlly(Soldier * ally);
-    //void helpRequested(Soldier * ally);
 
     void remove() override;
     void init(); // Initiate mOrigin variable (for defense reference)
     void resetTravelledDistance();
-
-    // Testing functions
-    void dontMove() { mAction = None; }
 
 private:
     void drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -94,15 +88,12 @@ private:
 
     sf::Vector2f randomDirection(); // Helper to roam();
 
-public:
-    //bool isAvailable;
-
 private:
     std::shared_ptr<AstarAlgo> mAstar;
     CommandQueue& mCommandQueue;
 
     // Needs adding of personal stats (atk, def, per, sp)
-    bool isBigBitch; // Temporary
+
     Entity::Bonus mBonus;
     sf::Sprite mSprite;
     sf::Sprite mGlow;

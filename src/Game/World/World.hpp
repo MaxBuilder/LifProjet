@@ -36,7 +36,6 @@ public:
     void onCommand();
     void updateMovement(); // Updates entity relative to the environment
     void updateTargets(); // Updates entity target from perspective
-    void updateCalls(); // Updates entities calling for help
     void updateBonus(); // Checks if entities are in range of buildings
 
     //aide
@@ -73,8 +72,6 @@ private:
     // Tracking
     int mTracked;
 
-    // Debug
-    sf::CircleShape zone;
 };
 
 
