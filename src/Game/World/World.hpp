@@ -8,6 +8,7 @@
 #include "../Map/TilesMap.hpp"
 #include "../../Core/Scene/SceneNode.hpp"
 #include "../../Core/Audio/SoundPlayer.hpp"
+#include "../../Core/Commands/CommandQueue.hpp"
 #include "../../Core/Util/Utility.hpp"
 #include "../Entities/Soldier.hpp"
 #include "../Entities/Building.hpp"
@@ -32,12 +33,11 @@ public:
     void trackedReset();
 
     // Entity functions :
-    void checkCollision(); // Checks and adapt position of entities relative to environment
-    void updateMovement();
+    void onCommand();
+    void updateMovement(); // Updates entity relative to the environment
     void updateTargets(); // Updates entity target from perspective
-    void adaptSpeed(); // Adapts speed of entities relative to environment
     void updateCalls(); // Updates entities calling for help
-    void updateBonus(); // check if entities are in range of buildings
+    void updateBonus(); // Checks if entities are in range of buildings
 
     //aide
     bool inMap(sf::Vector2f dpl);
@@ -54,20 +54,20 @@ private:
     TextureHolder& mTextures;
     FontHolder& mFonts;
     SoundPlayer& mSounds;
+    CommandQueue mCommandQueue;
 
     // Scene
     TilesMap mMap;
     SceneNode mSceneGraph;
     std::vector<SceneNode*> mSceneLayers;
 
-    // Entites
+    // Entites (multiple references to ease access)
     std::vector<Soldier*> mBlueTeam;
     std::vector<Soldier*> mRedTeam;
-
-    std::vector<Soldier*> mSoldiers; // Provisoire
+    std::vector<Soldier*> mSoldiers;
     std::vector<Building*> mBuildings;
 
-    //Astar
+    // Pathfinding
     AstarAlgo mAstar;
 
     // Tracking

@@ -13,6 +13,7 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
 , mSoldiers()
 , mTracked(-1)
 , mMap(textures.get(Textures::MapGround), 20.f)
+, mCommandQueue()
 {
     mMap.load("data/Maps/demo1.map");
     //mMap.load("data/Maps/demo2.map");
@@ -28,44 +29,77 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
         mSceneGraph.attachChild(std::move(layer));
     }
 
-    // Adding entities (to move in separate function)
+    // Adding entities (to move in separate function) and to serialize
+    /*
+    std::unique_ptr<Soldier> soldier1b = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts, mAstar, mCommandQueue, true);
+    soldier1b->setPosition(300, 40);
+    mBlueTeam.push_back(soldier1b.get());
+    mSoldiers.push_back(soldier1b.get());
+    mSceneLayers[Front]->attachChild(std::move(soldier1b));
 
-    std::unique_ptr<Soldier> soldier1b = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts,mAstar);
+*/
+    std::unique_ptr<Soldier> soldier1r = std::make_unique<Soldier>(0, Soldier::RedTeam, mTextures, mFonts, mAstar, mCommandQueue);
+    soldier1r->setPosition(60, 40);
+    mRedTeam.push_back(soldier1r.get());
+    mSoldiers.push_back(soldier1r.get());
+    mSceneLayers[Front]->attachChild(std::move(soldier1r));
+
+    std::unique_ptr<Soldier> soldier2r = std::make_unique<Soldier>(1, Soldier::RedTeam, mTextures, mFonts, mAstar, mCommandQueue);
+    soldier2r->setPosition(60, 120);
+    mRedTeam.push_back(soldier2r.get());
+    mSoldiers.push_back(soldier2r.get());
+    mSceneLayers[Front]->attachChild(std::move(soldier2r));
+
+    std::unique_ptr<Soldier> soldier3r = std::make_unique<Soldier>(2, Soldier::RedTeam, mTextures, mFonts, mAstar, mCommandQueue);
+    soldier3r->setPosition(60, 240);
+    mRedTeam.push_back(soldier3r.get());
+    mSoldiers.push_back(soldier3r.get());
+    mSceneLayers[Front]->attachChild(std::move(soldier3r));
+/*
+    std::unique_ptr<Soldier> soldier4r = std::make_unique<Soldier>(3, Soldier::RedTeam, mTextures, mFonts, mAstar, mCommandQueue);
+    soldier4r->setPosition(300, 60);
+    mRedTeam.push_back(soldier4r.get());
+    mSoldiers.push_back(soldier4r.get());
+    mSceneLayers[Front]->attachChild(std::move(soldier4r));
+*/
+
+
+    std::unique_ptr<Soldier> soldier1b = std::make_unique<Soldier>(0, Soldier::BlueTeam, mTextures, mFonts, mAstar, mCommandQueue);
     soldier1b->setPosition(1111, 20);
     mBlueTeam.push_back(soldier1b.get());
     mSoldiers.push_back(soldier1b.get());
     mSceneLayers[Front]->attachChild(std::move(soldier1b));
 
-    std::unique_ptr<Soldier> soldier2b = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts,mAstar);
+    std::unique_ptr<Soldier> soldier2b = std::make_unique<Soldier>(1, Soldier::BlueTeam, mTextures, mFonts, mAstar, mCommandQueue);
     soldier2b->setPosition(1100, 70);
     mBlueTeam.push_back(soldier2b.get());
     mSoldiers.push_back(soldier2b.get());
     mSceneLayers[Front]->attachChild(std::move(soldier2b));
 
-    std::unique_ptr<Soldier> soldier3b = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts,mAstar);
+    std::unique_ptr<Soldier> soldier3b = std::make_unique<Soldier>(2, Soldier::BlueTeam, mTextures, mFonts, mAstar, mCommandQueue);
     soldier3b->setPosition(1130, 120);
     mBlueTeam.push_back(soldier3b.get());
     mSoldiers.push_back(soldier3b.get());
     mSceneLayers[Front]->attachChild(std::move(soldier3b));
 
-    std::unique_ptr<Soldier> soldier4b = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts,mAstar);
+    std::unique_ptr<Soldier> soldier4b = std::make_unique<Soldier>(3, Soldier::BlueTeam, mTextures, mFonts, mAstar, mCommandQueue);
     soldier4b->setPosition(1190, 150);
     mBlueTeam.push_back(soldier4b.get());
     mSoldiers.push_back(soldier4b.get());
     mSceneLayers[Front]->attachChild(std::move(soldier4b));
 
-    std::unique_ptr<Soldier> soldier5b = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts,mAstar);
+    std::unique_ptr<Soldier> soldier5b = std::make_unique<Soldier>(4, Soldier::BlueTeam, mTextures, mFonts, mAstar, mCommandQueue);
     soldier5b->setPosition(1230, 200);
     mBlueTeam.push_back(soldier5b.get());
     mSoldiers.push_back(soldier5b.get());
     mSceneLayers[Front]->attachChild(std::move(soldier5b));
 
-    std::unique_ptr<Soldier> soldier6b = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts,mAstar);
+    std::unique_ptr<Soldier> soldier6b = std::make_unique<Soldier>(5, Soldier::BlueTeam, mTextures, mFonts, mAstar, mCommandQueue);
     soldier6b->setPosition(1120, 150);
     mBlueTeam.push_back(soldier6b.get());
     mSoldiers.push_back(soldier6b.get());
     mSceneLayers[Front]->attachChild(std::move(soldier6b));
-
+/*
     std::unique_ptr<Soldier> soldier1r = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts,mAstar);
     soldier1r->setPosition(88, 551);
     mRedTeam.push_back(soldier1r.get());
@@ -102,7 +136,7 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
     mRedTeam.push_back(soldier6r.get());
     mSoldiers.push_back(soldier6r.get());
     mSceneLayers[Front]->attachChild(std::move(soldier6r));
-
+*/
 
     for(auto &soldier : mSoldiers) // Init of defense positions
         soldier->init();
@@ -136,11 +170,59 @@ void World::update(sf::Time dt) {
     mSceneGraph.update(dt);
     updateMovement();
     updateTargets();
-    updateCalls();
+    //updateCalls();
     updateBonus();
+    onCommand();
+
+    //std::cout << mRedTeam[0]->getAction() << " " << mRedTeam[1]->getAction() << " " << mRedTeam[2]->getAction() << std::endl;
+}
+
+void World::onCommand() {
+    while(!mCommandQueue.isEmpty()) {
+        Command command = mCommandQueue.pop();
+
+        switch(command.mType) {
+            case CommandType::MakeTeam:
+                for(auto &red : mRedTeam) {
+                    if(red != mRedTeam[command.mSender] and distance(red->getPosition(), mRedTeam[command.mSender]->getPosition()) < 250) {
+                        red->createTeam(mRedTeam[command.mSender]->getId());
+                        mRedTeam[command.mSender]->nbRequested++;
+                    }
+                }
+                std::cout << mRedTeam[command.mSender]->getId() << " Demande de mise en groupe : " << mRedTeam[command.mSender]->nbRequested << std::endl;
+                break;
+
+            case CommandType::TeamAccept:
+                std::cout << "Accepted " << command.mSender << std::endl;
+                // Nommer receiver chef + associer les unités et modifier le comportement
+                mRedTeam[command.mReceiver]->nbResponse++;
+                mRedTeam[command.mReceiver]->mSquadSize++;
+                mRedTeam[command.mReceiver]->mSquadIds.push_back(command.mSender);
+                mRedTeam[command.mSender]->setAction(Soldier::WithSquad);
+                mRedTeam[command.mSender]->setLeader(mRedTeam[command.mReceiver]);
+                break;
+
+            case CommandType::TeamDeny:
+                std::cout << "Declined " << command.mSender << std::endl;
+                mRedTeam[command.mReceiver]->nbResponse++;
+                break;
+
+            case CommandType::InPosition:
+                std::cout << command.mSender << " " << command.mReceiver << " In position" << std::endl;
+                mRedTeam[command.mReceiver]->nbResponse++;
+                std::cout << mRedTeam[command.mReceiver]->nbResponse << std::endl;
+                break;
+
+            case CommandType::Assault:
+                std::cout << "Assault ordred " << command.mReceiver << std::endl;
+                mRedTeam[command.mReceiver]->setAction(Soldier::Assaulting);
+                break;
+        }
+    }
 }
 
 void World::updateCalls() {
+    /*
     // Calls for help : to modify so if unit is already helped, it doesn't enter the loop (and limit to one entity)
     for(auto & soldier : mRedTeam) {
         if(soldier->getAction() == Soldier::Calling) {
@@ -152,8 +234,58 @@ void World::updateCalls() {
             }
         }
     }
+     */
 }
 
+void World::updateTargets() {
+    // Cibles des attaquants
+    for(auto &red : mRedTeam) {
+        red->mTargetInSight = 0;
+        red->mAllyInSight = 0;
+        bool gotAssigned = false;
+        float distMin = 99999999.0;
+
+        for(auto &blue : mBlueTeam) {
+            float dist = distance(red->getPosition(), blue->getPosition());
+            if(dist < 150 and !blue->isDestroyed()) { // In sight
+                red->mTargetInSight++;
+                if(dist < distMin and dist < 100) {
+                    red->setTarget(blue);
+                    distMin = dist;
+                    gotAssigned = true;
+                }
+            }
+
+        }
+        if(!gotAssigned)
+            red->setTarget(nullptr);
+
+        for(auto &ally : mRedTeam) { // Pertinent (on sait jamais)
+            if (ally != red and distance(ally->getPosition(), red->getPosition()) < 150)
+                red->mAllyInSight++;
+        }
+        //std::cout << "Ennemies in sight : " << red->mTargetInSight << " Allies in sight : " << red->mAllyInSight << std::endl;
+        // Défenseurs : 100
+    }
+
+    // Cibles des défenseurs
+    for(auto &blue : mBlueTeam) {
+        bool gotAssigned = false;
+        float distMin = 99999999.0;
+
+        for(auto &red : mRedTeam) {
+            float dist = distance(red->getPosition(), blue->getPosition());
+            if(dist < distMin and dist < 80 and !red->isDestroyed()) {
+                blue->setTarget(red);
+                distMin = dist;
+                gotAssigned = true;
+            }
+        }
+        if(!gotAssigned)
+            blue->setTarget(nullptr);
+    }
+}
+/*
 void World::updateTargets() { // A MODIFIER, GIGA BUGGED
     bool *redHaveTarget = new bool[mRedTeam.size()];
     for(int i(0);i<mRedTeam.size();i++) redHaveTarget[i] = false;
@@ -189,7 +321,7 @@ void World::updateTargets() { // A MODIFIER, GIGA BUGGED
         }
     }
 
-}
+}*/
 
 void World::updateBonus(){
     bool entityHaveBonus = false;

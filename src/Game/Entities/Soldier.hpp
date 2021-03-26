@@ -15,6 +15,7 @@
 #include "../Astar/AstarAlgo.hpp"
 #include "../../Core/Util/Utility.hpp"
 #include "../../Core/Util/Rand.hpp"
+#include "../../Core/Commands/CommandQueue.hpp"
 #include "../Resources/ResourceIdentifiers.hpp"
 #include "../Resources/ResourceHolder.hpp"
 #include "../Map/TilesMap.hpp"
@@ -31,12 +32,17 @@ public:
         Fleeing,
         Attacking,
         Calling,
-        Helping,
+        //Helping,
+        Leading,
+        WithSquad,
+        Assaulting,
         Override
     };
 
 public:
-    Soldier(Team team, const TextureHolder& textures, const FontHolder& fonts, AstarAlgo& Astar, bool big = false);
+    Soldier(int id, Team team, const TextureHolder& textures, const FontHolder& fonts, AstarAlgo& Astar, CommandQueue& commandQueue, bool big = false);
+
+    int getId();
 
     void changeBonus(Entity::Bonus bonus);
     Entity::Bonus getBonus();
@@ -61,15 +67,19 @@ public:
 
     void setTarget(Soldier* target);
     void dropTarget();
+    void setLeader(Soldier* leader);
+    void dropLeader();
     Soldier* getTarget();
 
     void travel();
     void seekTarget();
+    void seekTarget(sf::Vector2f pos);
     void fleeTarget();
     void attackTarget();
     void roam(sf::Time dt);
-    void helpAlly(Soldier * ally);
-    void helpRequested(Soldier * ally);
+    void createTeam(int senderId);
+    //void helpAlly(Soldier * ally);
+    //void helpRequested(Soldier * ally);
 
     void remove() override;
     void init(); // Initiate mOrigin variable (for defense reference)
@@ -85,10 +95,12 @@ private:
     sf::Vector2f randomDirection(); // Helper to roam();
 
 public:
-    bool isAvailable;
+    //bool isAvailable;
 
 private:
     std::shared_ptr<AstarAlgo> mAstar;
+    CommandQueue& mCommandQueue;
+
     // Needs adding of personal stats (atk, def, per, sp)
     bool isBigBitch; // Temporary
     Entity::Bonus mBonus;
@@ -106,11 +118,22 @@ private:
     sf::Vector2f mOrigin; // Point where entity is instantiated
     float mTravelled; // Distance travelled
     int mDistance; // Distance to travel
-    sf::Clock mEntityClock,mAstarDuration;
+    sf::Clock mEntityClock, mAstarDuration;
     Action mAction;
+    bool prev;
 
-    Soldier * mTargeted;
+    Soldier * mTargeted; // Va changer en Entity
+    Soldier * mLeader;
+    int mId;
 
+public:
+    int mTargetInSight;
+    int mAllyInSight;
+
+    int nbRequested;
+    int nbResponse;
+    int mSquadSize;
+    std::vector<int> mSquadIds;
 };
 
 
