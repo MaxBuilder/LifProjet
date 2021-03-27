@@ -274,13 +274,14 @@ void World::updateBonus(){
 
 void World::updateMovement(){
     for (auto entity : mSoldiers){
+        if(entity->isDestroyed()) continue;
         sf::Vector2f tmpVeloce = entity->getVelocity();
         entity->setVelocity(entity->getVelocity()*mMap.getTile(entity->getPosition()/20.f).getMoveSpeed());
         sf::Vector2f point = (entity->getPosition()+entity->getVelocity());
 
         for (auto other : mSoldiers){
-            if (other == entity) continue;
-            if(distance(other->getPosition(), entity->getPosition())<10) {
+            if (other == entity or other->isDestroyed() ) continue;
+            if(distance(other->getPosition(), entity->getPosition())<10 ) {
                 sf::Vector2f diff = (entity->getPosition()-other->getPosition())/norm(entity->getPosition() - other->getPosition());
                 entity->setVelocity(entity->getVelocity() + diff * 0.5f);
                 // break;
