@@ -31,6 +31,7 @@ public:
 
 public:
     explicit StateStack(State::Context context);
+    ~StateStack();
 
     template<typename T>
     void registerState(States::ID stateID);

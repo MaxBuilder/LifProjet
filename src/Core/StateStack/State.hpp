@@ -34,7 +34,7 @@ public:
 
 public:
     State(StateStack& stack, Context& context);
-    ~State();
+    virtual ~State();
 
     virtual void draw() = 0;
     virtual bool update(sf::Time dt) = 0;

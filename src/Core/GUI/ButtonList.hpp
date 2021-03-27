@@ -34,8 +34,8 @@ namespace GUI {
         void nextOption();
         void previousOption();
 
-        virtual bool isSelectable() const;
-        virtual void handleEvent(const sf::Event& event);
+        bool isSelectable() const override;
+        void handleEvent(const sf::Event& event) override;
         void handleEvent(const sf::Event& event,const sf::RenderWindow& window);
 
 

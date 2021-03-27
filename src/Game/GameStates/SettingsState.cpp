@@ -142,3 +142,7 @@ bool SettingsState::handleEvent(const sf::Event& event){
     mCheckBox.handleCheckBoxEvent(event,getContext().window);
     return false;
 }
+
+SettingsState::~SettingsState() {
+
+}
