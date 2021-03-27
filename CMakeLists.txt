@@ -23,6 +23,8 @@ add_executable(LifProjet src/main.cpp
         src/Core/GUI/Button.cpp src/Core/GUI/Button.hpp
         src/Core/GUI/ButtonTexture.cpp src/Core/GUI/ButtonTexture.hpp
         src/Core/GUI/Container.cpp src/Core/GUI/Container.hpp
+        src/Core/GUI/ButtonList.cpp  src/Core/GUI/ButtonList.hpp
+        src/Core/GUI/CheckBox.cpp src/Core/GUI/CheckBox.hpp
         src/Core/GUI/ScrollingContainer.cpp src/Core/GUI/ScrollingContainer.hpp
         src/Game/GameStates/MapEditorState.cpp src/Game/GameStates/MapEditorState.hpp
         src/Game/Map/TilesMap.hpp src/Game/Map/TilesMap.cpp
@@ -33,8 +35,6 @@ add_executable(LifProjet src/main.cpp
         src/Core/Scene/SceneNode.cpp src/Core/Scene/SceneNode.hpp
         src/Game/GameStates/GameState.cpp src/Game/GameStates/GameState.hpp
         src/Core/Scene/TextNode.cpp src/Core/Scene/TextNode.hpp
-        src/Core/Gui/ButtonList.cpp  src/Core/Gui/ButtonList.hpp
-        src/Core/Gui/CheckBox.cpp src/Core/Gui/CheckBox.hpp
         src/Game/GameStates/PauseState.cpp src/Game/GameStates/PauseState.hpp
         src/Game/Map/BuildInfo.cpp src/Game/Map/BuildInfo.hpp
         src/Game/Entities/Entity.cpp src/Game/Entities/Entity.hpp

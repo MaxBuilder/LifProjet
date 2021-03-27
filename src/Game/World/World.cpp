@@ -278,6 +278,15 @@ void World::updateMovement(){
         entity->setVelocity(entity->getVelocity()*mMap.getTile(entity->getPosition()/20.f).getMoveSpeed());
         sf::Vector2f point = (entity->getPosition()+entity->getVelocity());
 
+        for (auto other : mSoldiers){
+            if (other == entity) continue;
+            if(distance(other->getPosition(), entity->getPosition())<10) {
+                sf::Vector2f diff = (entity->getPosition()-other->getPosition())/norm(entity->getPosition() - other->getPosition());
+                entity->setVelocity(entity->getVelocity() + diff * 0.5f);
+                // break;
+            }
+        }
+
         if(entity->getDirection().x > 0)
             point.x += 5.f;
         else if(entity->getDirection().x < 0)

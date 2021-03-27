@@ -117,20 +117,17 @@ void Application::updateStatistics(sf::Time dt) {
 }
 
 void Application::loadTextures() {
-    mTextures.load(Textures::None, "data/none.png");
-
     mTextures.load(Textures::MenuBackground1, "data/background/background_menu1.png");
     mTextures.load(Textures::MenuBackground2, "data/background/background_menu2.png");
     mTextures.load(Textures::MenuBackground3, "data/background/background_menu3.png");
     mTextures.load(Textures::MenuBackground4, "data/background/background_menu4.png");
     mTextures.load(Textures::EditorBackground, "data/background/mapEditorBackGround.png");
-    mTextures.load(Textures::MenuButton, "data/MenuButton.png");
-    mTextures.load(Textures::MenuTitle, "data/MenuTitle.png");
-    mTextures.load(Textures::Checkbox, "data/Checkbox.png");
-    mTextures.load(Textures::SettingsButton, "data/SettingsButton.png");
+    mTextures.load(Textures::MenuButton, "data/menuButton.png");
+    mTextures.load(Textures::MenuTitle, "data/menuTitle.png");
+    mTextures.load(Textures::Checkbox, "data/checkbox.png");
+    mTextures.load(Textures::SettingsButton, "data/settingsButton.png");
 
     mTextures.load(Textures::MapGround, "data/textureMapNew.png");
-    mTextures.load(Textures::MapBuildings, "data/textureBuild.png");
 
     mTextures.load(Textures::EditorBackButton, "data/Editor/back.png");
     mTextures.load(Textures::EditorNewButton, "data/Editor/new.png");
@@ -154,7 +151,7 @@ void Application::loadTextures() {
     mTextures.load(Textures::EditorRotateUpButton, "data/Editor/up.png");
     mTextures.load(Textures::EditorRotateRightButton, "data/Editor/right.png");
     mTextures.load(Textures::SubBackground, "data/Editor/subBackground.png");
-    mTextures.load(Textures::EntitySoldier, "data/SpritesSoldiers.png");
+    mTextures.load(Textures::EntitySoldier, "data/spritesSoldiers.png");
     mTextures.load(Textures::EntityGlow, "data/glow.png");
 }
 
