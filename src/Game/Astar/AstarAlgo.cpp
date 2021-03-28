@@ -175,7 +175,7 @@ void AstarAlgo::setNeighbour(AstarTile* knot) {
             || crossCorner(neiIndex,card)) continue;
         //pour le calcule du cout d'un
         float moveSpeed = mMap->getTile(knot->coordNoeud).getMoveSpeed();
-        dist = distance(neiIndex)*poids+static_cast<float>(knot->cout)/moveSpeed;
+        dist = distance(neiIndex)*poids+static_cast<float>(knot->cout)/(moveSpeed*2);
         if (Astar_grid[neiIndex.x][neiIndex.y].color == 'g'){
             if (dist < Astar_grid[neiIndex.x][neiIndex.y].dist ){
                 Astar_grid[neiIndex.x][neiIndex.y].dist = dist;

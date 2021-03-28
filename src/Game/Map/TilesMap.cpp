@@ -8,7 +8,7 @@
 TilesMap::TilesMap(const sf::Texture &texture, float blocSize)
 : texture(texture)
 {
-    mDrawBuildings = false;
+    mDrawEntity = false;
     mBlockSize = blocSize;
 
     mSprite.setTexture(texture);
@@ -16,7 +16,23 @@ TilesMap::TilesMap(const sf::Texture &texture, float blocSize)
     mSprite.setScale(float(mBlockSize) / mBounds, float(mBlockSize) / mBounds);
     mSprite.setOrigin(mBounds / 2.f, mBounds / 2.f);
 
-    //clear();
+}
+
+TilesMap::TilesMap(const sf::Texture &mapTexture, const sf::Texture &entitiesTexture, float blocSize){
+    mDrawEntity = true;
+    mBlockSize = blocSize;
+
+    mSprite.setTexture(mapTexture);
+    mEntitySprite.setTexture(entitiesTexture);
+
+    mBounds = 16.f;
+
+    mSprite.setScale(float(mBlockSize) / mBounds, float(mBlockSize) / mBounds);
+    mSprite.setOrigin(mBounds / 2.f, mBounds / 2.f);
+
+    mEntitySprite.setScale(mBlockSize/32, mBlockSize/32);
+    mEntitySprite.setOrigin(mBounds / 2.f, mBounds / 2.f);
+
 }
 
 void TilesMap::clear() {
@@ -26,6 +42,7 @@ void TilesMap::clear() {
         }
     }
     mBuildings.clear();
+    mEntities.clear();
 }
 
 Tile& TilesMap::getTile(int x, int y){
@@ -45,10 +62,6 @@ Tile& TilesMap::getTile(sf::Vector2i position){
 
 float TilesMap::getBlockSize() const{
     return mBlockSize;
-}
-
-void TilesMap::setDrawBuildings(bool draw) {
-    mDrawBuildings = draw;
 }
 
 void TilesMap::save(const std::string &file) const{
@@ -102,13 +115,29 @@ void TilesMap::save(const std::string &file) const{
         wf.write((char *) &(height), sizeof(int));
     }
 
+    float x,y;
+    Editor::Entity type;
+    Editor::Tool team;
+    size = mEntities.size();
+
+    wf.write((char *) &(size), sizeof(std::size_t));
+    for (const auto &e : mEntities){
+        x = e.getPosition().x;
+        y = e.getPosition().y;
+        type = e.getType();
+        team = e.getTeam();
+
+        wf.write((char *) &(x),sizeof(float));
+        wf.write((char *) &(y),sizeof(float));
+        wf.write((char *) &(type),sizeof(Editor::Entity));
+        wf.write((char *) &(team),sizeof(Editor::Tool));
+    }
+
     wf.close();
 
 }
 
 void TilesMap::load(const std::string &file) {
-
-    mBuildings.clear();
     clear();
     std::ifstream rf(file, std::ios::out | std::ios::binary);
     if(!rf) {
@@ -152,9 +181,30 @@ void TilesMap::load(const std::string &file) {
 
         sf::IntRect rect1 ={left, top, width, height};
 
-        addBuildings(BuildInfo(buildID, rect1));
+        mBuildings.emplace_back(BuildInfo(buildID, rect1));
 
     }
+
+    std::size_t nb_entities = 0;
+    float x,y;
+    Editor::Entity type;
+    Editor::Tool team;
+
+    rf.read((char *) &(nb_entities), sizeof(std::size_t));
+    for (std::size_t i(0); i<nb_entities; i++){
+
+        rf.read((char *) &(x), sizeof(float));
+        rf.read((char *) &(y), sizeof(float));
+        rf.read((char *) &(type),sizeof(Editor::Entity));
+        rf.read((char *) &(team),sizeof(Editor::Tool));
+
+        sf::Vector2f pos(x,y);
+        mEntities.emplace_back(EntityInfo(pos,type,team));
+
+    }
+
+
+
 
     rf.close();
 
@@ -165,12 +215,25 @@ std::pair<std::vector<BuildInfo>::iterator,
     return std::make_pair(mBuildings.begin(),mBuildings.end());
 }
 
+std::pair<std::vector<EntityInfo>::iterator,
+        std::vector<EntityInfo>::iterator> TilesMap::getEntitiesIt(){
+    return std::make_pair(mEntities.begin(),mEntities.end());
+}
+
 void TilesMap::addBuildings(BuildInfo build){
     mBuildings.push_back(build);
 }
 
 void TilesMap::supBuildings(std::vector<BuildInfo>::iterator it){
     mBuildings.erase(it);
+}
+
+void TilesMap::addEntity(EntityInfo entity){
+    mEntities.push_back(entity);
+}
+
+void TilesMap::supEntity(std::vector<EntityInfo>::iterator it){
+    mEntities.erase(it);
 }
 
 void TilesMap::draw(sf::RenderTarget& target, sf::RenderStates states) const{
@@ -192,7 +255,31 @@ void TilesMap::draw(sf::RenderTarget& target, sf::RenderStates states) const{
                 sprite.setTextureRect(sf::IntRect(mBounds*t.getTop().x, mBounds*t.getTop().y, mBounds, mBounds));
                 target.draw(sprite, states);
             }
+        }
+    }
 
+    if(mDrawEntity){
+        sprite = mEntitySprite;
+
+        for( const auto &Entity : mEntities){
+            sf::IntRect rect = {0,0,32,32};
+            if (Entity.getTeam() == Editor::Tool::redTeam) rect.top = 32;
+
+            switch (Entity.getType()){
+                case Editor::Entity::soldier :
+                    rect.left = 0;
+                    break;
+                case Editor::Entity::archer :
+                    rect.left = 32;
+                    break;
+                case Editor::Entity::tank :
+                    rect.left = 64;
+                    break;
+            }
+
+            sprite.setTextureRect(rect);
+            sprite.setPosition(Entity.getPosition()*mBlockSize+sf::Vector2f(5,5));
+            target.draw(sprite, states);
         }
     }
 }

@@ -36,6 +36,10 @@ namespace Textures {
         ToolBigBrush,
         ToolFill,
         ToolEraser,
+        EditorBlueTeam,
+        EditorRedTeam,
+        EditorSoldier,
+        EditorAllSoldiers,
         EditorNewButton,
         EditorLoadButton,
         EditorSaveButton,
@@ -78,7 +82,10 @@ namespace Sounds {
 
 namespace Editor {
     enum Tool {
-        standard, square3, circle5, fill, eraser
+        standard, square3, fill, eraser, blueTeam, redTeam
+    };
+    enum Entity{
+        soldier, archer, tank
     };
 }
 

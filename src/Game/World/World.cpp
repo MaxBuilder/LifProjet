@@ -30,113 +30,22 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
     }
 
     // Adding entities (to move in separate function) and to serialize
-    /*
-    std::unique_ptr<Soldier> soldier1b = std::make_unique<Soldier>(Soldier::BlueTeam, mTextures, mFonts, mAstar, mCommandQueue, true);
-    soldier1b->setPosition(300, 40);
-    mBlueTeam.push_back(soldier1b.get());
-    mSoldiers.push_back(soldier1b.get());
-    mSceneLayers[Front]->attachChild(std::move(soldier1b));
 
-*/
-    std::unique_ptr<Soldier> soldier1r = std::make_unique<Soldier>(0, Soldier::RedTeam, mTextures, mFonts, mAstar, mCommandQueue);
-    soldier1r->setPosition(60, 40);
-    mRedTeam.push_back(soldier1r.get());
-    mSoldiers.push_back(soldier1r.get());
-    mSceneLayers[Front]->attachChild(std::move(soldier1r));
+    auto e = mMap.getEntitiesIt();
+    int idr = 0;
+    int idb = 0;
+    int id;
+    for (; e.first != e.second ; e.first++){
 
-    std::unique_ptr<Soldier> soldier2r = std::make_unique<Soldier>(1, Soldier::RedTeam, mTextures, mFonts, mAstar, mCommandQueue);
-    soldier2r->setPosition(60, 120);
-    mRedTeam.push_back(soldier2r.get());
-    mSoldiers.push_back(soldier2r.get());
-    mSceneLayers[Front]->attachChild(std::move(soldier2r));
-
-    std::unique_ptr<Soldier> soldier3r = std::make_unique<Soldier>(2, Soldier::RedTeam, mTextures, mFonts, mAstar, mCommandQueue);
-    soldier3r->setPosition(60, 240);
-    mRedTeam.push_back(soldier3r.get());
-    mSoldiers.push_back(soldier3r.get());
-    mSceneLayers[Front]->attachChild(std::move(soldier3r));
-/*
-    std::unique_ptr<Soldier> soldier4r = std::make_unique<Soldier>(3, Soldier::RedTeam, mTextures, mFonts, mAstar, mCommandQueue);
-    soldier4r->setPosition(300, 60);
-    mRedTeam.push_back(soldier4r.get());
-    mSoldiers.push_back(soldier4r.get());
-    mSceneLayers[Front]->attachChild(std::move(soldier4r));
-*/
-
-
-    std::unique_ptr<Soldier> soldier1b = std::make_unique<Soldier>(0, Soldier::BlueTeam, mTextures, mFonts, mAstar, mCommandQueue);
-    soldier1b->setPosition(1111, 20);
-    mBlueTeam.push_back(soldier1b.get());
-    mSoldiers.push_back(soldier1b.get());
-    mSceneLayers[Front]->attachChild(std::move(soldier1b));
-
-    std::unique_ptr<Soldier> soldier2b = std::make_unique<Soldier>(1, Soldier::BlueTeam, mTextures, mFonts, mAstar, mCommandQueue);
-    soldier2b->setPosition(1100, 70);
-    mBlueTeam.push_back(soldier2b.get());
-    mSoldiers.push_back(soldier2b.get());
-    mSceneLayers[Front]->attachChild(std::move(soldier2b));
-
-    std::unique_ptr<Soldier> soldier3b = std::make_unique<Soldier>(2, Soldier::BlueTeam, mTextures, mFonts, mAstar, mCommandQueue);
-    soldier3b->setPosition(1130, 120);
-    mBlueTeam.push_back(soldier3b.get());
-    mSoldiers.push_back(soldier3b.get());
-    mSceneLayers[Front]->attachChild(std::move(soldier3b));
-
-    std::unique_ptr<Soldier> soldier4b = std::make_unique<Soldier>(3, Soldier::BlueTeam, mTextures, mFonts, mAstar, mCommandQueue);
-    soldier4b->setPosition(1190, 150);
-    mBlueTeam.push_back(soldier4b.get());
-    mSoldiers.push_back(soldier4b.get());
-    mSceneLayers[Front]->attachChild(std::move(soldier4b));
-
-    std::unique_ptr<Soldier> soldier5b = std::make_unique<Soldier>(4, Soldier::BlueTeam, mTextures, mFonts, mAstar, mCommandQueue);
-    soldier5b->setPosition(1230, 200);
-    mBlueTeam.push_back(soldier5b.get());
-    mSoldiers.push_back(soldier5b.get());
-    mSceneLayers[Front]->attachChild(std::move(soldier5b));
-
-    std::unique_ptr<Soldier> soldier6b = std::make_unique<Soldier>(5, Soldier::BlueTeam, mTextures, mFonts, mAstar, mCommandQueue);
-    soldier6b->setPosition(1120, 150);
-    mBlueTeam.push_back(soldier6b.get());
-    mSoldiers.push_back(soldier6b.get());
-    mSceneLayers[Front]->attachChild(std::move(soldier6b));
-/*
-    std::unique_ptr<Soldier> soldier1r = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts,mAstar);
-    soldier1r->setPosition(88, 551);
-    mRedTeam.push_back(soldier1r.get());
-    mSoldiers.push_back(soldier1r.get());
-    mSceneLayers[Front]->attachChild(std::move(soldier1r));
-
-
-    std::unique_ptr<Soldier> soldier2r = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts,mAstar);
-    soldier2r->setPosition(169, 553);
-    mRedTeam.push_back(soldier2r.get());
-    mSoldiers.push_back(soldier2r.get());
-    mSceneLayers[Front]->attachChild(std::move(soldier2r));
-
-    std::unique_ptr<Soldier> soldier3r = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts,mAstar);
-    soldier3r->setPosition(235, 564);
-    mRedTeam.push_back(soldier3r.get());
-    mSoldiers.push_back(soldier3r.get());
-    mSceneLayers[Front]->attachChild(std::move(soldier3r));
-
-    std::unique_ptr<Soldier> soldier4r = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts,mAstar);
-    soldier4r->setPosition(340, 564);
-    mRedTeam.push_back(soldier4r.get());
-    mSoldiers.push_back(soldier4r.get());
-    mSceneLayers[Front]->attachChild(std::move(soldier4r));
-
-    std::unique_ptr<Soldier> soldier5r = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts,mAstar);
-    soldier5r->setPosition(391, 600);
-    mRedTeam.push_back(soldier5r.get());
-    mSoldiers.push_back(soldier5r.get());
-    mSceneLayers[Front]->attachChild(std::move(soldier5r));
-
-    std::unique_ptr<Soldier> soldier6r = std::make_unique<Soldier>(Soldier::RedTeam, mTextures, mFonts,mAstar);
-    soldier6r->setPosition(407, 590);
-    mRedTeam.push_back(soldier6r.get());
-    mSoldiers.push_back(soldier6r.get());
-    mSceneLayers[Front]->attachChild(std::move(soldier6r));
-*/
+        if(e.first->getTeam() == Editor::Tool::blueTeam){
+            id = idb;
+            idb++;
+        }else{
+            id = idr;
+            idr++;
+        }
+        createEntity(e.first->getPosition(), e.first->getTeam(), e.first->getType(), id);
+    }
 
     for(auto &soldier : mSoldiers) // Init of defense positions
         soldier->init();
@@ -147,6 +56,30 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
         mBuildings.push_back(build.get());
         mSceneLayers[Back]->attachChild(std::move(build));
     }
+}
+
+void World::createEntity(sf::Vector2f position, Editor::Tool team, Editor::Entity type, int id){
+
+    Entity::Team mteam;
+    if(team == Editor::Tool::blueTeam)
+        mteam = Entity::BlueTeam;
+    else
+        mteam = Entity::RedTeam;
+
+    if(type != Editor::Entity::soldier)
+        return;
+
+    std::unique_ptr<Soldier> soldier = std::make_unique<Soldier>(id, mteam, mTextures, mFonts, mAstar, mCommandQueue);
+    soldier->setPosition(position*mMap.getBlockSize());
+
+    if(mteam ==  Entity::RedTeam)
+        mRedTeam.push_back(soldier.get());
+    else
+        mBlueTeam.push_back(soldier.get());
+
+    mSoldiers.push_back(soldier.get());
+    mSceneLayers[Front]->attachChild(std::move(soldier));
+
 }
 
 void World::draw() {

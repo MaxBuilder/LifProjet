@@ -6,13 +6,12 @@
 
 MapEditorState::MapEditorState(StateStack &stack, Context context)
         : State(stack, context)
-        , map(context.textures.get(Textures::MapGround), 16.f)
+        , map(context.textures.get(Textures::MapGround), context.textures.get(Textures::EditorAllSoldiers), 16.f)
         , mPaletteBar(sf::IntRect(1130,100,150,550),4)
         , subBackground(getContext().textures.get(Textures::SubBackground))
 {
-
+    mBuild_selection = Buildings::None;
     background.setTexture(context.textures.get(Textures::EditorBackground));
-    map.setDrawBuildings(true);
     map.setPosition(92,90);
 
     mapPath.setFont(context.fonts.get(Fonts::Main));
@@ -21,7 +20,7 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
 
     rotate = 0.f;
     MapEditorState::mMapPath = "Unsaved";
-    ground_selection = sf::Vector2i (0,0);
+    ground_selection = sf::Vector2i (1,0);
     lastGround = sf::Vector2i (0,0);
     lastTileUpdate = {-1,-1};
 
@@ -78,6 +77,18 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     });
     mEditBar.pack(redoButton);
 
+    // Soldier selection :
+
+    auto soldier = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorSoldier);
+    soldier->setToggle(true);
+    soldier->setPosition(495, 10);
+    soldier->activate();
+    soldier->setCallback([this] () {
+        mSoldier = Editor::Entity::soldier;
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mSoldierBar.pack(soldier);
+
     // Tool bar buttons :
 
     auto smallBrushButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::ToolSmallBrush);
@@ -99,17 +110,8 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     });
     mToolBar.pack(mediumBrushButton);
 
-    auto bigBrushButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::ToolBigBrush);
-    bigBrushButton->setPosition(16, 230);
-    bigBrushButton->setToggle(true);
-    bigBrushButton->setCallback([this](){
-        tool = Editor::Tool::circle5;
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mToolBar.pack(bigBrushButton);
-
     auto eraserButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::ToolEraser);
-    eraserButton->setPosition(16, 296);
+    eraserButton->setPosition(16, 230);
     eraserButton->setToggle(true);
     eraserButton->setCallback([this](){
         tool = Editor::Tool::eraser;
@@ -118,13 +120,31 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     mToolBar.pack(eraserButton);
 
     auto fillButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::ToolFill);
-    fillButton->setPosition(16, 362);
+    fillButton->setPosition(16, 296);
     fillButton->setToggle(true);
     fillButton->setCallback([this](){
         tool = Editor::Tool::fill;
         getContext().sounds.play(Sounds::Menu);
     });
     mToolBar.pack(fillButton);
+
+    auto blue_team = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorBlueTeam);
+    blue_team->setToggle(true);
+    blue_team->setPosition(16, 362);
+    blue_team->setCallback([this] () {
+        tool = Editor::Tool::blueTeam;
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mToolBar.pack(blue_team);
+
+    auto red_team = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorRedTeam);
+    red_team->setToggle(true);
+    red_team->setPosition(16, 428);
+    red_team->setCallback([this] () {
+        tool = Editor::Tool::redTeam;
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mToolBar.pack(red_team);
 
     // Rotation bar buttons :
 
@@ -209,16 +229,6 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     });
     mSubMenu.pack(ret);
 
-    /*
-    auto rotateAleaButton = std::make_shared<GUI::Button>(context, 130, 70, Textures::MapEditorButton);
-    rotateAleaButton->setPosition(1536-130-30,1026-70.f/2 );
-    rotateAleaButton->setText("0-90-180°");
-    rotateAleaButton->setToggle(true);
-    rotateAleaButton->setCallback([this](){
-        rotate = -1;
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mTextureRotation.pack(rotateAleaButton);*/
 }
 
 void MapEditorState::draw() {
@@ -227,6 +237,7 @@ void MapEditorState::draw() {
     window.draw(background);
     window.draw(map);
     window.draw(mEditBar);
+    window.draw(mSoldierBar);
     window.draw(mToolBar);
     window.draw(mPaletteBar);
     window.draw(mRotationBar);
@@ -261,6 +272,7 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
     }
 
     mEditBar.handleEvent(event, getContext().window);
+    mSoldierBar.handleEvent(event, getContext().window);
     mToolBar.handleEvent(event, getContext().window);
     mPaletteBar.handleEvent(event, getContext().window);
     mRotationBar.handleEvent(event, getContext().window);
@@ -285,7 +297,7 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
                 else if (event.mouseButton.button == sf::Mouse::Right)
                     supressBuildings(pos);
             }
-            else if (sf::Mouse::isButtonPressed(sf::Mouse::Left) and ground_selection != sf::Vector2i(0,0)) {
+            else if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 
                 if (lastTileUpdate == pos and lastGround == ground_selection)
                     return false;
@@ -304,16 +316,19 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
                         paintSquare3(pos);
                         break;
 
-                    case Editor::Tool::circle5 :
-                        paintCircle5(pos);
-                        break;
-
                     case Editor::Tool::fill :
                         paintFill(pos);
                         break;
 
                     case Editor::Tool::eraser :
-                        map.getTile(pos.x,pos.y).paint(sf::Vector2i (0,0),0);
+                        if(not supressSoldier(pos))
+                            map.getTile(pos.x,pos.y).paint(sf::Vector2i (0,0),0);
+                        break;
+
+                    case Editor::Tool::blueTeam :
+                    case Editor::Tool::redTeam :
+                        createSoldier(pos);
+                        break;
 
                     default :
                         break;
@@ -386,10 +401,6 @@ void MapEditorState::paintSquare3(sf::Vector2i pos){
     if (pos.y < 35)
         map.getTile(pos.x,pos.y+1).paint(ground_selection,rotate);
 
-}
-
-void MapEditorState::paintCircle5(sf::Vector2i pos){
-    map.getTile(pos.x,pos.y).paint(ground_selection,rotate);
 }
 
 void MapEditorState::paintFill(sf::Vector2i pos){
@@ -487,4 +498,33 @@ void MapEditorState::supressBuildings(sf::Vector2i pos) {
             break;
         }
     }
+}
+
+void MapEditorState::createSoldier(sf::Vector2i pos){
+    std::cout<<"enter Create\n";
+    if(not map.getTile(pos).isCrossable()) return;
+
+    auto posf = static_cast<sf::Vector2f>(pos);
+    auto other = map.getEntitiesIt();
+
+    for(;other.first != other.second; other.first++)
+        if(other.first->getPosition() == posf) return;
+
+    map.addEntity(EntityInfo(posf,mSoldier,tool));
+    std::cout<<"exit Create\n";
+}
+
+bool MapEditorState::supressSoldier(sf::Vector2i pos){
+    bool ret = false;
+    auto posf = static_cast<sf::Vector2f>(pos);
+    auto other = map.getEntitiesIt();
+
+    for(;other.first != other.second; other.first++)
+        if(other.first->getPosition() == posf){
+            map.supEntity(other.first);
+            ret = true;
+            break;
+        }
+
+    return ret;
 }

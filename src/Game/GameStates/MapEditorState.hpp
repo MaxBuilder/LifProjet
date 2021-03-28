@@ -26,11 +26,12 @@ public:
     virtual bool handleEvent(const sf::Event& event);
 
     void paintSquare3( sf::Vector2i coordinate);
-    void paintCircle5( sf::Vector2i coordinate);
     void paintFill( sf::Vector2i coordinate);
 
     void recPaintFill(sf::Vector2i coordinate, bool* isPaint);
 
+    void createSoldier(sf::Vector2i pos);
+    bool supressSoldier(sf::Vector2i pos);
     void createBuildings(sf::Vector2i pos);
     void supressBuildings(sf::Vector2i pos);
 
@@ -46,6 +47,7 @@ private :
     bool subMenu;
     bool saveload; // true : save | false : load
 
+    GUI::Container mSoldierBar;
     GUI::Container mEditBar;
     GUI::Container mToolBar;
     GUI::Container mRotationBar;
@@ -61,6 +63,7 @@ private :
     sf::Vector2i lastGround;
     sf::Vector2i lastTileUpdate;
     Editor::Tool tool;
+    Editor::Entity mSoldier;
 
 };
 

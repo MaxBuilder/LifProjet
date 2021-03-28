@@ -135,6 +135,10 @@ void Application::loadTextures() {
     mTextures.load(Textures::EditorSaveButton, "data/Editor/save.png");
     mTextures.load(Textures::EditorUndoButton, "data/Editor/undo.png");
     mTextures.load(Textures::EditorRedoButton, "data/Editor/redo.png");
+    mTextures.load(Textures::EditorBlueTeam, "data/Editor/blue_team.png");
+    mTextures.load(Textures::EditorRedTeam, "data/Editor/red_team.png");
+    mTextures.load(Textures::EditorSoldier, "data/Editor/soldier.png");
+    mTextures.load(Textures::EditorAllSoldiers, "data/Editor/allSoldiers.png");
     mTextures.load(Textures::ToolSmallBrush, "data/Editor/small.png");
     mTextures.load(Textures::ToolMediumBrush, "data/Editor/medium.png");
     mTextures.load(Textures::ToolBigBrush, "data/Editor/big.png");

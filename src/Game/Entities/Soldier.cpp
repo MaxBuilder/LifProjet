@@ -139,6 +139,12 @@ void Soldier::updateAttack(sf::Time dt) {
         setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
     }
     else if(mAction == Attacking) {
+
+        if(mTargeted == nullptr){
+            mAction = Moving;
+            return;
+        }
+
         if(distance(getPosition(), mTargeted->getPosition()) >= 30) {
             mAction = Seeking;
             return;
@@ -227,8 +233,10 @@ void Soldier::updateDefense(sf::Time dt) {
         setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
     }
     else if(mAction == Attacking) {
-        if(mTargeted == nullptr)
+        if(mTargeted == nullptr){
             mAction = Moving;
+            return;
+        }
 
         if(distance(getPosition(), mTargeted->getPosition()) >= 30) {
             mAction = Seeking;

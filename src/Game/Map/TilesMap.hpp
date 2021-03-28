@@ -7,6 +7,7 @@
 
 #include "Tile.hpp"
 #include "BuildInfo.hpp"
+#include "EntityInfo.hpp"
 #include "../../Game/Resources/ResourceIdentifiers.hpp"
 
 #include "SFML/Graphics/Drawable.hpp"
@@ -24,20 +25,26 @@ class TilesMap : public sf::Drawable, public sf::Transformable{
 
 public:
     TilesMap(const sf::Texture &texture, float blocSize);
+    TilesMap(const sf::Texture &mapTexture, const sf::Texture &entitiesTexture, float blocSize);
 
     void clear();
     void save(const std::string &file) const;
     void load(const std::string &file);
-    void setDrawBuildings(bool draw);
 
     Tile& getTile(int x, int y);
     Tile& getTile(sf::Vector2f position);
     Tile& getTile(sf::Vector2i position);
+
     std::pair<std::vector<BuildInfo>::iterator,
             std::vector<BuildInfo>::iterator> getBuildingsIt();
+    std::pair<std::vector<EntityInfo>::iterator,
+            std::vector<EntityInfo>::iterator> getEntitiesIt();
 
     void addBuildings(BuildInfo build);
     void supBuildings(std::vector<BuildInfo>::iterator it);
+
+    void addEntity(EntityInfo entity);
+    void supEntity(std::vector<EntityInfo>::iterator it);
 
     float getBlockSize() const;
 
@@ -46,14 +53,17 @@ public:
 private:
 
     Tile grid_id[64][36];
-    std::vector<BuildInfo> mBuildings;
     sf::Texture texture;
     sf::Sprite mSprite;
+    sf::Sprite mEntitySprite;
+
+    std::vector<BuildInfo> mBuildings;
+    std::vector<EntityInfo> mEntities;
 
     float mBlockSize;
     float mBounds;
 
-    bool mDrawBuildings;
+    bool mDrawEntity;
 
 };
 
