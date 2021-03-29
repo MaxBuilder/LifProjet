@@ -19,6 +19,8 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
     //mMap.load("data/Maps/demo2.map");
     //mMap.load("data/Maps/demo3.map");
 
+    std::cout<<"map loaded\n";
+
     mAstar.setMap(mMap);
 
     // Scene building based on 2 plans (back and front)
@@ -52,6 +54,7 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
 
     auto builds = mMap.getBuildingsIt();
     for (;builds.first != builds.second;builds.first++){
+        std::cout<<builds.first->getID()<<" pos : "<<builds.first->getPosition().left<<"/"<<builds.first->getPosition().top<<std::endl;
         std::unique_ptr<Building> build = std::make_unique<Building>(builds.first->getID(),(builds.first->getPosition()));
         mBuildings.push_back(build.get());
         mSceneLayers[Back]->attachChild(std::move(build));
@@ -95,7 +98,16 @@ void World::update(sf::Time dt) {
     updateBonus();
     onCommand();
 
-    //std::cout << mRedTeam[0]->getAction() << " " << mRedTeam[1]->getAction() << " " << mRedTeam[2]->getAction() << std::endl;
+    // test ça marche
+    /*
+    for (auto *e : mSoldiers){
+        if (e->isDestroyed() and not e->down) {
+            mSceneLayers[Back]->attachChild(mSceneLayers[Front]->detachChild(static_cast<SceneNode *>(e)));
+            e->down = true;
+            std::cout<<"enter change scene\n";
+        }
+    }
+    */
 }
 
 void World::onCommand() {
@@ -155,15 +167,28 @@ void World::updateTargets() {
             if(dist < 150 and !blue->isDestroyed()) { // In sight
                 red->mTargetInSight++;
                 if(dist < distMin and dist < 100) {
-                    red->setTarget(blue);
+                    red->setTarget(static_cast<Entity*>(blue));
                     distMin = dist;
                     gotAssigned = true;
                 }
             }
-
         }
-        if(!gotAssigned)
-            red->setTarget(nullptr);
+
+        if(!gotAssigned) {
+            distMin = 99999999.0;
+            for (auto &build : mBuildings){
+                float dist = distance(red->getPosition(), build->getPosition());
+                if(dist < 150 and !build->isDestroyed()) { // In sight
+                    if(dist < distMin and dist < 100) {
+                        red->setTarget(static_cast<Entity*>(build));
+                        distMin = dist;
+                        gotAssigned = true;
+                    }
+                }
+            }
+            if (!gotAssigned)
+                red->setTarget(nullptr);
+        }
 
         for(auto &ally : mRedTeam) { // Pertinent (on sait jamais)
             if (ally != red and distance(ally->getPosition(), red->getPosition()) < 150)
@@ -179,7 +204,7 @@ void World::updateTargets() {
         for(auto &red : mRedTeam) {
             float dist = distance(red->getPosition(), blue->getPosition());
             if(dist < distMin and dist < 80 and !red->isDestroyed()) {
-                blue->setTarget(red);
+                blue->setTarget(static_cast<Entity*>(red));
                 distMin = dist;
                 gotAssigned = true;
             }
@@ -190,7 +215,7 @@ void World::updateTargets() {
 }
 
 void World::updateBonus(){
-    bool entityHaveBonus = false;
+    bool entityHaveBonus;
     for (auto &entity : mSoldiers){
         entityHaveBonus = false;
         for (const auto &build : mBuildings ){
@@ -216,28 +241,28 @@ void World::updateMovement(){
             if (other == entity or other->isDestroyed() ) continue;
             if(distance(other->getPosition(), entity->getPosition())<10 ) {
                 sf::Vector2f diff = (entity->getPosition()-other->getPosition())/norm(entity->getPosition() - other->getPosition());
-                entity->setVelocity(entity->getVelocity() + diff * 0.5f);
+                entity->setVelocity(entity->getVelocity() + diff * 0.1f);
                 // break;
             }
         }
 
-        if(entity->getDirection().x > 0)
+        if(entity->getVelocity().x > 0)
             point.x += 5.f;
-        else if(entity->getDirection().x < 0)
+        else if(entity->getVelocity().x < 0)
             point.x -= 5.f;
 
-        if(entity->getDirection().y > 0)
+        if(entity->getVelocity().y > 0)
             point.y += 10.f;
 
         sf::Vector2i pos = sf::Vector2i(point.x/20, point.y/20);
-        if (mMap.getTile(pos.x,pos.y).isCrossable() and inMap(point))
+        if (mMap.getTile(pos).isCrossable() and inMap(point))
             entity->travel();
         else{
-            sf::Vector2i pos1 = sf::Vector2i(point.x/20, (point.y-entity->getVelocity().y)/20);
-            sf::Vector2i pos2 = sf::Vector2i((point.x-entity->getVelocity().x)/20, point.y/20);
-            if (mMap.getTile(pos1.x,pos1.y).isCrossable() and inMap(point))
+            sf::Vector2i pos1 = sf::Vector2i(point.x/20, entity->getPosition().y/20);
+            sf::Vector2i pos2 = sf::Vector2i((entity->getPosition().x)/20, point.y/20);
+            if (mMap.getTile(pos1).isCrossable() and inMap(point))
                 entity->move(entity->getVelocity().x,0);
-            else if(mMap.getTile(pos2.x,pos2.y).isCrossable() and inMap(point))
+            else if(mMap.getTile(pos2).isCrossable() and inMap(point))
                 entity->move(0,entity->getVelocity().y);
         }
         entity->setVelocity(tmpVeloce);
@@ -260,7 +285,7 @@ void World::trackPrev() {
     trackedReset();
     mTracked--;
     if(mTracked < 0)
-        mTracked = mSoldiers.size() - 1;
+        mTracked = static_cast<int>(mSoldiers.size()) - 1;
     mSoldiers[mTracked]->setAction(Soldier::Action::Override);
 }
 

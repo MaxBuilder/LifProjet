@@ -203,9 +203,6 @@ void TilesMap::load(const std::string &file) {
 
     }
 
-
-
-
     rf.close();
 
 }

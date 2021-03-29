@@ -24,7 +24,7 @@ public:
     explicit SceneNode();
 
     void attachChild(Ptr child);
-    Ptr detachChild(const SceneNode& node);
+    Ptr detachChild(const SceneNode* node);
 
     void update(sf::Time dt);
 

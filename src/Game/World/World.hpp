@@ -40,12 +40,12 @@ public:
     void updateBonus(); // Checks if entities are in range of buildings
 
     //aide
-    bool inMap(sf::Vector2f dpl);
+    static bool inMap(sf::Vector2f dpl);
 
 private:
     enum Layer {
-        Front,
         Back,
+        Front,
         LayerCount
     };
 

@@ -24,10 +24,13 @@ public:
         Village
     };
 
+    bool down;
+
     explicit Entity(int hitPoints, Team team);
 
     Team getTeam();
     int getHitPoints() const;
+    float getBorder() const;
     void heal(int points);
     void damage(int points);
     void destroy();
@@ -38,6 +41,7 @@ protected:
     virtual void updateCurrent(sf::Time dt);
 
 protected:
+    float mBorder;
     int mHitPoints;
     Team mTeam;
 

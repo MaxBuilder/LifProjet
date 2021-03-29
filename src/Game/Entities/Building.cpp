@@ -13,6 +13,7 @@ Building::Building(Buildings::ID ID, sf::IntRect position) :
 
     switch (ID){
         case Buildings::BlueCastle :
+            mBorder = 40;
             mHitPoints = 500;
             mTeam = Entity::BlueTeam;
             mRange = 150;
@@ -20,6 +21,7 @@ Building::Building(Buildings::ID ID, sf::IntRect position) :
             break;
 
         case Buildings::RedCastle :
+            mBorder = 40;
             mHitPoints = 500;
             mTeam = Entity::RedTeam;
             mRange = 150;
@@ -27,6 +29,7 @@ Building::Building(Buildings::ID ID, sf::IntRect position) :
             break;
 
         case Buildings::BlueVillage :
+            mBorder = 27;
             mHitPoints = 300;
             mTeam = Entity::BlueTeam;
             mRange = 100;
@@ -34,6 +37,7 @@ Building::Building(Buildings::ID ID, sf::IntRect position) :
             break;
 
         case Buildings::RedVillage :
+            mBorder = 27;
             mHitPoints = 300;
             mTeam = Entity::RedTeam;
             mRange = 100;
@@ -41,6 +45,7 @@ Building::Building(Buildings::ID ID, sf::IntRect position) :
             break;
 
         case Buildings::BlueBarrier :
+            mBorder = 15;
             mHitPoints = 200;
             mTeam = Entity::BlueTeam;
             mRange = 0;
@@ -48,6 +53,7 @@ Building::Building(Buildings::ID ID, sf::IntRect position) :
             break;
 
         case Buildings::RedBarrier :
+            mBorder = 15;
             mHitPoints = 200;
             mTeam = Entity::RedTeam;
             mRange = 0;
@@ -81,5 +87,6 @@ Entity::Bonus Building::getBonusFlag() const{
 }
 
 void Building::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const {
-    target.draw(zone, states);
+    if (not isDestroyed())
+        target.draw(zone, states);
 }

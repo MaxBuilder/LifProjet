@@ -8,7 +8,9 @@
 
 Entity::Entity(int hitPoints, Team team)
 : mHitPoints(hitPoints),
-  mTeam(team)
+  mTeam(team),
+  mBorder(0),
+  down(false)
 {}
 
 void Entity::heal(int points) {
@@ -33,6 +35,10 @@ bool Entity::isDestroyed() const {
 
 int Entity::getHitPoints() const {
     return mHitPoints;
+}
+
+float Entity::getBorder() const{
+    return mBorder;
 }
 
 Entity::Team Entity::getTeam() {

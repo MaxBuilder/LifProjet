@@ -64,11 +64,11 @@ public:
     sf::Vector2f getVelocity();
     void setVelocity(sf::Vector2f dpl);
 
-    void setTarget(Soldier* target);
+    void setTarget(Entity* target);
     void dropTarget();
     void setLeader(Soldier* leader);
     void dropLeader();
-    Soldier* getTarget();
+    Entity* getTarget();
 
     void travel();
     void seekTarget();
@@ -113,7 +113,7 @@ private:
     Action mAction;
     bool prev;
 
-    Soldier * mTargeted; // Va changer en Entity
+    Entity * mTargeted;
     Soldier * mLeader;
     int mId;
 
