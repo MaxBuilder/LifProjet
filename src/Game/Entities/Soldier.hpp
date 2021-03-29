@@ -124,6 +124,7 @@ public:
     int nbRequested;
     int nbResponse;
     int mSquadSize;
+    int nbInPlace;
     std::vector<int> mSquadIds;
 };
 

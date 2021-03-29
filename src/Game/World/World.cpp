@@ -15,12 +15,11 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
 , mMap(textures.get(Textures::MapGround), 20.f)
 , mCommandQueue()
 {
+    // Map initialization
     mMap.load("data/Maps/demo1.map");
-    //mMap.load("data/Maps/demo2.map");
-    //mMap.load("data/Maps/demo3.map");
-
     std::cout<<"map loaded\n";
 
+    // Setting up pathfinding
     mAstar.setMap(mMap);
 
     // Scene building based on 2 plans (back and front)
@@ -31,27 +30,29 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
         mSceneGraph.attachChild(std::move(layer));
     }
 
-    // Adding entities (to move in separate function) and to serialize
-
+    // Adding entities to the scene
     auto e = mMap.getEntitiesIt();
     int idr = 0;
     int idb = 0;
     int id;
-    for (; e.first != e.second ; e.first++){
 
-        if(e.first->getTeam() == Editor::Tool::blueTeam){
+    for (; e.first != e.second ; e.first++) {
+        if(e.first->getTeam() == Editor::Tool::blueTeam) {
             id = idb;
             idb++;
-        }else{
+        }
+        else {
             id = idr;
             idr++;
         }
         createEntity(e.first->getPosition(), e.first->getTeam(), e.first->getType(), id);
     }
 
-    for(auto &soldier : mSoldiers) // Init of defense positions
+    // Initialisation of defender (to expand)
+    for(auto &soldier : mSoldiers)
         soldier->init();
 
+    // Adding buildings to the scene
     auto builds = mMap.getBuildingsIt();
     for (;builds.first != builds.second;builds.first++){
         std::cout<<builds.first->getID()<<" pos : "<<builds.first->getPosition().left<<"/"<<builds.first->getPosition().top<<std::endl;
@@ -59,30 +60,6 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
         mBuildings.push_back(build.get());
         mSceneLayers[Back]->attachChild(std::move(build));
     }
-}
-
-void World::createEntity(sf::Vector2f position, Editor::Tool team, Editor::Entity type, int id){
-
-    Entity::Team mteam;
-    if(team == Editor::Tool::blueTeam)
-        mteam = Entity::BlueTeam;
-    else
-        mteam = Entity::RedTeam;
-
-    if(type != Editor::Entity::soldier)
-        return;
-
-    std::unique_ptr<Soldier> soldier = std::make_unique<Soldier>(id, mteam, mTextures, mFonts, mAstar, mCommandQueue);
-    soldier->setPosition(position*mMap.getBlockSize());
-
-    if(mteam ==  Entity::RedTeam)
-        mRedTeam.push_back(soldier.get());
-    else
-        mBlueTeam.push_back(soldier.get());
-
-    mSoldiers.push_back(soldier.get());
-    mSceneLayers[Front]->attachChild(std::move(soldier));
-
 }
 
 void World::draw() {
@@ -141,9 +118,9 @@ void World::onCommand() {
                 break;
 
             case CommandType::InPosition:
-                std::cout << command.mSender << " " << command.mReceiver << " In position" << std::endl;
-                mRedTeam[command.mReceiver]->nbResponse++;
-                std::cout << mRedTeam[command.mReceiver]->nbResponse << std::endl;
+                std::cout << command.mSender << " " << command.mReceiver << " In position";
+                mRedTeam[command.mReceiver]->nbInPlace++;
+                std::cout << " nb in position : " << mRedTeam[command.mReceiver]->nbInPlace << std::endl;
                 break;
 
             case CommandType::Assault:
@@ -155,6 +132,7 @@ void World::onCommand() {
 }
 
 void World::updateTargets() {
+
     // Cibles des attaquants
     for(auto &red : mRedTeam) {
         red->mTargetInSight = 0;
@@ -230,7 +208,7 @@ void World::updateBonus(){
     }
 }
 
-void World::updateMovement(){
+void World::updateMovement() {
     for (auto entity : mSoldiers){
         if(entity->isDestroyed()) continue;
         sf::Vector2f tmpVeloce = entity->getVelocity();
@@ -267,6 +245,29 @@ void World::updateMovement(){
         }
         entity->setVelocity(tmpVeloce);
     }
+}
+
+void World::createEntity(sf::Vector2f position, Editor::Tool team, Editor::Entity type, int id){
+    Entity::Team mteam;
+    if(team == Editor::Tool::blueTeam)
+        mteam = Entity::BlueTeam;
+    else
+        mteam = Entity::RedTeam;
+
+    if(type != Editor::Entity::soldier)
+        return;
+
+    std::unique_ptr<Soldier> soldier = std::make_unique<Soldier>(id, mteam, mTextures, mFonts, mAstar, mCommandQueue);
+    soldier->setPosition(position*mMap.getBlockSize());
+
+    if(mteam ==  Entity::RedTeam)
+        mRedTeam.push_back(soldier.get());
+    else
+        mBlueTeam.push_back(soldier.get());
+
+    mSoldiers.push_back(soldier.get());
+    mSceneLayers[Front]->attachChild(std::move(soldier));
+
 }
 
 bool World::inMap(sf::Vector2f dpl){

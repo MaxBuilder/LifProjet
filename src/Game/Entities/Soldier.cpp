@@ -30,6 +30,7 @@ Soldier::Soldier(int id, Team team, const TextureHolder& textures, const FontHol
 , nbResponse(0)
 , prev(false)
 , mSquadSize(0)
+, nbInPlace(0)
 {
     mBorder = 10;
     mAstar = std::make_shared<AstarAlgo>(Astar);
@@ -174,11 +175,14 @@ void Soldier::updateAttack(sf::Time dt) {
         mVelocity = sf::Vector2f(0, 0);
     }
     else if(mAction == Leading) {
-        if(nbResponse == mSquadSize) {
+        if(nbInPlace == mSquadSize) {
             // Attack
             for (auto id : mSquadIds)
                 mCommandQueue.push(Command(true, mId, id, CommandType::Assault));
             setAction(Assaulting);
+            mSquadSize = 0;
+            nbInPlace = 0;
+            mSquadIds.clear();
         }
     }
     else if(mAction == WithSquad) {
@@ -195,11 +199,15 @@ void Soldier::updateAttack(sf::Time dt) {
         }
     }
     else if(mAction == Assaulting) {
+        prev = false;
         if(mTargeted == nullptr) {
             setDirection(1, 0);
             setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
         }
-        else setAction(Seeking);
+        else {
+            setAction(Seeking);
+            mLeader = nullptr;
+        }
     }
 }
 
