@@ -66,7 +66,7 @@ void AstarAlgo::setPoids(int p) {
 
 
 
-//l et w les coordonnées de self et lt et wt les coordonnées de la target
+//self les coordonnées de l'entité et target les coordonnées de la target
 void AstarAlgo::initVoronoi(sf::Vector2f self, sf::Vector2f target){
     int lSelf = self.x;
     int wSelf = self.y;
@@ -173,9 +173,9 @@ void AstarAlgo::setNeighbour(AstarTile* knot) {
         neiIndex = getNeighbourIndex(knot->coordNoeud.x,knot->coordNoeud.y,card);
         if (!indIsValid(neiIndex) || (Astar_grid[neiIndex.x][neiIndex.y].color == 'b') || !mMap->getTile(neiIndex.x,neiIndex.y).isCrossable()
             || crossCorner(neiIndex,card)) continue;
-        //pour le calcule du cout d'un
+        //pour le calcule du cout d'une case
         float moveSpeed = mMap->getTile(knot->coordNoeud).getMoveSpeed();
-        dist = distance(neiIndex)*poids+static_cast<float>(knot->cout)/(moveSpeed*2);
+        dist = (distance(neiIndex)*poids+static_cast<float>(knot->cout))/(moveSpeed*1000);
         if (Astar_grid[neiIndex.x][neiIndex.y].color == 'g'){
             if (dist < Astar_grid[neiIndex.x][neiIndex.y].dist ){
                 Astar_grid[neiIndex.x][neiIndex.y].dist = dist;
@@ -198,7 +198,7 @@ sf::Vector2i AstarAlgo::getNeighbourIndex(int l,int w,cardinal c)const {
     sf::Vector2i coordNei;
 
     switch (c) {
-        case cardinal::South : l++; if((unsigned int)l >= length){ l = -1; w = -1;} break;
+        case cardinal::South : l++; if(l > length){ l = -1; w = -1;} break;
         case cardinal::North : l--; if(l < 0 ) {l = -1; w = -1;} break;
         case cardinal::Est   : w++; if ( w > width){ l = -1; w = -1;} break;
         case cardinal::West  : w--; if (w < 0 ) {l = -1; w = -1;} break;
@@ -248,9 +248,13 @@ bool AstarAlgo::crossCorner(sf::Vector2i ind, cardinal card) {
         default : // pour les cas Nort Sud Est West retourne false pour ne pas skip
             return false;
     }
+    if(indIsValid(coord) && indIsValid(coord2)) {
+        if (!mMap->getTile(coord.x,coord.y).isCrossable() || !mMap->getTile(coord2.x,coord2.y).isCrossable()) {
+            return true;
+        }
+    }
 
-    if (!mMap->getTile(coord.x,coord.y).isCrossable() || !mMap->getTile(coord2.x,coord2.y).isCrossable())
-        return true;
+
     else return false;
 }
 

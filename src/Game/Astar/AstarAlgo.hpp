@@ -53,9 +53,8 @@ class AstarAlgo : public sf::Transformable{
         sf::Vector2i getObjectif();
 
         /** Execute la recherche et retourne le chemin complet de l'entité à la target
-         *
-         * @param lSelf et wSelf les coordonnées de l'entitée
-         * @param ltarget et wTarget les coordonnées de la cible
+         * @param self les coordonnées de l'entitée
+         * @param target les coordonnées de la cible
          * @param path le Vector<sf::Vector2f> contenant le chemin jusqu'a la cible
          */
         void getPath(sf::Vector2f self, sf::Vector2f target, std::vector<sf::Vector2f> &path,int poid = 2);
@@ -65,7 +64,7 @@ class AstarAlgo : public sf::Transformable{
 
 
         void setPoids(int p);
-        //l et w les coordonnées de self et lt et wt les coordonnées de la target
+        //self les coordonnées de l'entité et target les coordonnées de la target
         void initVoronoi(sf::Vector2f self, sf::Vector2f target);
         bool Voronoi();
 
