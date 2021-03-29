@@ -166,7 +166,10 @@ void Soldier::updateAttack(sf::Time dt) {
     }
     else if(mAction == Calling) {
         if(nbRequested != 0 and nbResponse == nbRequested) {
-            setAction(Leading);
+            if(mSquadSize == 0)
+                setAction(Assaulting);
+            else
+                setAction(Leading);
             nbResponse = 0;
             nbRequested = 0;
         }
