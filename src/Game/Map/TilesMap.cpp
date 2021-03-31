@@ -50,12 +50,16 @@ Tile& TilesMap::getTile(int x, int y){
     return grid_id[x][y];
 }
 Tile& TilesMap::getTile(sf::Vector2f position){
+    if(not((position.x >= 0 and position.y >= 0 and position.x < 64 and position.y < 36 )))
+        std::cout<<position.x<<" "<<position.y<<std::endl;
     assert(position.x >= 0 and position.y >= 0 and position.x < 64 and position.y < 36 );
     auto pos = static_cast<sf::Vector2i>(position);
     return grid_id[pos.x][pos.y];
 }
 
 Tile& TilesMap::getTile(sf::Vector2i position){
+    if(not((position.x >= 0 and position.y >= 0 and position.x < 64 and position.y < 36 )))
+        std::cout<<position.x<<" "<<position.y<<std::endl;
     assert(position.x >= 0 and position.y >= 0 and position.x < 64 and position.y < 36 );
     return grid_id[position.x][position.y];
 }

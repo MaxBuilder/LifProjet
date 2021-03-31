@@ -8,7 +8,7 @@
 
 // A faire : ajouter les tables de données pour les entités
 Soldier::Soldier(int id, Team team, const TextureHolder& textures, const FontHolder& fonts, AstarAlgo& Astar, CommandQueue& commandQueue)
-: Entity(100,team)
+: Entity(100,team, commandQueue)
 , mId(id)
 , mVelocity(0,0)
 , mDirection(sf::Vector2f(0, 0))
@@ -22,7 +22,6 @@ Soldier::Soldier(int id, Team team, const TextureHolder& textures, const FontHol
 , mTargeted(nullptr)
 , mAction(Moving)
 , mTravelled(0.f)
-, mCommandQueue(commandQueue)
 , mTargetInSight(0)
 , mAllyInSight(0)
 , mLeader(nullptr)
@@ -115,7 +114,8 @@ void Soldier::updateAttack(sf::Time dt) {
         if(mTargeted == nullptr) {
             if(mPath.empty()) {
                 mAstarDuration.restart();
-                mAstar->getPath(getPosition(),sf::Vector2f(57,5),mPath,2) ;
+                Editor::Tool team = mTeam == Entity::BlueTeam ? Editor::Tool::blueTeam : Editor::Tool::redTeam;
+                mAstar->getPath(getPosition(),sf::Vector2f(57,6),mPath, 2) ;
                 std::cout << "Astar Duration :" << mAstarDuration.getElapsedTime().asMicroseconds() << std::endl;
             }
             sf::Vector2f &target = mPath.back();
@@ -339,7 +339,7 @@ Soldier::Action Soldier::getAction() {
 }
 
 void Soldier::setAction(Action act) {
-    std::string name[9] = {"None","Moving","Seeking","Fleeing","Attacking","Calling","Leading","WithSquad","Assaulting"};
+    std::string name[10] = {"None","Moving","Seeking","Fleeing","Attacking","Calling","Leading","WithSquad","Assaulting","controlling"};
     std::string str = mTeam ==Entity::BlueTeam ? "Blue" : "Red";
     std::cout<<"id : "<<mId<<str<<" action :"<<name[mAction]<<" -> "<<name[act]<<std::endl;
     mAction = act;

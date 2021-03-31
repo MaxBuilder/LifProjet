@@ -61,9 +61,12 @@ void Tile::paint(const sf::Vector2i &id,const float &rotation ){
     }else if( id.y < 26 ){ // ponts, contour forets
         topMoveSpeed = 0.85f;
         topCrossable = true;
-    }else{ // batiment + montagnes + foret
-        topMoveSpeed = 0.2f;
+    }else if (id.y < 46){ // batiment + montagnes + foret
+        topMoveSpeed = 0.6f;
         topCrossable = false;
+    }else{
+        topMoveSpeed = 0.6f;
+        topCrossable = true;
     }
 
 }
@@ -89,8 +92,28 @@ float Tile::getMoveSpeed() const{
 }
 
 bool Tile::isCrossable() const{
-    if(mHaveTop)
+    if(mHaveTop) {
+
+        if (top.x == 2 and (top.y == 38 or top.y == 39))
+            return true;
+        if (top.x == 2 and (top.y == 36 or top.y == 37))
+            return true;
+
         return topCrossable;
+    }
+    else
+        return crossable;
+}
+
+bool Tile::isCrossable(Editor::Tool team) const{
+    if(mHaveTop) {
+        if (top.x == 2 and (top.y == 38 or top.y == 39) and team == Editor::Tool::blueTeam)
+            return true;
+        if (top.x == 2 and (top.y == 36 or top.y == 37) and team == Editor::Tool::redTeam)
+            return true;
+
+        return topCrossable;
+    }
     else
         return crossable;
 }

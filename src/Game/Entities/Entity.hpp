@@ -6,6 +6,7 @@
 #define LIFPROJET_ENTITY_HPP
 
 #include "../../Core/Scene/SceneNode.hpp"
+#include "../../Core/Commands/CommandQueue.hpp"
 
 
 class Entity : public SceneNode {
@@ -26,7 +27,7 @@ public:
 
     bool down;
 
-    explicit Entity(int hitPoints, Team team);
+    explicit Entity(int hitPoints, Team team, CommandQueue &commandQueue);
 
     Team getTeam();
     int getHitPoints() const;
@@ -44,6 +45,7 @@ protected:
     float mBorder;
     int mHitPoints;
     Team mTeam;
+    CommandQueue& mCommandQueue;
 
 };
 

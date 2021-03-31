@@ -5,11 +5,12 @@
 #include "Building.hpp"
 #include <iostream>
 
-Building::Building(Buildings::ID ID, sf::IntRect position) :
- Entity(0,Entity::Team::BlueTeam){
+Building::Building(Buildings::ID ID, sf::IntRect position,  CommandQueue& commandQueue) :
+   Entity(0,Entity::Team::BlueTeam, commandQueue)
+ {
 
-    mPosition = {position.left*20,position.top*20,position.width*20,position.height*20};
-    setPosition(mPosition.left+mPosition.width/2,mPosition.top+mPosition.width/2);
+    mPosition = position;
+    setPosition(float(mPosition.left)*20+float(mPosition.width)*20/2,float(mPosition.top)*20+float(mPosition.width)*20/2);
 
     switch (ID){
         case Buildings::BlueCastle :
@@ -18,6 +19,7 @@ Building::Building(Buildings::ID ID, sf::IntRect position) :
             mTeam = Entity::BlueTeam;
             mRange = 150;
             mBonusFlag = Entity::Castle;
+            mTextureId.y = 53; mTextureId.x = 0;
             break;
 
         case Buildings::RedCastle :
@@ -26,6 +28,7 @@ Building::Building(Buildings::ID ID, sf::IntRect position) :
             mTeam = Entity::RedTeam;
             mRange = 150;
             mBonusFlag = Entity::Castle;
+            mTextureId.y = 50; mTextureId.x = 0;
             break;
 
         case Buildings::BlueVillage :
@@ -34,6 +37,7 @@ Building::Building(Buildings::ID ID, sf::IntRect position) :
             mTeam = Entity::BlueTeam;
             mRange = 100;
             mBonusFlag = Entity::Village;
+            mTextureId.y = 48; mTextureId.x = 0;
             break;
 
         case Buildings::RedVillage :
@@ -42,6 +46,7 @@ Building::Building(Buildings::ID ID, sf::IntRect position) :
             mTeam = Entity::RedTeam;
             mRange = 100;
             mBonusFlag = Entity::Village;
+            mTextureId.y = 46; mTextureId.x = 0;
             break;
 
         case Buildings::BlueBarrier :
@@ -50,6 +55,7 @@ Building::Building(Buildings::ID ID, sf::IntRect position) :
             mTeam = Entity::BlueTeam;
             mRange = 0;
             mBonusFlag = Entity::None;
+            mTextureId.y = 49; mTextureId.x = 2;
             break;
 
         case Buildings::RedBarrier :
@@ -58,6 +64,7 @@ Building::Building(Buildings::ID ID, sf::IntRect position) :
             mTeam = Entity::RedTeam;
             mRange = 0;
             mBonusFlag = Entity::None;
+            mTextureId.y = 47; mTextureId.x = 2;
             break;
 
         default:
@@ -89,4 +96,20 @@ Entity::Bonus Building::getBonusFlag() const{
 void Building::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const {
     if (not isDestroyed())
         target.draw(zone, states);
+}
+
+sf::Vector2i Building::getOnMapPosition() const{
+    return sf::Vector2i(mPosition.left,mPosition.top);
+}
+
+sf::Vector2i Building::getOnMapSize() const{
+    return sf::Vector2i(mPosition.width,mPosition.height);
+}
+
+sf::Vector2i Building::getMapId() const{
+    return mTextureId;
+}
+
+void Building::updateCurrent(){
+
 }

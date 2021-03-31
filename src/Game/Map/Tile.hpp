@@ -20,6 +20,7 @@ public:
     float getMoveSpeed() const;
     float getRotation() const;
     bool isCrossable() const;
+    bool isCrossable(Editor::Tool) const;
 
     void paint(const sf::Vector2i &id,const float &rotation);
     void setRotation(const float &rotation);

@@ -127,7 +127,7 @@ void Application::loadTextures() {
     mTextures.load(Textures::Checkbox, "data/checkbox.png");
     mTextures.load(Textures::SettingsButton, "data/settingsButton.png");
 
-    mTextures.load(Textures::MapGround, "data/textureMapNew.png");
+    mTextures.load(Textures::MapGround, "data/texturesMap.png");
 
     mTextures.load(Textures::EditorBackButton, "data/Editor/back.png");
     mTextures.load(Textures::EditorNewButton, "data/Editor/new.png");

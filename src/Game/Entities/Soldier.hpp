@@ -15,7 +15,6 @@
 #include "../Astar/AstarAlgo.hpp"
 #include "../../Core/Util/Utility.hpp"
 #include "../../Core/Util/Rand.hpp"
-#include "../../Core/Commands/CommandQueue.hpp"
 #include "../Resources/ResourceIdentifiers.hpp"
 #include "../Resources/ResourceHolder.hpp"
 #include "../Map/TilesMap.hpp"
@@ -90,7 +89,6 @@ private:
 
 private:
     std::shared_ptr<AstarAlgo> mAstar;
-    CommandQueue& mCommandQueue;
 
     // Needs adding of personal stats (atk, def, per, sp)
 

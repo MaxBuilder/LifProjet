@@ -38,9 +38,11 @@ public:
     void updateMovement(); // Updates entity relative to the environment
     void updateTargets(); // Updates entity target from perspective
     void updateBonus(); // Checks if entities are in range of buildings
+    void updateDeath(); // check if an entity is dead
 
     //aide
     static bool inMap(sf::Vector2f dpl);
+    void recBarrier(sf::Vector2i);
 
 private:
     enum Layer {

@@ -12,6 +12,7 @@ namespace CommandType {
         TeamDeny,
         InPosition,
         Assault,
+        Dead,
     };
 }
 

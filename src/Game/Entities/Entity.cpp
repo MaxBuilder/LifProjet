@@ -6,11 +6,12 @@
 
 #include <iostream>
 
-Entity::Entity(int hitPoints, Team team)
+Entity::Entity(int hitPoints, Team team,CommandQueue &commandQueue)
 : mHitPoints(hitPoints),
   mTeam(team),
   mBorder(0),
-  down(false)
+  down(false),
+  mCommandQueue(commandQueue)
 {}
 
 void Entity::heal(int points) {
@@ -19,6 +20,8 @@ void Entity::heal(int points) {
 
 void Entity::damage(int points) {
     mHitPoints -= points;
+    if (mHitPoints <= 0)
+        mCommandQueue.push(Command(mTeam,0,0,CommandType::Dead));
 }
 
 void Entity::destroy() {

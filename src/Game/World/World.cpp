@@ -17,6 +17,7 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
 {
     // Map initialization
     mMap.load("data/Maps/demo1.map");
+    // mMap.load("data/Maps/demo2.map");
     std::cout<<"map loaded\n";
 
     // Setting up pathfinding
@@ -56,7 +57,7 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
     auto builds = mMap.getBuildingsIt();
     for (;builds.first != builds.second;builds.first++){
         std::cout<<builds.first->getID()<<" pos : "<<builds.first->getPosition().left<<"/"<<builds.first->getPosition().top<<std::endl;
-        std::unique_ptr<Building> build = std::make_unique<Building>(builds.first->getID(),(builds.first->getPosition()));
+        std::unique_ptr<Building> build = std::make_unique<Building>(builds.first->getID(),builds.first->getPosition(),mCommandQueue);
         mBuildings.push_back(build.get());
         mSceneLayers[Back]->attachChild(std::move(build));
     }
@@ -74,17 +75,6 @@ void World::update(sf::Time dt) {
     updateTargets();
     updateBonus();
     onCommand();
-
-    // test ça marche
-    /*
-    for (auto *e : mSoldiers){
-        if (e->isDestroyed() and not e->down) {
-            mSceneLayers[Back]->attachChild(mSceneLayers[Front]->detachChild(static_cast<SceneNode *>(e)));
-            e->down = true;
-            std::cout<<"enter change scene\n";
-        }
-    }
-    */
 }
 
 void World::onCommand() {
@@ -127,6 +117,11 @@ void World::onCommand() {
                 std::cout << "Assault ordred " << command.mReceiver << std::endl;
                 mRedTeam[command.mReceiver]->setAction(Soldier::Assaulting);
                 break;
+
+            case CommandType::Dead :
+                std::cout<<"Entity died\n";
+                updateDeath();
+                break;
         }
     }
 }
@@ -156,7 +151,7 @@ void World::updateTargets() {
             distMin = 99999999.0;
             for (auto &build : mBuildings){
                 float dist = distance(red->getPosition(), build->getPosition());
-                if(dist < 150 and !build->isDestroyed()) { // In sight
+                if(dist < 150 and !build->isDestroyed() and build->getTeam() == Entity::BlueTeam) { // In sight
                     if(dist < distMin and dist < 100) {
                         red->setTarget(static_cast<Entity*>(build));
                         distMin = dist;
@@ -195,9 +190,15 @@ void World::updateTargets() {
 void World::updateBonus(){
     bool entityHaveBonus;
     for (auto &entity : mSoldiers){
+
+        if (entity->isDestroyed()){
+            entity->changeBonus(Entity::None);
+            continue;
+        }
+
         entityHaveBonus = false;
         for (const auto &build : mBuildings ){
-            if(entity->getTeam() != build->getTeam()) continue;
+            if(entity->getTeam() != build->getTeam() or build->isDestroyed()) continue;
             if (distance(build->getPosition(),entity->getPosition()) <= build->getRange()) {
                 entity->changeBonus(build->getBonusFlag());
                 entityHaveBonus = true;
@@ -211,6 +212,11 @@ void World::updateBonus(){
 void World::updateMovement() {
     for (auto entity : mSoldiers){
         if(entity->isDestroyed()) continue;
+        Editor::Tool team;
+        if(entity->getTeam() == Entity::BlueTeam)
+            team = Editor::Tool::blueTeam;
+        else
+            team = Editor::Tool::redTeam;
         sf::Vector2f tmpVeloce = entity->getVelocity();
         entity->setVelocity(entity->getVelocity()*mMap.getTile(entity->getPosition()/20.f).getMoveSpeed());
         sf::Vector2f point = (entity->getPosition()+entity->getVelocity());
@@ -233,17 +239,68 @@ void World::updateMovement() {
             point.y += 10.f;
 
         sf::Vector2i pos = sf::Vector2i(point.x/20, point.y/20);
-        if (mMap.getTile(pos).isCrossable() and inMap(point))
+        if (mMap.getTile(pos).isCrossable(team) and inMap(point))
             entity->travel();
         else{
             sf::Vector2i pos1 = sf::Vector2i(point.x/20, entity->getPosition().y/20);
             sf::Vector2i pos2 = sf::Vector2i((entity->getPosition().x)/20, point.y/20);
-            if (mMap.getTile(pos1).isCrossable() and inMap(point))
+            if (mMap.getTile(pos1).isCrossable(team) and inMap(point))
                 entity->move(entity->getVelocity().x,0);
-            else if(mMap.getTile(pos2).isCrossable() and inMap(point))
+            else if(mMap.getTile(pos2).isCrossable(team) and inMap(point))
                 entity->move(0,entity->getVelocity().y);
         }
         entity->setVelocity(tmpVeloce);
+    }
+}
+
+void World::updateDeath(){
+
+    for (auto *e : mSoldiers){
+        if (e->isDestroyed() and not e->down) {
+            mSceneLayers[Back]->attachChild(mSceneLayers[Front]->detachChild(static_cast<SceneNode *>(e)));
+            e->down = true;
+            std::cout<<"enter change scene\n";
+        }
+    }
+
+    for( auto &build : mBuildings)
+        if(build->isDestroyed() and not build->down and build->getBonusFlag() == Entity::None)
+            recBarrier(build->getOnMapPosition());
+
+    for (auto &build : mBuildings){
+        if(build->isDestroyed() and not build->down){
+            auto size = build->getOnMapSize();
+            auto pos = build->getOnMapPosition();
+            auto id  = build->getMapId();
+            for (int y(0); y < size.y;y++){
+                for (int x(0); x <size.x;x++){
+                    mMap.getTile(x+pos.x,y+pos.y).paint(sf::Vector2i(id.x+x,id.y+y),0);
+                }
+            }
+            build->down = true;
+        }
+    }
+}
+
+void World::recBarrier(sf::Vector2i position){
+    sf::Vector2i dir[4]={position+sf::Vector2i(0,1),
+                         position+sf::Vector2i(1,0),
+                         position+sf::Vector2i(0,-1),
+                         position+sf::Vector2i(-1,0)};
+    for (auto & i : dir){
+        if (i.x < 0 or i.y < 0 or i.x >= 64 or i.y >= 36 ) continue;
+        if(mMap.getTile(i).getTop().x == 2
+        and mMap.getTile(i).getTop().y >= 36
+        and mMap.getTile(i).getTop().y <= 39)
+            for(auto &b :mBuildings){
+                if (b->getOnMapPosition() == i
+                and not b->isDestroyed()
+                and b->getBonusFlag() == Entity::None){
+                    b->destroy();
+                    recBarrier(i);
+                    break;
+                }
+            }
     }
 }
 

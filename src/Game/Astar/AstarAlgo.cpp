@@ -103,7 +103,7 @@ bool AstarAlgo::Voronoi(){
 
 
 
-void AstarAlgo::getPath(sf::Vector2f self, sf::Vector2f target, std::vector<sf::Vector2f> &path, int poid) {
+void AstarAlgo::getPath(sf::Vector2f self, sf::Vector2f target, std::vector<sf::Vector2f> &path,int poid) {
     setPoids(poid);
     self = self/mMap->getBlockSize();
     //potencielement utile si on fait un algo pour chercher sur la map où est l'objectif
