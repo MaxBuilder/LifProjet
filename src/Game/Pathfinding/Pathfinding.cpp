@@ -14,8 +14,7 @@ void Pathfinding::afficherGraph() {
 }
 
 
-Pathfinding::Pathfinding() {
-}
+Pathfinding::Pathfinding() = default;
 
 
 void Pathfinding::setMap(TilesMap &map){
@@ -30,9 +29,7 @@ void Pathfinding::setMap(TilesMap &map){
     }
 }
 
-Pathfinding::~Pathfinding(){
-
-}
+Pathfinding::~Pathfinding() = default;
 
 void Pathfinding::resetGraph() {
     for (unsigned int x(0); x < length; x++) {

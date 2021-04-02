@@ -22,8 +22,8 @@ enum cardinal{South, North, Est, West, NorthEst, NorthWest, SouthEst, SouthWest}
 class Pathfinding {
 
     private :
-        unsigned int length;
-        unsigned int width;
+        unsigned int length{};
+        unsigned int width{};
         PathfindingTile Astar_grid[64][36];
         std::shared_ptr<TilesMap> mMap;
 
@@ -31,7 +31,7 @@ class Pathfinding {
         std::vector<PathfindingTile*>knots;
 
         //fonction à intégret dans le projet
-        int poids;
+        int poids{};
         //a rename probablement ou supprimer
         sf::Vector2i objectif;
 

@@ -17,10 +17,9 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
 {
     // Map initialization
     mMap.load("data/Maps/demo1.map");
-    // mMap.load("data/Maps/demo2.map");
-    std::cout<<"map loaded\n";
+    std::cout << "Map loaded" << std::endl;
 
-    // Setting up pathfinding
+    // Setting up mPathfinding
     mAstar.setMap(mMap);
 
     // Scene building based on 2 plans (back and front)

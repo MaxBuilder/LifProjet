@@ -88,7 +88,7 @@ private:
     sf::Vector2f randomDirection(); // Helper to roam();
 
 private:
-    std::shared_ptr<Pathfinding> mAstar;
+    Pathfinding& mPathfinding;
 
     // Needs adding of personal stats (atk, def, per, sp)
 

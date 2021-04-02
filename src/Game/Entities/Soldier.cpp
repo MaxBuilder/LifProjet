@@ -30,10 +30,11 @@ Soldier::Soldier(int id, Team team, const TextureHolder& textures, const FontHol
 , prev(false)
 , mSquadSize(0)
 , nbInPlace(0)
+, mPathfinding(Astar)
 {
     mBorder = 10;
-    mAstar = std::make_shared<Pathfinding>(Astar);
     float blockSize = 20.f; // à modifier pour rendre dynamique
+
     // Fix origin and texture selection
     mGlow.setTextureRect(sf::IntRect(0,0,32,32));
     mTeam == BlueTeam ? mSpriteRect= sf::IntRect(32,0,32,32) : mSpriteRect = sf::IntRect(32,32,32,32);
@@ -43,6 +44,7 @@ Soldier::Soldier(int id, Team team, const TextureHolder& textures, const FontHol
     setOrigin(blockSize/2.f,blockSize/2.f);
     mSpriteTime = sf::milliseconds(0);
 
+    // Font init
     mLife.setFont(fonts.get(Fonts::Main));
     mLife.setFillColor(sf::Color::Black);
     mLife.setCharacterSize(10u);
@@ -115,7 +117,7 @@ void Soldier::updateAttack(sf::Time dt) {
             if(mPath.empty()) {
                 mAstarDuration.restart();
                 Editor::Tool team = mTeam == Entity::BlueTeam ? Editor::Tool::BlueTeam : Editor::Tool::RedTeam;
-                mAstar->getPath(getPosition(),sf::Vector2f(57,6),mPath, 2) ;
+                mPathfinding.getPath(getPosition(), sf::Vector2f(57, 6), mPath, 2) ;
                 std::cout << "Pathfinding Duration :" << mAstarDuration.getElapsedTime().asMicroseconds() << std::endl;
             }
             sf::Vector2f &target = mPath.back();
