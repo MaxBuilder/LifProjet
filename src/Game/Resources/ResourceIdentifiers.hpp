@@ -82,10 +82,11 @@ namespace Sounds {
 
 namespace Editor {
     enum Tool {
-        standard, square3, fill, eraser, blueTeam, redTeam
+        Standard, Square3, Fill, Eraser, BlueTeam, RedTeam
     };
+
     enum Entity{
-        soldier, archer, tank
+        Soldier, Archer, Tank
     };
 }
 

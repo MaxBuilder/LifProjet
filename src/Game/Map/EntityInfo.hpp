@@ -12,9 +12,9 @@ class EntityInfo {
 public:
     EntityInfo(sf::Vector2f position, Editor::Entity type, Editor::Tool team);
 
-    [[nodiscard]] sf::Vector2f getPosition() const;
-    [[nodiscard]] Editor::Entity getType() const;
-    [[nodiscard]] Editor::Tool getTeam() const;
+    sf::Vector2f getPosition() const;
+    Editor::Entity getType() const;
+    Editor::Tool getTeam() const;
 
 private:
     sf::Vector2f mPosition;

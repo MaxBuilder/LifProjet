@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-// A faire : ajouter les tables de données pour les entités
+// Archer faire : ajouter les tables de données pour les entités
 Soldier::Soldier(int id, Team team, const TextureHolder& textures, const FontHolder& fonts, AstarAlgo& Astar, CommandQueue& commandQueue)
 : Entity(100,team, commandQueue)
 , mId(id)
@@ -114,7 +114,7 @@ void Soldier::updateAttack(sf::Time dt) {
         if(mTargeted == nullptr) {
             if(mPath.empty()) {
                 mAstarDuration.restart();
-                Editor::Tool team = mTeam == Entity::BlueTeam ? Editor::Tool::blueTeam : Editor::Tool::redTeam;
+                Editor::Tool team = mTeam == Entity::BlueTeam ? Editor::Tool::BlueTeam : Editor::Tool::RedTeam;
                 mAstar->getPath(getPosition(),sf::Vector2f(57,6),mPath, 2) ;
                 std::cout << "Astar Duration :" << mAstarDuration.getElapsedTime().asMicroseconds() << std::endl;
             }

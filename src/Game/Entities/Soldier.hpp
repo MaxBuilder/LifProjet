@@ -26,7 +26,7 @@ public:
 
     enum Action {
         None,
-        Moving, // Attackers -> go to objective | Defenders -> roam defended zone
+        Moving, // Attackers -> go to objective | Defenders -> roam defended mZone
         Seeking,
         Fleeing,
         Attacking,

@@ -30,7 +30,7 @@ private:
 
     float mRange;
     Entity::Bonus mBonusFlag;
-    sf::CircleShape zone;
+    sf::CircleShape mZone;
     sf::IntRect mPosition;
     sf::Vector2i mTextureId;
 };

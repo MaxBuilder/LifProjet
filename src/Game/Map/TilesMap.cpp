@@ -264,16 +264,16 @@ void TilesMap::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 
         for( const auto &Entity : mEntities){
             sf::IntRect rect = {0,0,32,32};
-            if (Entity.getTeam() == Editor::Tool::redTeam) rect.top = 32;
+            if (Entity.getTeam() == Editor::Tool::RedTeam) rect.top = 32;
 
             switch (Entity.getType()){
-                case Editor::Entity::soldier :
+                case Editor::Entity::Soldier :
                     rect.left = 0;
                     break;
-                case Editor::Entity::archer :
+                case Editor::Entity::Archer :
                     rect.left = 32;
                     break;
-                case Editor::Entity::tank :
+                case Editor::Entity::Tank :
                     rect.left = 64;
                     break;
             }

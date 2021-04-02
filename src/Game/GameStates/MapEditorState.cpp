@@ -24,7 +24,7 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     lastGround = sf::Vector2i (0,0);
     lastTileUpdate = {-1,-1};
 
-    tool = Editor::Tool::standard;
+    tool = Editor::Tool::Standard;
 
     // Edit buttons :
 
@@ -84,7 +84,7 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     soldier->setPosition(495, 10);
     soldier->activate();
     soldier->setCallback([this] () {
-        mSoldier = Editor::Entity::soldier;
+        mSoldier = Editor::Entity::Soldier;
         getContext().sounds.play(Sounds::Menu);
     });
     mSoldierBar.pack(soldier);
@@ -96,7 +96,7 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     smallBrushButton->setToggle(true);
     smallBrushButton->activate();
     smallBrushButton->setCallback([this](){
-        tool = Editor::Tool::standard;
+        tool = Editor::Tool::Standard;
         getContext().sounds.play(Sounds::Menu);
     });
     mToolBar.pack(smallBrushButton);
@@ -105,7 +105,7 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     mediumBrushButton->setPosition(16, 164);
     mediumBrushButton->setToggle(true);
     mediumBrushButton->setCallback([this](){
-        tool = Editor::Tool::square3;
+        tool = Editor::Tool::Square3;
         getContext().sounds.play(Sounds::Menu);
     });
     mToolBar.pack(mediumBrushButton);
@@ -114,7 +114,7 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     eraserButton->setPosition(16, 230);
     eraserButton->setToggle(true);
     eraserButton->setCallback([this](){
-        tool = Editor::Tool::eraser;
+        tool = Editor::Tool::Eraser;
         getContext().sounds.play(Sounds::Menu);
     });
     mToolBar.pack(eraserButton);
@@ -123,7 +123,7 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     fillButton->setPosition(16, 296);
     fillButton->setToggle(true);
     fillButton->setCallback([this](){
-        tool = Editor::Tool::fill;
+        tool = Editor::Tool::Fill;
         getContext().sounds.play(Sounds::Menu);
     });
     mToolBar.pack(fillButton);
@@ -132,7 +132,7 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     blue_team->setToggle(true);
     blue_team->setPosition(16, 362);
     blue_team->setCallback([this] () {
-        tool = Editor::Tool::blueTeam;
+        tool = Editor::Tool::BlueTeam;
         getContext().sounds.play(Sounds::Menu);
     });
     mToolBar.pack(blue_team);
@@ -141,7 +141,7 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     red_team->setToggle(true);
     red_team->setPosition(16, 428);
     red_team->setCallback([this] () {
-        tool = Editor::Tool::redTeam;
+        tool = Editor::Tool::RedTeam;
         getContext().sounds.play(Sounds::Menu);
     });
     mToolBar.pack(red_team);
@@ -308,25 +308,25 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
 
                 switch (tool) {
 
-                    case Editor::Tool::standard :
+                    case Editor::Tool::Standard :
                         map.getTile(pos.x,pos.y).paint(ground_selection,rotate);
                         break;
 
-                    case Editor::Tool::square3 :
+                    case Editor::Tool::Square3 :
                         paintSquare3(pos);
                         break;
 
-                    case Editor::Tool::fill :
+                    case Editor::Tool::Fill :
                         paintFill(pos);
                         break;
 
-                    case Editor::Tool::eraser :
+                    case Editor::Tool::Eraser :
                         if(not supressSoldier(pos))
                             map.getTile(pos.x,pos.y).paint(sf::Vector2i (0,0),0);
                         break;
 
-                    case Editor::Tool::blueTeam :
-                    case Editor::Tool::redTeam :
+                    case Editor::Tool::BlueTeam :
+                    case Editor::Tool::RedTeam :
                         createSoldier(pos);
                         break;
 

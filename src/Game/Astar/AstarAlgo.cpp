@@ -254,8 +254,7 @@ bool AstarAlgo::crossCorner(sf::Vector2i ind, cardinal card) {
         }
     }
 
-
-    else return false;
+    return false;
 }
 
 bool AstarAlgo::indIsValid(sf::Vector2i ind) {

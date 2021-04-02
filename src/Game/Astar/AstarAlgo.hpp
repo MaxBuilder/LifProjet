@@ -19,7 +19,7 @@
 enum cardinal{South, North, Est, West, NorthEst, NorthWest, SouthEst, SouthWest};
 
 
-class AstarAlgo : public sf::Transformable{
+class AstarAlgo {
 
     private :
         unsigned int length;

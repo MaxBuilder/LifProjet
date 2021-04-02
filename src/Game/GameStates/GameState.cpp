@@ -15,7 +15,7 @@ GameState::GameState(StateStack &stack, Context& context)
 , mScroll(0)
 , mSpeed(0)
 , mTracking(false)
-, mTrackText("Tracking soldier", context.fonts.get(Fonts::Main))
+, mTrackText("Tracking Soldier", context.fonts.get(Fonts::Main))
 {
     mView.setSize(1280, 720);
     mView.setCenter(640, 360);

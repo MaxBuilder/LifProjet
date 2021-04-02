@@ -75,14 +75,14 @@ Building::Building(Buildings::ID ID, sf::IntRect position,  CommandQueue& comman
             break;
     }
 
-    zone.setRadius(mRange);
-    zone.setOrigin(mRange,mRange);
+    mZone.setRadius(mRange);
+    mZone.setOrigin(mRange, mRange);
     if(mTeam == Entity::BlueTeam)
-        zone.setOutlineColor(sf::Color::Blue);
+        mZone.setOutlineColor(sf::Color::Blue);
     else
-        zone.setOutlineColor(sf::Color::Red);
-    zone.setOutlineThickness(1);
-    zone.setFillColor(sf::Color::Transparent);
+        mZone.setOutlineColor(sf::Color::Red);
+    mZone.setOutlineThickness(1);
+    mZone.setFillColor(sf::Color::Transparent);
 }
 
 float Building::getRange() const{
@@ -95,7 +95,7 @@ Entity::Bonus Building::getBonusFlag() const{
 
 void Building::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const {
     if (not isDestroyed())
-        target.draw(zone, states);
+        target.draw(mZone, states);
 }
 
 sf::Vector2i Building::getOnMapPosition() const{

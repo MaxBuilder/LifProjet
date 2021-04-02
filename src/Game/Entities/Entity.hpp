@@ -39,7 +39,7 @@ public:
     virtual bool isDestroyed() const;
 
 protected:
-    virtual void updateCurrent(sf::Time dt);
+    void updateCurrent(sf::Time dt) override;
 
 protected:
     float mBorder;

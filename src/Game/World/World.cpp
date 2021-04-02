@@ -38,7 +38,7 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
     int id;
 
     for (; e.first != e.second ; e.first++) {
-        if(e.first->getTeam() == Editor::Tool::blueTeam) {
+        if(e.first->getTeam() == Editor::Tool::BlueTeam) {
             id = idb;
             idb++;
         }
@@ -214,9 +214,9 @@ void World::updateMovement() {
         if(entity->isDestroyed()) continue;
         Editor::Tool team;
         if(entity->getTeam() == Entity::BlueTeam)
-            team = Editor::Tool::blueTeam;
+            team = Editor::Tool::BlueTeam;
         else
-            team = Editor::Tool::redTeam;
+            team = Editor::Tool::RedTeam;
         sf::Vector2f tmpVeloce = entity->getVelocity();
         entity->setVelocity(entity->getVelocity()*mMap.getTile(entity->getPosition()/20.f).getMoveSpeed());
         sf::Vector2f point = (entity->getPosition()+entity->getVelocity());
@@ -306,12 +306,12 @@ void World::recBarrier(sf::Vector2i position){
 
 void World::createEntity(sf::Vector2f position, Editor::Tool team, Editor::Entity type, int id){
     Entity::Team mteam;
-    if(team == Editor::Tool::blueTeam)
+    if(team == Editor::Tool::BlueTeam)
         mteam = Entity::BlueTeam;
     else
         mteam = Entity::RedTeam;
 
-    if(type != Editor::Entity::soldier)
+    if(type != Editor::Entity::Soldier)
         return;
 
     std::unique_ptr<Soldier> soldier = std::make_unique<Soldier>(id, mteam, mTextures, mFonts, mAstar, mCommandQueue);

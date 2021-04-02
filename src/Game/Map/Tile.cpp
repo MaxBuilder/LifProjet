@@ -107,9 +107,9 @@ bool Tile::isCrossable() const{
 
 bool Tile::isCrossable(Editor::Tool team) const{
     if(mHaveTop) {
-        if (top.x == 2 and (top.y == 38 or top.y == 39) and team == Editor::Tool::blueTeam)
+        if (top.x == 2 and (top.y == 38 or top.y == 39) and team == Editor::Tool::BlueTeam)
             return true;
-        if (top.x == 2 and (top.y == 36 or top.y == 37) and team == Editor::Tool::redTeam)
+        if (top.x == 2 and (top.y == 36 or top.y == 37) and team == Editor::Tool::RedTeam)
             return true;
 
         return topCrossable;

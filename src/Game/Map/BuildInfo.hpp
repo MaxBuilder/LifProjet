@@ -12,8 +12,8 @@ class BuildInfo {
 public:
     BuildInfo(Buildings::ID ID, sf::IntRect position);
 
-    [[nodiscard]] Buildings::ID getID() const;
-    [[nodiscard]] sf::IntRect getPosition() const;
+    Buildings::ID getID() const;
+    sf::IntRect getPosition() const;
     void setPosition(sf::IntRect rect);
 
 private:

@@ -21,7 +21,7 @@
 class SettingsState : public State {
 public:
     SettingsState(StateStack& stack, Context context);
-    ~SettingsState();
+    ~SettingsState() override;
 
     void draw() override;
     bool update(sf::Time dt) override;
