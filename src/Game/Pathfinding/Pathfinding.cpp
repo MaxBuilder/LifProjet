@@ -2,9 +2,9 @@
 // Created by Marc on 23/02/2021.
 //
 
-#include "AstarAlgo.hpp"
+#include "Pathfinding.hpp"
 
-void AstarAlgo::afficherGraph() {
+void Pathfinding::afficherGraph() {
     for(int i = 0; i< width; i++) {
         for(int j = 0 ; j < length; j++){
             std::cout << Astar_grid[i][j].dist << "";
@@ -14,11 +14,11 @@ void AstarAlgo::afficherGraph() {
 }
 
 
-AstarAlgo::AstarAlgo() {
+Pathfinding::Pathfinding() {
 }
 
 
-void AstarAlgo::setMap(TilesMap &map){
+void Pathfinding::setMap(TilesMap &map){
     mMap = std::make_shared<TilesMap>(map);
     length = 64;
     width = 32;
@@ -30,11 +30,11 @@ void AstarAlgo::setMap(TilesMap &map){
     }
 }
 
-AstarAlgo::~AstarAlgo(){
+Pathfinding::~Pathfinding(){
 
 }
 
-void AstarAlgo::resetGraph() {
+void Pathfinding::resetGraph() {
     for (unsigned int x(0); x < length; x++) {
         for (unsigned int y(0); y < width; y++) {
             Astar_grid[x][y].cout = 0;
@@ -48,18 +48,18 @@ void AstarAlgo::resetGraph() {
     knots.clear();
 }
 
-void AstarAlgo::addObjectif(int x,int y){
+void Pathfinding::addObjectif(int x, int y){
     objectif.x = x;
     objectif.y = y;
 }
 
-sf::Vector2i AstarAlgo::getObjectif() {
+sf::Vector2i Pathfinding::getObjectif() {
     return objectif;
 }
 
 
 
-void AstarAlgo::setPoids(int p) {
+void Pathfinding::setPoids(int p) {
     poids = p;
 }
 
@@ -67,7 +67,7 @@ void AstarAlgo::setPoids(int p) {
 
 
 //self les coordonnées de l'entité et target les coordonnées de la target
-void AstarAlgo::initVoronoi(sf::Vector2f self, sf::Vector2f target){
+void Pathfinding::initVoronoi(sf::Vector2f self, sf::Vector2f target){
     int lSelf = self.x;
     int wSelf = self.y;
     Astar_grid[lSelf][wSelf].color = 'g';
@@ -83,7 +83,7 @@ void AstarAlgo::initVoronoi(sf::Vector2f self, sf::Vector2f target){
 
 
 
-bool AstarAlgo::Voronoi(){
+bool Pathfinding::Voronoi(){
     int min;
     //pour chaque noeud a regarder
     if(knots.size()!=0){
@@ -103,15 +103,15 @@ bool AstarAlgo::Voronoi(){
 
 
 
-void AstarAlgo::getPath(sf::Vector2f self, sf::Vector2f target, std::vector<sf::Vector2f> &path,int poid) {
+void Pathfinding::getPath(sf::Vector2f self, sf::Vector2f target, std::vector<sf::Vector2f> &path, int poid) {
     setPoids(poid);
     self = self/mMap->getBlockSize();
     //potencielement utile si on fait un algo pour chercher sur la map où est l'objectif
     //target = target/map->getBlockSize();
     initVoronoi(self, target);
-    //partie qui run l'algo Astar
+    //partie qui run l'algo Pathfinding
     while(Voronoi());
-    AstarTile* tmp = &Astar_grid[objectif.x][objectif.y];
+    PathfindingTile* tmp = &Astar_grid[objectif.x][objectif.y];
     while (tmp != nullptr){
         path.push_back(sf::Vector2f(tmp->coordNoeud.x,tmp->coordNoeud.y)*mMap->getBlockSize()+sf::Vector2f(1,1)*mMap->getBlockSize()/2.f);
         tmp = tmp->parent;
@@ -120,16 +120,16 @@ void AstarAlgo::getPath(sf::Vector2f self, sf::Vector2f target, std::vector<sf::
 }
 
 /*
-std::vector<sf::Vector2f> AstarAlgo::getPath(std::shared_ptr<TilesMap> &map,sf::Vector2f self, sf::Vector2f target, int poid) {
+std::vector<sf::Vector2f> Pathfinding::getPath(std::shared_ptr<TilesMap> &map,sf::Vector2f self, sf::Vector2f target, int poid) {
     setPoids(poid);
     self = self/map->getBlockSize();
     //potencielement utile si on fait un algo pour chercher
     //target = target/map->getBlockSize();
     initVoronoi(self, target);
-    //partie qui run l'algo Astar
+    //partie qui run l'algo Pathfinding
     while(Voronoi());
     std::vector<sf::Vector2f> path;
-    AstarTile* tmp = &Astar_grid[objectif.x][objectif.y];
+    PathfindingTile* tmp = &Astar_grid[objectif.x][objectif.y];
     while (tmp != nullptr){
         path.push_back(sf::Vector2f(tmp->coordNoeud.x,tmp->coordNoeud.y)*map->getBlockSize()+sf::Vector2f(1,1)*map->getBlockSize()/2.f);
         tmp = tmp->parent;
@@ -140,7 +140,7 @@ std::vector<sf::Vector2f> AstarAlgo::getPath(std::shared_ptr<TilesMap> &map,sf::
 */
 
 
-int AstarAlgo::minimum(std::vector<AstarTile*> knots)const{
+int Pathfinding::minimum(std::vector<PathfindingTile*> knots)const{
     int min = 1000000000;
     int index = 0;
     for(long unsigned int i = 0;i<knots.size();i++){
@@ -154,7 +154,7 @@ int AstarAlgo::minimum(std::vector<AstarTile*> knots)const{
 
 
 
-double AstarAlgo::distance(sf::Vector2i ind)const {
+double Pathfinding::distance(sf::Vector2i ind)const {
     //heuristique Euclidean distance
     //double num = std::sqrt(std::pow(ind.y-objectif.y,double(2))+ std::pow(ind.x-objectif.x,double(2)));
     //heuristique chebyshev distance
@@ -165,7 +165,7 @@ double AstarAlgo::distance(sf::Vector2i ind)const {
 
 
 
-void AstarAlgo::setNeighbour(AstarTile* knot) {
+void Pathfinding::setNeighbour(PathfindingTile* knot) {
     cardinal c[8] = {South, North, Est, West, NorthEst, NorthWest, SouthEst, SouthWest};
     sf::Vector2i neiIndex;
     double dist;
@@ -194,7 +194,7 @@ void AstarAlgo::setNeighbour(AstarTile* knot) {
     }
 }
 
-sf::Vector2i AstarAlgo::getNeighbourIndex(int l,int w,cardinal c)const {
+sf::Vector2i Pathfinding::getNeighbourIndex(int l, int w, cardinal c)const {
     sf::Vector2i coordNei;
 
     switch (c) {
@@ -226,7 +226,7 @@ sf::Vector2i AstarAlgo::getNeighbourIndex(int l,int w,cardinal c)const {
 
 
 
-bool AstarAlgo::crossCorner(sf::Vector2i ind, cardinal card) {
+bool Pathfinding::crossCorner(sf::Vector2i ind, cardinal card) {
     sf::Vector2i coord, coord2;
     switch (card) {
         case NorthEst :
@@ -257,7 +257,7 @@ bool AstarAlgo::crossCorner(sf::Vector2i ind, cardinal card) {
     return false;
 }
 
-bool AstarAlgo::indIsValid(sf::Vector2i ind) {
+bool Pathfinding::indIsValid(sf::Vector2i ind) {
     return ( ind.x >= 0 && ind.y >= 0);
 }
 

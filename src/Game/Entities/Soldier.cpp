@@ -7,7 +7,7 @@
 #include <iostream>
 
 // Archer faire : ajouter les tables de données pour les entités
-Soldier::Soldier(int id, Team team, const TextureHolder& textures, const FontHolder& fonts, AstarAlgo& Astar, CommandQueue& commandQueue)
+Soldier::Soldier(int id, Team team, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue)
 : Entity(100,team, commandQueue)
 , mId(id)
 , mVelocity(0,0)
@@ -32,7 +32,7 @@ Soldier::Soldier(int id, Team team, const TextureHolder& textures, const FontHol
 , nbInPlace(0)
 {
     mBorder = 10;
-    mAstar = std::make_shared<AstarAlgo>(Astar);
+    mAstar = std::make_shared<Pathfinding>(Astar);
     float blockSize = 20.f; // à modifier pour rendre dynamique
     // Fix origin and texture selection
     mGlow.setTextureRect(sf::IntRect(0,0,32,32));
@@ -116,7 +116,7 @@ void Soldier::updateAttack(sf::Time dt) {
                 mAstarDuration.restart();
                 Editor::Tool team = mTeam == Entity::BlueTeam ? Editor::Tool::BlueTeam : Editor::Tool::RedTeam;
                 mAstar->getPath(getPosition(),sf::Vector2f(57,6),mPath, 2) ;
-                std::cout << "Astar Duration :" << mAstarDuration.getElapsedTime().asMicroseconds() << std::endl;
+                std::cout << "Pathfinding Duration :" << mAstarDuration.getElapsedTime().asMicroseconds() << std::endl;
             }
             sf::Vector2f &target = mPath.back();
             if (distance(getPosition(), target) < 2 )

@@ -9,15 +9,15 @@
 
 
 
-class AstarTile{
+class PathfindingTile {
 private:
 public:
-    AstarTile();
+    PathfindingTile();
     int cout;
     char color;
     double dist;
     sf::Vector2i coordNoeud;
-    AstarTile *parent;
+    PathfindingTile *parent;
 
     void setCoordinate(int x,int y);
 };

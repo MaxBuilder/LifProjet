@@ -70,7 +70,7 @@ private:
     std::vector<Building*> mBuildings;
 
     // Pathfinding
-    AstarAlgo mAstar;
+    Pathfinding mAstar;
 
     // Tracking
     int mTracked;

@@ -9,8 +9,8 @@ set(SFML_DIR "lib/SFML-2.5.1/lib/cmake/SFML")
 find_package(SFML 2.5.1 COMPONENTS graphics audio REQUIRED)
 add_executable(LifProjet src/main.cpp
         src/Game/Application/Application.cpp src/Game/Application/Application.hpp
-        src/Game/Astar/AstarAlgo.hpp src/Game/Astar/AstarAlgo.cpp
-        src/Game/Astar/AstarTile.hpp src/Game/Astar/AstarTile.cpp
+        src/Game/Pathfinding/Pathfinding.hpp src/Game/Pathfinding/Pathfinding.cpp
+        src/Game/Pathfinding/PathfindingTile.hpp src/Game/Pathfinding/PathfindingTile.cpp
         src/Core/StateStack/State.cpp src/Core/StateStack/State.hpp
         src/Core/StateStack/StateStack.cpp src/Core/StateStack/StateStack.hpp
         src/Game/Resources/ResourceHolder.hpp src/Game/Resources/ResourceIdentifiers.hpp

@@ -12,7 +12,7 @@
 #include <SFML/System/Clock.hpp>
 
 #include "Entity.hpp"
-#include "../Astar/AstarAlgo.hpp"
+#include "../Pathfinding//Pathfinding.hpp"
 #include "../../Core/Util/Utility.hpp"
 #include "../../Core/Util/Rand.hpp"
 #include "../Resources/ResourceIdentifiers.hpp"
@@ -38,7 +38,7 @@ public:
     };
 
 public:
-    Soldier(int id, Team team, const TextureHolder& textures, const FontHolder& fonts, AstarAlgo& Astar, CommandQueue& commandQueue);
+    Soldier(int id, Team team, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue);
 
     int getId() const;
 
@@ -88,7 +88,7 @@ private:
     sf::Vector2f randomDirection(); // Helper to roam();
 
 private:
-    std::shared_ptr<AstarAlgo> mAstar;
+    std::shared_ptr<Pathfinding> mAstar;
 
     // Needs adding of personal stats (atk, def, per, sp)
 

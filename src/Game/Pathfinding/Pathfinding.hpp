@@ -13,22 +13,22 @@
 #include <cstdlib>
 #include <memory>
 #include <SFML/Graphics.hpp>
-#include "AstarTile.hpp"
+#include "PathfindingTile.hpp"
 
 
 enum cardinal{South, North, Est, West, NorthEst, NorthWest, SouthEst, SouthWest};
 
 
-class AstarAlgo {
+class Pathfinding {
 
     private :
         unsigned int length;
         unsigned int width;
-        AstarTile Astar_grid[64][36];
+        PathfindingTile Astar_grid[64][36];
         std::shared_ptr<TilesMap> mMap;
 
         //vetor qui contien les noeuds a check
-        std::vector<AstarTile*>knots;
+        std::vector<PathfindingTile*>knots;
 
         //fonction à intégret dans le projet
         int poids;
@@ -39,15 +39,15 @@ class AstarAlgo {
         //fonction pas obligatoir et qui peut etre supprimer
         bool indIsValid(sf::Vector2i ind);
 
-        int minimum(std::vector<AstarTile*> knots)const;
-        void setNeighbour(AstarTile* knot);
+        int minimum(std::vector<PathfindingTile*> knots)const;
+        void setNeighbour(PathfindingTile* knot);
         sf::Vector2i getNeighbourIndex(int x,int y,cardinal c)const;
         bool crossCorner(sf::Vector2i ind, cardinal card);
 
     public :
         void afficherGraph();
-        AstarAlgo();
-        ~AstarAlgo();
+        Pathfinding();
+        ~Pathfinding();
         void addObjectif(int x,int y);
         void setMap(TilesMap& map);
         sf::Vector2i getObjectif();
