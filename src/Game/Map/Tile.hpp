@@ -6,6 +6,7 @@
 #define LIFPROJET_TILE_HPP
 
 #include "../../Game/Resources/ResourceIdentifiers.hpp"
+#include "EntityInfo.hpp"
 #include "SFML/Graphics/Sprite.hpp"
 
 class Tile {
@@ -20,7 +21,7 @@ public:
     float getMoveSpeed() const;
     float getRotation() const;
     bool isCrossable() const;
-    bool isCrossable(Editor::Tool) const;
+    bool isCrossable(EntityInfo::Team team) const;
 
     void paint(const sf::Vector2i &id,const float &rotation);
     void setRotation(const float &rotation);

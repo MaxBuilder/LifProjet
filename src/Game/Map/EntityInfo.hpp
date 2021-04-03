@@ -9,17 +9,31 @@
 #include "SFML/Graphics/Rect.hpp"
 
 class EntityInfo {
+
 public:
-    EntityInfo(sf::Vector2f position, Editor::Entity type, Editor::Tool team);
+
+    enum Team{
+        Blue,Red,
+    };
+    enum Type {
+        Building, Soldier,
+    };
+    enum ID {
+        None, Knight, Archer, Tank, Castle, Village, Barrier,
+    };
+
+    EntityInfo(sf::Vector2f position, EntityInfo::ID id, EntityInfo::Team team, EntityInfo::Type type);
 
     sf::Vector2f getPosition() const;
-    Editor::Entity getType() const;
-    Editor::Tool getTeam() const;
+    EntityInfo::ID getID() const;
+    EntityInfo::Type getType() const;
+    EntityInfo::Team getTeam() const;
 
 private:
     sf::Vector2f mPosition;
-    Editor::Entity mType;
-    Editor::Tool mTeam;
+    EntityInfo::ID mId;
+    EntityInfo::Type mType;
+    EntityInfo::Team mTeam;
 
 
 };

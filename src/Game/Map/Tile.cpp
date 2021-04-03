@@ -105,11 +105,11 @@ bool Tile::isCrossable() const{
         return crossable;
 }
 
-bool Tile::isCrossable(Editor::Tool team) const{
+bool Tile::isCrossable(EntityInfo::Team team) const{
     if(mHaveTop) {
-        if (top.x == 2 and (top.y == 38 or top.y == 39) and team == Editor::Tool::BlueTeam)
+        if (top.x == 2 and (top.y == 38 or top.y == 39) and team == EntityInfo::Blue)
             return true;
-        if (top.x == 2 and (top.y == 36 or top.y == 37) and team == Editor::Tool::RedTeam)
+        if (top.x == 2 and (top.y == 36 or top.y == 37) and team == EntityInfo::Team::Red)
             return true;
 
         return topCrossable;

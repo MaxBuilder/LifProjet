@@ -9,6 +9,7 @@
 #include "../../Core/StateStack/State.hpp"
 #include "../../Core/GUI/Container.hpp"
 #include "../../Core/GUI/Button.hpp"
+#include "../../Core/GUI/CheckBox.hpp"
 #include "../../Core/GUI/ButtonTexture.hpp"
 
 #include "../../Game/Map/TilesMap.hpp"
@@ -16,6 +17,12 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Window/Event.hpp>
+
+namespace Editor {
+    enum Tool {
+        Standard, Square3, Fill, Eraser, PlaceSoldier, PlaceBuilding,
+    };
+}
 
 class MapEditorState : public State {
 public:
@@ -33,7 +40,7 @@ public:
     void createSoldier(sf::Vector2i pos);
     bool supressSoldier(sf::Vector2i pos);
     void createBuildings(sf::Vector2i pos);
-    void supressBuildings(sf::Vector2i pos);
+    bool supressBuildings(sf::Vector2i pos);
 
     void addButtonTexture(sf::Vector2i id, sf::Vector2i pos);
 
@@ -51,6 +58,7 @@ private :
     GUI::Container mEditBar;
     GUI::Container mToolBar;
     GUI::Container mRotationBar;
+    GUI::Container mTeamSelection;
     GUI::ScrollingContainer mPaletteBar;
 
     GUI::Container mSubMenu;
@@ -58,12 +66,13 @@ private :
     float rotate;
     //std::string mMapPath;
 
-    Buildings::ID mBuild_selection;
+    EntityInfo::ID mBuild_selection;
     sf::Vector2i ground_selection;
     sf::Vector2i lastGround;
     sf::Vector2i lastTileUpdate;
     Editor::Tool tool;
-    Editor::Entity mSoldier;
+    EntityInfo::ID mEntity;
+    EntityInfo::Team mTeam;
 
 };
 

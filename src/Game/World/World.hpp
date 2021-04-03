@@ -33,7 +33,7 @@ public:
     void trackedReset();
 
     // Entity functions :
-    void createEntity(sf::Vector2f position, Editor::Tool team, Editor::Entity type, int id);
+    void createEntity(sf::Vector2f position, EntityInfo::Team team, EntityInfo::ID type, int id);
     void onCommand();
     void updateMovement(); // Updates entity relative to the environment
     void updateTargets(); // Updates entity target from perspective

@@ -3,10 +3,9 @@
 //
 
 #include "Entity.hpp"
-
 #include <iostream>
 
-Entity::Entity(int hitPoints, Team team,CommandQueue &commandQueue)
+Entity::Entity(int hitPoints, EntityInfo::Team team,CommandQueue &commandQueue)
 : mHitPoints(hitPoints),
   mTeam(team),
   mBorder(0),
@@ -44,7 +43,7 @@ float Entity::getBorder() const{
     return mBorder;
 }
 
-Entity::Team Entity::getTeam() {
+EntityInfo::Team Entity::getTeam() {
     return mTeam;
 }
 

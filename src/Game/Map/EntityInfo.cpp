@@ -4,9 +4,10 @@
 
 #include "EntityInfo.hpp"
 
-EntityInfo::EntityInfo(sf::Vector2f position, Editor::Entity type, Editor::Tool team){
+EntityInfo::EntityInfo(sf::Vector2f position, EntityInfo::ID id, EntityInfo::Team team,EntityInfo::Type type){
     mPosition = position;
     mType = type;
+    mId = id;
     mTeam = team;
 }
 
@@ -14,10 +15,14 @@ sf::Vector2f EntityInfo::getPosition() const{
     return mPosition;
 }
 
-Editor::Entity EntityInfo::getType() const{
-    return mType;
+EntityInfo::ID EntityInfo::getID() const{
+    return mId;
 }
 
-Editor::Tool EntityInfo::getTeam() const{
+EntityInfo::Team EntityInfo::getTeam() const{
     return mTeam;
+}
+
+EntityInfo::Type EntityInfo::getType() const {
+    return mType;
 }

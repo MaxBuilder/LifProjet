@@ -7,7 +7,7 @@
 #include <iostream>
 
 // Archer faire : ajouter les tables de données pour les entités
-Soldier::Soldier(int id, Team team, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue)
+Soldier::Soldier(int id, EntityInfo::Team team, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue)
 : Entity(100,team, commandQueue)
 , mId(id)
 , mVelocity(0,0)
@@ -17,7 +17,7 @@ Soldier::Soldier(int id, Team team, const TextureHolder& textures, const FontHol
 , mGlow(textures.get(Textures::EntityGlow))
 , mSpeedBase(15)
 , mSpeedBonus(0)
-, mBonus(Entity::None)
+, mBonus(EntityInfo::ID::None)
 , mDamages(20)
 , mTargeted(nullptr)
 , mAction(Moving)
@@ -37,7 +37,7 @@ Soldier::Soldier(int id, Team team, const TextureHolder& textures, const FontHol
 
     // Fix origin and texture selection
     mGlow.setTextureRect(sf::IntRect(0,0,32,32));
-    mTeam == BlueTeam ? mSpriteRect= sf::IntRect(32,0,32,32) : mSpriteRect = sf::IntRect(32,32,32,32);
+    mTeam == EntityInfo::Team::Blue ? mSpriteRect= sf::IntRect(32,0,32,32) : mSpriteRect = sf::IntRect(32,32,32,32);
     mSprite.setTextureRect(mSpriteRect);
     mSprite.setScale(blockSize/mSprite.getLocalBounds().width,blockSize/mSprite.getLocalBounds().height);
     mGlow.setScale(blockSize/mSprite.getLocalBounds().width,blockSize/mSprite.getLocalBounds().height);
@@ -82,10 +82,10 @@ void Soldier::updateCurrent(sf::Time dt) {
         mSprite.setTextureRect(mSpriteRect);
     }
 
-    mTeam == BlueTeam ? updateDefense(dt) : updateAttack(dt);
+    mTeam == EntityInfo::Team::Blue ? updateDefense(dt) : updateAttack(dt);
     // mLife.setString(std::to_string(getHitPoints()));
     std::string str = toString(mId);
-    if (mTeam == Entity::BlueTeam)
+    if (mTeam == EntityInfo::Team::Blue)
         str+=std::string(" Blue");
     else
         str+=std::string(" Red");
@@ -116,7 +116,6 @@ void Soldier::updateAttack(sf::Time dt) {
         if(mTargeted == nullptr) {
             if(mPath.empty()) {
                 mAstarDuration.restart();
-                Editor::Tool team = mTeam == Entity::BlueTeam ? Editor::Tool::BlueTeam : Editor::Tool::RedTeam;
                 mPathfinding.getPath(getPosition(), sf::Vector2f(57, 6), mPath, 2) ;
                 std::cout << "Pathfinding Duration :" << mAstarDuration.getElapsedTime().asMicroseconds() << std::endl;
             }
@@ -342,7 +341,7 @@ Soldier::Action Soldier::getAction() {
 
 void Soldier::setAction(Action act) {
     std::string name[10] = {"None","Moving","Seeking","Fleeing","Attacking","Calling","Leading","WithSquad","Assaulting","controlling"};
-    std::string str = mTeam ==Entity::BlueTeam ? "Blue" : "Red";
+    std::string str = mTeam ==EntityInfo::Team::Blue ? "Blue" : "Red";
     std::cout<<"id : "<<mId<<str<<" action :"<<name[mAction]<<" -> "<<name[act]<<std::endl;
     mAction = act;
 }
@@ -402,27 +401,27 @@ void Soldier::travel(){
     move(mVelocity);
 }
 
-void Soldier::changeBonus(Entity::Bonus bonus) {
-    if(bonus == Entity::Castle){
+void Soldier::changeBonus(EntityInfo::ID bonus) {
+    if(bonus == EntityInfo::Castle){
         mGlow.setTextureRect(sf::IntRect(64,0,32,32));
         mBonus = bonus;
         mSpeedBonus = 15;
         mDamages = 25;
     }
-    else if(bonus == Entity::Village and mBonus == Entity::None){
+    else if(bonus == EntityInfo::Village and mBonus == EntityInfo::None){
         mGlow.setTextureRect(sf::IntRect(32,0,32,32));
         mBonus = bonus;
         mSpeedBonus = 15;
         mDamages = 25;
     }
-    else if(bonus == Entity::None){
+    else if(bonus == EntityInfo::None){
         mGlow.setTextureRect(sf::IntRect(0,0,32,32));
         mBonus = bonus;
         mSpeedBonus = 0;
         mDamages = 20;
     }
 }
-Entity::Bonus Soldier::getBonus(){
+EntityInfo::ID Soldier::getBonus(){
     return mBonus;
 }
 

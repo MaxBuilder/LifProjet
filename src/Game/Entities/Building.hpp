@@ -5,7 +5,6 @@
 #ifndef LIFPROJET_BUILDING_HPP
 #define LIFPROJET_BUILDING_HPP
 
-#include "../../Game/Resources/ResourceIdentifiers.hpp"
 #include <SFML/Graphics/RenderTarget.hpp>
 #include "SFML/Graphics/CircleShape.hpp"
 
@@ -14,11 +13,11 @@
 
 class Building : public Entity {
 public:
-    Building(Buildings::ID ID, sf::IntRect position,  CommandQueue& commandQueue);
+    Building(EntityInfo::ID ID,EntityInfo::Team team, sf::IntRect position,  CommandQueue& commandQueue);
 
     float getRange() const;
 
-    Entity::Bonus getBonusFlag() const;
+    EntityInfo::ID getBonusFlag() const;
     sf::Vector2i getMapId() const;
     sf::Vector2i getOnMapPosition() const;
     sf::Vector2i getOnMapSize() const;
@@ -29,7 +28,7 @@ private:
     void updateCurrent();
 
     float mRange;
-    Entity::Bonus mBonusFlag;
+    EntityInfo::ID mBonusFlag;
     sf::CircleShape mZone;
     sf::IntRect mPosition;
     sf::Vector2i mTextureId;

@@ -1,16 +1,21 @@
 //
 // Created by 33771 on 18/02/2021.
 //
-
+#include "EntityInfo.hpp"
 #include "BuildInfo.hpp"
 
-BuildInfo::BuildInfo(Buildings::ID ID, sf::IntRect position){
+BuildInfo::BuildInfo(EntityInfo::ID ID,EntityInfo::Team team, sf::IntRect position){
     mId  = ID;
+    mTeam = team;
     mPosition = position;
 }
 
-Buildings::ID BuildInfo::getID() const{
+EntityInfo::ID BuildInfo::getID() const{
     return mId;
+}
+
+EntityInfo::Team BuildInfo::getTeam() const {
+    return mTeam;
 }
 
 sf::IntRect BuildInfo::getPosition() const{

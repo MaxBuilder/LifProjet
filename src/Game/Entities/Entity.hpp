@@ -5,31 +5,20 @@
 #ifndef LIFPROJET_ENTITY_HPP
 #define LIFPROJET_ENTITY_HPP
 
+#include "../Map/EntityInfo.hpp"
 #include "../../Core/Scene/SceneNode.hpp"
 #include "../../Core/Commands/CommandQueue.hpp"
-
+#include "../../Game/Resources/ResourceIdentifiers.hpp"
 
 class Entity : public SceneNode {
 
 public:
 
-    enum Team {
-        BlueTeam,
-        RedTeam,
-        TypeCount
-    };
-
-    enum Bonus{
-        None,
-        Castle,
-        Village
-    };
-
     bool down;
 
-    explicit Entity(int hitPoints, Team team, CommandQueue &commandQueue);
+    explicit Entity(int hitPoints, EntityInfo::Team team, CommandQueue &commandQueue);
 
-    Team getTeam();
+    EntityInfo::Team getTeam();
     int getHitPoints() const;
     float getBorder() const;
     void heal(int points);
@@ -44,7 +33,7 @@ protected:
 protected:
     float mBorder;
     int mHitPoints;
-    Team mTeam;
+    EntityInfo::Team mTeam;
     CommandQueue& mCommandQueue;
 
 };

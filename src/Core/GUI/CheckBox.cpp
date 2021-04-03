@@ -58,7 +58,7 @@ namespace GUI {
     }
 
     void CheckBox::changeTexture(Type buttonType) {
-        sf::IntRect textureRect(0, 40 * buttonType, mWidth, mHeight);
+        sf::IntRect textureRect(0, mWidth * buttonType, mWidth, mHeight);
         mSprite.setTextureRect(textureRect);
     }
 

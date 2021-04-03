@@ -5,79 +5,49 @@
 #include "Building.hpp"
 #include <iostream>
 
-Building::Building(Buildings::ID ID, sf::IntRect position,  CommandQueue& commandQueue) :
-   Entity(0,Entity::Team::BlueTeam, commandQueue)
+Building::Building(EntityInfo::ID ID,EntityInfo::Team team, sf::IntRect position,  CommandQueue& commandQueue) :
+   Entity(0,EntityInfo::Team::Blue, commandQueue)
  {
 
     mPosition = position;
     setPosition(float(mPosition.left)*20+float(mPosition.width)*20/2,float(mPosition.top)*20+float(mPosition.width)*20/2);
 
     switch (ID){
-        case Buildings::BlueCastle :
+        case EntityInfo::ID::Castle :
             mBorder = 40;
             mHitPoints = 500;
-            mTeam = Entity::BlueTeam;
+            mTeam = team;
             mRange = 150;
-            mBonusFlag = Entity::Castle;
+            mBonusFlag = ID;
             mTextureId.y = 53; mTextureId.x = 0;
             break;
 
-        case Buildings::RedCastle :
-            mBorder = 40;
-            mHitPoints = 500;
-            mTeam = Entity::RedTeam;
-            mRange = 150;
-            mBonusFlag = Entity::Castle;
-            mTextureId.y = 50; mTextureId.x = 0;
-            break;
-
-        case Buildings::BlueVillage :
+        case EntityInfo::ID::Village :
             mBorder = 27;
             mHitPoints = 300;
-            mTeam = Entity::BlueTeam;
+            mTeam =team;
             mRange = 100;
-            mBonusFlag = Entity::Village;
+            mBonusFlag = ID;
             mTextureId.y = 48; mTextureId.x = 0;
             break;
 
-        case Buildings::RedVillage :
-            mBorder = 27;
-            mHitPoints = 300;
-            mTeam = Entity::RedTeam;
-            mRange = 100;
-            mBonusFlag = Entity::Village;
-            mTextureId.y = 46; mTextureId.x = 0;
-            break;
 
-        case Buildings::BlueBarrier :
+        case  EntityInfo::ID::Barrier :
             mBorder = 15;
             mHitPoints = 200;
-            mTeam = Entity::BlueTeam;
+            mTeam = team;
             mRange = 0;
-            mBonusFlag = Entity::None;
+            mBonusFlag = ID;
             mTextureId.y = 49; mTextureId.x = 2;
             break;
 
-        case Buildings::RedBarrier :
-            mBorder = 15;
-            mHitPoints = 200;
-            mTeam = Entity::RedTeam;
-            mRange = 0;
-            mBonusFlag = Entity::None;
-            mTextureId.y = 47; mTextureId.x = 2;
-            break;
-
         default:
-            mHitPoints = 0;
-            mTeam = Entity::BlueTeam;
-            mRange = 0;
-            mBonusFlag = Entity::None;
             break;
     }
 
     mZone.setRadius(mRange);
     mZone.setOrigin(mRange, mRange);
-    if(mTeam == Entity::BlueTeam)
+    if(mTeam == EntityInfo::Team::Blue)
         mZone.setOutlineColor(sf::Color::Blue);
     else
         mZone.setOutlineColor(sf::Color::Red);
@@ -89,7 +59,7 @@ float Building::getRange() const{
     return mRange;
 }
 
-Entity::Bonus Building::getBonusFlag() const{
+EntityInfo::ID Building::getBonusFlag() const{
     return mBonusFlag;
 }
 

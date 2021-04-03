@@ -36,8 +36,8 @@ namespace Textures {
         ToolBigBrush,
         ToolFill,
         ToolEraser,
-        EditorBlueTeam,
-        EditorRedTeam,
+        EditorEntityButton,
+        EditorTeamColor,
         EditorSoldier,
         EditorAllSoldiers,
         EditorNewButton,
@@ -61,13 +61,6 @@ namespace Textures {
     };
 }
 
-namespace Buildings {
-    enum ID {
-        None, RedCastle, BlueCastle, RedVillage, BlueVillage, RedBarrier, BlueBarrier
-    };
-}
-
-
 namespace Fonts {
     enum ID {
         Main
@@ -80,15 +73,6 @@ namespace Sounds {
     };
 }
 
-namespace Editor {
-    enum Tool {
-        Standard, Square3, Fill, Eraser, BlueTeam, RedTeam
-    };
-
-    enum Entity{
-        Soldier, Archer, Tank
-    };
-}
 
 template <typename Resource, typename Identifier>
 class ResourceHolder;

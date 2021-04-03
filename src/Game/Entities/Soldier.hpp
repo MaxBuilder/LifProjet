@@ -38,12 +38,12 @@ public:
     };
 
 public:
-    Soldier(int id, Team team, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue);
+    Soldier(int id, EntityInfo::Team team, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue);
 
     int getId() const;
 
-    void changeBonus(Entity::Bonus bonus);
-    Entity::Bonus getBonus();
+    void changeBonus(EntityInfo::ID bonus);
+    EntityInfo::ID getBonus();
 
     Action getAction();
     void setAction(Action act);
@@ -92,7 +92,7 @@ private:
 
     // Needs adding of personal stats (atk, def, per, sp)
 
-    Entity::Bonus mBonus;
+    EntityInfo::ID mBonus;
     sf::Sprite mSprite;
     sf::Sprite mGlow;
     sf::Text mLife;

@@ -10,7 +10,8 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
         , mPaletteBar(sf::IntRect(1130,100,150,550),4)
         , subBackground(getContext().textures.get(Textures::SubBackground))
 {
-    mBuild_selection = Buildings::None;
+    mEntity = EntityInfo::None;
+    mTeam = EntityInfo::Team::Red;
     background.setTexture(context.textures.get(Textures::EditorBackground));
     map.setPosition(92,90);
 
@@ -79,15 +80,30 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
 
     // Soldier selection :
 
-    auto soldier = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorSoldier);
-    soldier->setToggle(true);
-    soldier->setPosition(495, 10);
-    soldier->activate();
-    soldier->setCallback([this] () {
-        mSoldier = Editor::Entity::Soldier;
+    auto teamColor = std::make_shared<GUI::CheckBox>(context, 60, 60, Textures::EditorTeamColor);
+    teamColor->setToggle(true);
+    teamColor->setPosition(490, 10);
+    teamColor->activate();
+    teamColor->setCallback([this] (bool red) {
+        if(red)
+            mTeam = EntityInfo::Red;
+        else
+            mTeam = EntityInfo::Blue;
+
         getContext().sounds.play(Sounds::Menu);
     });
-    mSoldierBar.pack(soldier);
+    teamColor->activate();
+    mTeamSelection.pack(teamColor);
+
+    auto knight = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorSoldier);
+    knight->setToggle(true);
+    knight->setPosition(562, 10);
+    knight->activate();
+    knight->setCallback([this] () {
+        mEntity = EntityInfo::ID::Knight ;
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mSoldierBar.pack(knight);
 
     // Tool bar buttons :
 
@@ -128,23 +144,15 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     });
     mToolBar.pack(fillButton);
 
-    auto blue_team = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorBlueTeam);
-    blue_team->setToggle(true);
-    blue_team->setPosition(16, 362);
-    blue_team->setCallback([this] () {
-        tool = Editor::Tool::BlueTeam;
+    auto EntityButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorEntityButton);
+    EntityButton->setToggle(true);
+    EntityButton->setPosition(16, 362);
+    EntityButton->setCallback([this] () {
+        tool = Editor::Tool::PlaceSoldier;
+        mEntity = EntityInfo::Knight;
         getContext().sounds.play(Sounds::Menu);
     });
-    mToolBar.pack(blue_team);
-
-    auto red_team = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorRedTeam);
-    red_team->setToggle(true);
-    red_team->setPosition(16, 428);
-    red_team->setCallback([this] () {
-        tool = Editor::Tool::RedTeam;
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mToolBar.pack(red_team);
+    mToolBar.pack(EntityButton);
 
     // Rotation bar buttons :
 
@@ -241,6 +249,7 @@ void MapEditorState::draw() {
     window.draw(mToolBar);
     window.draw(mPaletteBar);
     window.draw(mRotationBar);
+    window.draw(mTeamSelection);
 
     mapPath.setString(mMapPath);
     window.draw(mapPath);
@@ -276,6 +285,7 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
     mToolBar.handleEvent(event, getContext().window);
     mPaletteBar.handleEvent(event, getContext().window);
     mRotationBar.handleEvent(event, getContext().window);
+    mTeamSelection.handleCheckBoxEvent(event,getContext().window);
 
     if (event.type == sf::Event::MouseMoved or event.type == sf::Event::MouseButtonPressed){
 
@@ -291,13 +301,7 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
             pos.y = pos.y/caseSize;
             pos.x = pos.x/caseSize;
 
-            if (mBuild_selection != Buildings::None){
-                if (event.mouseButton.button == sf::Mouse::Left)
-                    createBuildings(pos);
-                else if (event.mouseButton.button == sf::Mouse::Right)
-                    supressBuildings(pos);
-            }
-            else if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 
                 if (lastTileUpdate == pos and lastGround == ground_selection)
                     return false;
@@ -321,15 +325,17 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
                         break;
 
                     case Editor::Tool::Eraser :
-                        if(not supressSoldier(pos))
+                        if(not supressSoldier(pos) and not (supressBuildings(pos)))
                             map.getTile(pos.x,pos.y).paint(sf::Vector2i (0,0),0);
                         break;
 
-                    case Editor::Tool::BlueTeam :
-                    case Editor::Tool::RedTeam :
+                    case Editor::Tool::PlaceSoldier :
                         createSoldier(pos);
                         break;
 
+                    case Editor::Tool::PlaceBuilding:
+                        createBuildings(pos);
+                        break;
                     default :
                         break;
                 }
@@ -347,32 +353,46 @@ void MapEditorState::addButtonTexture(sf::Vector2i id, sf::Vector2i pos){
     button->setToggle(true);
     button->setCallback([this](sf::Vector2i bId){
 
-        Buildings::ID buildId = Buildings::None;
+        EntityInfo::ID buildId = EntityInfo::ID::None;
+        EntityInfo::Team team = EntityInfo::Team::Blue;
+
         if ((bId.y == 37 or bId.y == 36) and (bId.x == 0 or bId.x == 1)) {
             bId.y = 36; bId.x = 0;
-            buildId = Buildings::RedVillage;
+            buildId = EntityInfo::ID::Village;
+            team = EntityInfo::Team::Red;
         }
         else if ((bId.y == 36 or bId.y == 37) and bId.x == 2) {
-            buildId = Buildings::RedBarrier;
+            buildId = EntityInfo::ID::Barrier;
+            team = EntityInfo::Team::Red;
         }
         else if ((bId.y == 39 or bId.y == 38) and (bId.x == 0 or bId.x == 1)){
             bId.y = 38; bId.x = 0;
-            buildId = Buildings::BlueVillage;
+            buildId = EntityInfo::ID::Village;
+            team = EntityInfo::Team::Blue;
         }
         else if ((bId.y == 39 or bId.y == 38) and bId.x == 2) {
-            buildId = Buildings::BlueBarrier;
+            buildId = EntityInfo::ID::Barrier;
+            team = EntityInfo::Team::Blue;
         }
         else if(bId.y >= 40 and bId.y <= 42) {
             bId.y = 40; bId.x = 0;
-            buildId = Buildings::RedCastle;
+            buildId = EntityInfo::ID::Castle;
+            team = EntityInfo::Team::Red;
         }
         else if(bId.y >= 43) {
             bId.y = 43; bId.x = 0;
-            buildId = Buildings::BlueCastle;
+            buildId = EntityInfo::ID::Castle;
+            team = EntityInfo::Team::Blue;
         }
 
         ground_selection = bId;
-        mBuild_selection = buildId;
+        if(buildId != EntityInfo::None) {
+            mEntity = buildId;
+            tool = Editor::Tool::PlaceBuilding;
+        }else if( tool == Editor::Tool::PlaceBuilding ){
+            tool = Editor::Tool::Standard;
+        }
+        mTeam = team;
         getContext().sounds.play(Sounds::Menu);
     });
     mPaletteBar.pack(button);
@@ -440,13 +460,13 @@ void MapEditorState::createBuildings(sf::Vector2i pos){
     sf::IntRect rect1 = {pos.x, pos.y, 0, 0};
     bool construtible = true;
 
-    if (mBuild_selection == Buildings::RedBarrier or mBuild_selection == Buildings::BlueBarrier){
+    if (mEntity == EntityInfo::Barrier){
         rect1.height = 1;
         rect1.width = 1;
-    }else if (mBuild_selection == Buildings::RedVillage or mBuild_selection == Buildings::BlueVillage){
+    }else if (mEntity == EntityInfo::Village){
         rect1.height = 2;
         rect1.width = 2;
-    }else if (mBuild_selection == Buildings::RedCastle or mBuild_selection == Buildings::BlueCastle){
+    }else if (mEntity == EntityInfo::Castle){
         rect1.height = 3;
         rect1.width = 3;
     }
@@ -473,12 +493,12 @@ void MapEditorState::createBuildings(sf::Vector2i pos){
             }
         }
 
-        map.addBuildings(BuildInfo(mBuild_selection, rect1));
+        map.addBuildings(BuildInfo(mEntity, mTeam, rect1));
     }
 }
 
 
-void MapEditorState::supressBuildings(sf::Vector2i pos) {
+bool MapEditorState::supressBuildings(sf::Vector2i pos) {
     sf::IntRect rect2;
     auto b = map.getBuildingsIt();
     for(; b.first !=  b.second; b.first++){
@@ -495,13 +515,14 @@ void MapEditorState::supressBuildings(sf::Vector2i pos) {
             }
 
             map.supBuildings(b.first);
-            break;
+            return true;
         }
     }
+    return false;
 }
 
 void MapEditorState::createSoldier(sf::Vector2i pos){
-    std::cout<<"enter Create\n";
+    std::cout<<"Entity creation\n";
     if(not map.getTile(pos).isCrossable()) return;
 
     auto posf = static_cast<sf::Vector2f>(pos);
@@ -510,8 +531,9 @@ void MapEditorState::createSoldier(sf::Vector2i pos){
     for(;other.first != other.second; other.first++)
         if(other.first->getPosition() == posf) return;
 
-    map.addEntity(EntityInfo(posf,mSoldier,tool));
-    std::cout<<"exit Create\n";
+
+    map.addEntity(EntityInfo(posf,mEntity,mTeam,EntityInfo::Type::Soldier));
+    std::cout<<"Entity added\n";
 }
 
 bool MapEditorState::supressSoldier(sf::Vector2i pos){

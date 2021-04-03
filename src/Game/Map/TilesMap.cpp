@@ -100,9 +100,11 @@ void TilesMap::save(const std::string &file) const{
     }
 
     int left, top, width, height;
-    Buildings::ID buildID;
+    EntityInfo::ID buildID;
+    EntityInfo::Team buildTeam;
 
     std::size_t size = mBuildings.size();
+    std::cout<<"nb bulding "<<size<<std::endl;
     wf.write((char *) &(size), sizeof(std::size_t));
 
     for (const auto &b : mBuildings){
@@ -111,8 +113,10 @@ void TilesMap::save(const std::string &file) const{
         width = b.getPosition().width;
         height = b.getPosition().height;
         buildID = b.getID();
+        buildTeam = b.getTeam();
 
-        wf.write((char *) &(buildID), sizeof(Buildings::ID));
+        wf.write((char *) &(buildID), sizeof(EntityInfo::ID));
+        wf.write((char *) &(buildTeam), sizeof(EntityInfo::Team));
         wf.write((char *) &(left), sizeof(int));
         wf.write((char *) &(top), sizeof(int));
         wf.write((char *) &(width), sizeof(int));
@@ -120,21 +124,22 @@ void TilesMap::save(const std::string &file) const{
     }
 
     float x,y;
-    Editor::Entity type;
-    Editor::Tool team;
+    EntityInfo::ID id;
+    EntityInfo::Team team;
     size = mEntities.size();
+    std::cout<<"nb entities "<<size<<std::endl;
 
     wf.write((char *) &(size), sizeof(std::size_t));
     for (const auto &e : mEntities){
         x = e.getPosition().x;
         y = e.getPosition().y;
-        type = e.getType();
+        id = e.getID();
         team = e.getTeam();
 
         wf.write((char *) &(x),sizeof(float));
         wf.write((char *) &(y),sizeof(float));
-        wf.write((char *) &(type),sizeof(Editor::Entity));
-        wf.write((char *) &(team),sizeof(Editor::Tool));
+        wf.write((char *) &(id),sizeof(EntityInfo::ID));
+        wf.write((char *) &(team),sizeof(EntityInfo::Team));
     }
 
     wf.close();
@@ -172,12 +177,16 @@ void TilesMap::load(const std::string &file) {
 
     std::size_t nb_buildings = 0;
     int left, top, width, height;
-    Buildings::ID buildID = Buildings::None;
+    EntityInfo::ID buildID = EntityInfo::ID::None;
+    EntityInfo::Team buildTeam;
 
     rf.read((char *) &(nb_buildings), sizeof(std::size_t));
+    std::cout<<"nb bulding laoded"<<nb_buildings<<std::endl;
+    if(nb_buildings > 100 ) return;
     for (std::size_t i(0); i<nb_buildings; i++){
 
-        rf.read((char *) &(buildID), sizeof(Buildings::ID));
+        rf.read((char *) &(buildID), sizeof(EntityInfo::ID));
+        rf.read((char *) &(buildTeam), sizeof(EntityInfo::Team));
         rf.read((char *) &(left), sizeof(int));
         rf.read((char *) &(top), sizeof(int));
         rf.read((char *) &(width), sizeof(int));
@@ -185,28 +194,29 @@ void TilesMap::load(const std::string &file) {
 
         sf::IntRect rect1 ={left, top, width, height};
 
-        mBuildings.emplace_back(BuildInfo(buildID, rect1));
+        mBuildings.emplace_back(BuildInfo(buildID,buildTeam, rect1));
 
     }
 
     std::size_t nb_entities = 0;
     float x,y;
-    Editor::Entity type;
-    Editor::Tool team;
+    EntityInfo::ID id;
+    EntityInfo::Team team;
 
     rf.read((char *) &(nb_entities), sizeof(std::size_t));
+    std::cout<<"nb entities laoded"<<nb_entities<<std::endl;
+    if(nb_entities > 100 ) return;
     for (std::size_t i(0); i<nb_entities; i++){
 
         rf.read((char *) &(x), sizeof(float));
         rf.read((char *) &(y), sizeof(float));
-        rf.read((char *) &(type),sizeof(Editor::Entity));
-        rf.read((char *) &(team),sizeof(Editor::Tool));
+        rf.read((char *) &(id),sizeof(EntityInfo::ID));
+        rf.read((char *) &(team),sizeof(EntityInfo::Team));
 
         sf::Vector2f pos(x,y);
-        mEntities.emplace_back(EntityInfo(pos,type,team));
+        mEntities.emplace_back(EntityInfo(pos,id,team,EntityInfo::Type::Soldier));
 
     }
-
     rf.close();
 
 }
@@ -264,18 +274,20 @@ void TilesMap::draw(sf::RenderTarget& target, sf::RenderStates states) const{
 
         for( const auto &Entity : mEntities){
             sf::IntRect rect = {0,0,32,32};
-            if (Entity.getTeam() == Editor::Tool::RedTeam) rect.top = 32;
+            if (Entity.getTeam() == EntityInfo::Team::Red) rect.top = 32;
 
-            switch (Entity.getType()){
-                case Editor::Entity::Soldier :
+            switch (Entity.getID()){
+                case EntityInfo::Knight :
                     rect.left = 0;
                     break;
-                case Editor::Entity::Archer :
+                case EntityInfo::Archer :
                     rect.left = 32;
                     break;
-                case Editor::Entity::Tank :
+                case EntityInfo::Tank :
                     rect.left = 64;
                     break;
+                default:
+                    continue;
             }
 
             sprite.setTextureRect(rect);

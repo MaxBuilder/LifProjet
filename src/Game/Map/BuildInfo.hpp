@@ -10,14 +10,16 @@
 
 class BuildInfo {
 public:
-    BuildInfo(Buildings::ID ID, sf::IntRect position);
+    BuildInfo(EntityInfo::ID ID,EntityInfo::Team team, sf::IntRect position);
 
-    Buildings::ID getID() const;
+    EntityInfo::ID getID() const;
+    EntityInfo::Team getTeam() const;
     sf::IntRect getPosition() const;
     void setPosition(sf::IntRect rect);
 
 private:
-    Buildings::ID mId;
+    EntityInfo::ID mId;
+    EntityInfo::Team mTeam;
     sf::IntRect mPosition;
 };
 

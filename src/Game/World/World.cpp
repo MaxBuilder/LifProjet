@@ -37,7 +37,7 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
     int id;
 
     for (; e.first != e.second ; e.first++) {
-        if(e.first->getTeam() == Editor::Tool::BlueTeam) {
+        if(e.first->getTeam() == EntityInfo::Blue) {
             id = idb;
             idb++;
         }
@@ -45,7 +45,7 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
             id = idr;
             idr++;
         }
-        createEntity(e.first->getPosition(), e.first->getTeam(), e.first->getType(), id);
+        createEntity(e.first->getPosition(), e.first->getTeam(), e.first->getID(), id);
     }
 
     // Initialisation of defender (to expand)
@@ -56,7 +56,7 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
     auto builds = mMap.getBuildingsIt();
     for (;builds.first != builds.second;builds.first++){
         std::cout<<builds.first->getID()<<" pos : "<<builds.first->getPosition().left<<"/"<<builds.first->getPosition().top<<std::endl;
-        std::unique_ptr<Building> build = std::make_unique<Building>(builds.first->getID(),builds.first->getPosition(),mCommandQueue);
+        std::unique_ptr<Building> build = std::make_unique<Building>(builds.first->getID(), builds.first->getTeam(),builds.first->getPosition(),mCommandQueue);
         mBuildings.push_back(build.get());
         mSceneLayers[Back]->attachChild(std::move(build));
     }
@@ -150,7 +150,7 @@ void World::updateTargets() {
             distMin = 99999999.0;
             for (auto &build : mBuildings){
                 float dist = distance(red->getPosition(), build->getPosition());
-                if(dist < 150 and !build->isDestroyed() and build->getTeam() == Entity::BlueTeam) { // In sight
+                if(dist < 150 and !build->isDestroyed() and build->getTeam() == EntityInfo::Blue) { // In sight
                     if(dist < distMin and dist < 100) {
                         red->setTarget(static_cast<Entity*>(build));
                         distMin = dist;
@@ -191,7 +191,7 @@ void World::updateBonus(){
     for (auto &entity : mSoldiers){
 
         if (entity->isDestroyed()){
-            entity->changeBonus(Entity::None);
+            entity->changeBonus(EntityInfo::None);
             continue;
         }
 
@@ -204,18 +204,14 @@ void World::updateBonus(){
             }
         }
         if (!entityHaveBonus)
-            entity->changeBonus(Entity::None);
+            entity->changeBonus(EntityInfo::None);
     }
 }
 
 void World::updateMovement() {
     for (auto entity : mSoldiers){
         if(entity->isDestroyed()) continue;
-        Editor::Tool team;
-        if(entity->getTeam() == Entity::BlueTeam)
-            team = Editor::Tool::BlueTeam;
-        else
-            team = Editor::Tool::RedTeam;
+
         sf::Vector2f tmpVeloce = entity->getVelocity();
         entity->setVelocity(entity->getVelocity()*mMap.getTile(entity->getPosition()/20.f).getMoveSpeed());
         sf::Vector2f point = (entity->getPosition()+entity->getVelocity());
@@ -238,14 +234,14 @@ void World::updateMovement() {
             point.y += 10.f;
 
         sf::Vector2i pos = sf::Vector2i(point.x/20, point.y/20);
-        if (mMap.getTile(pos).isCrossable(team) and inMap(point))
+        if (mMap.getTile(pos).isCrossable(entity->getTeam()) and inMap(point))
             entity->travel();
         else{
             sf::Vector2i pos1 = sf::Vector2i(point.x/20, entity->getPosition().y/20);
             sf::Vector2i pos2 = sf::Vector2i((entity->getPosition().x)/20, point.y/20);
-            if (mMap.getTile(pos1).isCrossable(team) and inMap(point))
+            if (mMap.getTile(pos1).isCrossable(entity->getTeam()) and inMap(point))
                 entity->move(entity->getVelocity().x,0);
-            else if(mMap.getTile(pos2).isCrossable(team) and inMap(point))
+            else if(mMap.getTile(pos2).isCrossable(entity->getTeam()) and inMap(point))
                 entity->move(0,entity->getVelocity().y);
         }
         entity->setVelocity(tmpVeloce);
@@ -263,7 +259,7 @@ void World::updateDeath(){
     }
 
     for( auto &build : mBuildings)
-        if(build->isDestroyed() and not build->down and build->getBonusFlag() == Entity::None)
+        if(build->isDestroyed() and not build->down and build->getBonusFlag() == EntityInfo::Barrier)
             recBarrier(build->getOnMapPosition());
 
     for (auto &build : mBuildings){
@@ -294,7 +290,7 @@ void World::recBarrier(sf::Vector2i position){
             for(auto &b :mBuildings){
                 if (b->getOnMapPosition() == i
                 and not b->isDestroyed()
-                and b->getBonusFlag() == Entity::None){
+                and b->getBonusFlag() == EntityInfo::Barrier){
                     b->destroy();
                     recBarrier(i);
                     break;
@@ -303,20 +299,12 @@ void World::recBarrier(sf::Vector2i position){
     }
 }
 
-void World::createEntity(sf::Vector2f position, Editor::Tool team, Editor::Entity type, int id){
-    Entity::Team mteam;
-    if(team == Editor::Tool::BlueTeam)
-        mteam = Entity::BlueTeam;
-    else
-        mteam = Entity::RedTeam;
+void World::createEntity(sf::Vector2f position, EntityInfo::Team team, EntityInfo::ID id, int indice){
 
-    if(type != Editor::Entity::Soldier)
-        return;
-
-    std::unique_ptr<Soldier> soldier = std::make_unique<Soldier>(id, mteam, mTextures, mFonts, mAstar, mCommandQueue);
+    std::unique_ptr<Soldier> soldier = std::make_unique<Soldier>(indice, team, mTextures, mFonts, mAstar, mCommandQueue);
     soldier->setPosition(position*mMap.getBlockSize());
 
-    if(mteam ==  Entity::RedTeam)
+    if(team ==  EntityInfo::Team::Red)
         mRedTeam.push_back(soldier.get());
     else
         mBlueTeam.push_back(soldier.get());
@@ -362,6 +350,6 @@ void World::trackedMove(sf::Vector2f direction) {
 void World::trackedReset() {
     if(mTracked != -1) {
         mSoldiers[mTracked]->setAction(Soldier::Action::Moving);
-        if(mSoldiers[mTracked]->getTeam() == Soldier::BlueTeam) mSoldiers[mTracked]->resetTravelledDistance();
+        if(mSoldiers[mTracked]->getTeam() == EntityInfo::Team::Blue) mSoldiers[mTracked]->resetTravelledDistance();
     }
 }
