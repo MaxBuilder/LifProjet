@@ -43,6 +43,7 @@ public:
     bool supressBuildings(sf::Vector2i pos);
 
     void addButtonTexture(sf::Vector2i id, sf::Vector2i pos);
+    void addButtonBuilding(sf::Vector2i id, sf::Vector2i pos);
 
 private :
     sf::Sprite background;
@@ -54,12 +55,12 @@ private :
     bool subMenu;
     bool saveload; // true : save | false : load
 
-    GUI::Container mSoldierBar;
     GUI::Container mEditBar;
     GUI::Container mToolBar;
     GUI::Container mRotationBar;
     GUI::Container mTeamSelection;
     GUI::ScrollingContainer mPaletteBar;
+    GUI::ScrollingContainer mBuildingbar;
 
     GUI::Container mSubMenu;
 

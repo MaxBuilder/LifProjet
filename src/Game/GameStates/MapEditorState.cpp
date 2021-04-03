@@ -8,6 +8,7 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
         : State(stack, context)
         , map(context.textures.get(Textures::MapGround), context.textures.get(Textures::EditorAllSoldiers), 16.f)
         , mPaletteBar(sf::IntRect(1130,100,150,550),4)
+        , mBuildingbar(sf::IntRect(1130,100,150,550),4)
         , subBackground(getContext().textures.get(Textures::SubBackground))
 {
     mEntity = EntityInfo::None;
@@ -98,12 +99,29 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     auto knight = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorSoldier);
     knight->setToggle(true);
     knight->setPosition(562, 10);
-    knight->activate();
     knight->setCallback([this] () {
         mEntity = EntityInfo::ID::Knight ;
         getContext().sounds.play(Sounds::Menu);
     });
-    mSoldierBar.pack(knight);
+    mEditBar.pack(knight);
+
+    auto Archer = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorArcher);
+    Archer->setToggle(true);
+    Archer->setPosition(634, 10);
+    Archer->setCallback([this] () {
+        mEntity = EntityInfo::ID::Archer ;
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mEditBar.pack(Archer);
+
+    auto Tank = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorTank);
+    Tank->setToggle(true);
+    Tank->setPosition(706, 10);
+    Tank->setCallback([this] () {
+        mEntity = EntityInfo::ID::Tank ;
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mEditBar.pack(Tank);
 
     // Tool bar buttons :
 
@@ -154,6 +172,16 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     });
     mToolBar.pack(EntityButton);
 
+    auto buildingButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorBuilding);
+    buildingButton->setToggle(true);
+    buildingButton->setPosition(16, 428);
+    buildingButton->setCallback([this] () {
+        tool = Editor::Tool::PlaceBuilding;
+        mEntity = EntityInfo::None;
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mToolBar.pack(buildingButton);
+
     // Rotation bar buttons :
 
     auto rotateUpButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorRotateUpButton);
@@ -177,10 +205,19 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
 
     // Texture selection buttons :
 
-    for(int y(0); y < 46; y++){
+    for(int y(0); y < 36; y++){
         for (int x(0); x < 3;x++){
 
             addButtonTexture(sf::Vector2i(x,y), sf::Vector2i(1134+44*x,100+44*y));
+        }
+    }
+
+    // Buildings selection :
+
+    for(int y(36); y < 46; y++){
+        for (int x(0); x < 3;x++){
+
+            addButtonBuilding(sf::Vector2i(x,y), sf::Vector2i(1134+44*x,100+44*(y-36)));
         }
     }
 
@@ -245,11 +282,19 @@ void MapEditorState::draw() {
     window.draw(background);
     window.draw(map);
     window.draw(mEditBar);
-    window.draw(mSoldierBar);
     window.draw(mToolBar);
-    window.draw(mPaletteBar);
     window.draw(mRotationBar);
     window.draw(mTeamSelection);
+
+    switch (tool) {
+        case Editor::Tool::PlaceBuilding :
+            window.draw(mBuildingbar);
+            break;
+        default:
+            window.draw(mPaletteBar);
+            break;
+    }
+
 
     mapPath.setString(mMapPath);
     window.draw(mapPath);
@@ -281,11 +326,19 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
     }
 
     mEditBar.handleEvent(event, getContext().window);
-    mSoldierBar.handleEvent(event, getContext().window);
     mToolBar.handleEvent(event, getContext().window);
-    mPaletteBar.handleEvent(event, getContext().window);
     mRotationBar.handleEvent(event, getContext().window);
     mTeamSelection.handleCheckBoxEvent(event,getContext().window);
+
+    switch (tool) {
+        case Editor::Tool::PlaceBuilding :
+            mBuildingbar.handleEvent(event, getContext().window);
+            break;
+        default:
+            mPaletteBar.handleEvent(event, getContext().window);
+            break;
+    }
+
 
     if (event.type == sf::Event::MouseMoved or event.type == sf::Event::MouseButtonPressed){
 
@@ -345,9 +398,8 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
     return false;
 }
 
-void MapEditorState::addButtonTexture(sf::Vector2i id, sf::Vector2i pos){
-
-
+void MapEditorState::addButtonBuilding(sf::Vector2i id, sf::Vector2i pos) {
+    std::cout<<"create bulding buttons\n";
     auto button = std::make_shared<GUI::ButtonTexture>(getContext(), 40, 40, Textures::MapGround,id);
     button->setPosition(pos.x, pos.y);
     button->setToggle(true);
@@ -386,13 +438,23 @@ void MapEditorState::addButtonTexture(sf::Vector2i id, sf::Vector2i pos){
         }
 
         ground_selection = bId;
-        if(buildId != EntityInfo::None) {
-            mEntity = buildId;
-            tool = Editor::Tool::PlaceBuilding;
-        }else if( tool == Editor::Tool::PlaceBuilding ){
-            tool = Editor::Tool::Standard;
-        }
+        mEntity = buildId;
         mTeam = team;
+        getContext().sounds.play(Sounds::Menu);
+
+    });
+    mBuildingbar.pack(button);
+
+}
+
+void MapEditorState::addButtonTexture(sf::Vector2i id, sf::Vector2i pos){
+
+
+    auto button = std::make_shared<GUI::ButtonTexture>(getContext(), 40, 40, Textures::MapGround,id);
+    button->setPosition(pos.x, pos.y);
+    button->setToggle(true);
+    button->setCallback([this](sf::Vector2i bId){
+        ground_selection = bId;
         getContext().sounds.play(Sounds::Menu);
     });
     mPaletteBar.pack(button);
@@ -457,6 +519,7 @@ void MapEditorState::recPaintFill(sf::Vector2i co, bool* isPaint){
 }
 
 void MapEditorState::createBuildings(sf::Vector2i pos){
+    if(mEntity == EntityInfo::None) return;
     sf::IntRect rect1 = {pos.x, pos.y, 0, 0};
     bool construtible = true;
 
