@@ -318,13 +318,6 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
         return false;
     }
 
-    if (event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::L){
-        auto build = map.getBuildingsIt();
-        for (; build.first != build.second; build.first++)
-            std::cout<<build.first->getID();
-        std::cout<<std::endl;
-    }
-
     mEditBar.handleEvent(event, getContext().window);
     mToolBar.handleEvent(event, getContext().window);
     mRotationBar.handleEvent(event, getContext().window);
@@ -399,7 +392,6 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
 }
 
 void MapEditorState::addButtonBuilding(sf::Vector2i id, sf::Vector2i pos) {
-    std::cout<<"create bulding buttons\n";
     auto button = std::make_shared<GUI::ButtonTexture>(getContext(), 40, 40, Textures::MapGround,id);
     button->setPosition(pos.x, pos.y);
     button->setToggle(true);
@@ -585,7 +577,6 @@ bool MapEditorState::supressBuildings(sf::Vector2i pos) {
 }
 
 void MapEditorState::createSoldier(sf::Vector2i pos){
-    std::cout<<"Entity creation\n";
     if(not map.getTile(pos).isCrossable()) return;
 
     auto posf = static_cast<sf::Vector2f>(pos);
@@ -596,7 +587,6 @@ void MapEditorState::createSoldier(sf::Vector2i pos){
 
 
     map.addEntity(EntityInfo(posf,mEntity,mTeam,EntityInfo::Type::Soldier));
-    std::cout<<"Entity added\n";
 }
 
 bool MapEditorState::supressSoldier(sf::Vector2i pos){

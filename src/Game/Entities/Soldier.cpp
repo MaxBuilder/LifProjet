@@ -7,9 +7,10 @@
 #include <iostream>
 
 // Archer faire : ajouter les tables de données pour les entités
-Soldier::Soldier(int id, EntityInfo::Team team, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue)
+Soldier::Soldier(int id, EntityInfo::Team team, sf::Vector2i objectif, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue)
 : Entity(100,team, commandQueue)
 , mId(id)
+, mObjectif(objectif)
 , mVelocity(0,0)
 , mDirection(sf::Vector2f(0, 0))
 , mOrigin(sf::Vector2f(0, 0))
@@ -31,6 +32,7 @@ Soldier::Soldier(int id, EntityInfo::Team team, const TextureHolder& textures, c
 , mSquadSize(0)
 , nbInPlace(0)
 , mPathfinding(Astar)
+, usePathFinding(false)
 {
     mBorder = 10;
     float blockSize = 20.f; // à modifier pour rendre dynamique
@@ -96,9 +98,6 @@ void Soldier::updateCurrent(sf::Time dt) {
 
 void Soldier::updateAttack(sf::Time dt) {
 
-    if(mAction != Moving)
-        mPath.clear();
-
     if(mAction == None or isDestroyed()) return;
     else if(mAction == Override) {
         setVelocity(mDirection * dt.asSeconds() * (80.f+mSpeedBonus));
@@ -116,7 +115,7 @@ void Soldier::updateAttack(sf::Time dt) {
         if(mTargeted == nullptr) {
             if(mPath.empty()) {
                 mAstarDuration.restart();
-                mPathfinding.getPath(getPosition(), sf::Vector2f(57, 6), mPath, 2) ;
+                mPathfinding.getPath(getPosition(), mObjectif, mPath, 2) ;
                 std::cout << "Pathfinding Duration :" << mAstarDuration.getElapsedTime().asMicroseconds() << std::endl;
             }
             sf::Vector2f &target = mPath.back();
@@ -311,17 +310,27 @@ sf::Vector2f Soldier::randomDirection() {
     return sf::Vector2f(Random::Generate(-10.f, 10.f), Random::Generate(-10.f, 10.f));
 }
 
-void Soldier::seekTarget() {
-    sf::Vector2f target = mTargeted->getPosition();
-    target = target - getPosition();
-    mDirection = target / norm(target);
-    mSpeedBase = 30;
-}
-
 void Soldier::seekTarget(sf::Vector2f pos) {
-    sf::Vector2f target = pos;
-    target = target - getPosition();
-    mDirection = target / norm(target);
+    sf::Vector2f target;
+    if (pos == sf::Vector2f(-1,-1))
+        target = mTargeted->getPosition();
+    else
+        target = pos;
+    if(usePathFinding){
+        if(mPath.empty()) {
+            mAstarDuration.restart();
+            mPathfinding.getPath(getPosition(), target/20.f, mPath, 2) ;
+            std::cout << "Pathfinding Duration :" << mAstarDuration.getElapsedTime().asMicroseconds() << std::endl;
+        }
+        target = mPath.back();
+        if (distance(getPosition(), target) < 2 )
+            mPath.pop_back();
+        setDirection((target-getPosition())/norm(target-getPosition()));
+    }
+    else{
+        target = target - getPosition();
+        mDirection = target / norm(target);
+    }
     mSpeedBase = 30;
 }
 
@@ -340,6 +349,8 @@ Soldier::Action Soldier::getAction() {
 }
 
 void Soldier::setAction(Action act) {
+    mPath.clear();
+    usePathFinding = false;
     std::string name[10] = {"None","Moving","Seeking","Fleeing","Attacking","Calling","Leading","WithSquad","Assaulting","controlling"};
     std::string str = mTeam ==EntityInfo::Team::Blue ? "Blue" : "Red";
     std::cout<<"id : "<<mId<<str<<" action :"<<name[mAction]<<" -> "<<name[act]<<std::endl;

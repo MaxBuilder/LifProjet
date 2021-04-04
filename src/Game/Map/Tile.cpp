@@ -61,11 +61,11 @@ void Tile::paint(const sf::Vector2i &id,const float &rotation ){
     }else if( id.y < 26 ){ // ponts, contour forets
         topMoveSpeed = 0.85f;
         topCrossable = true;
-    }else if (id.y < 46){ // batiment + montagnes + foret
+    }else if (id.y < 40){ // batiment + montagnes + foret
         topMoveSpeed = 0.6f;
         topCrossable = false;
     }else{
-        topMoveSpeed = 0.6f;
+        topMoveSpeed = 0.75f;
         topCrossable = true;
     }
 

@@ -38,7 +38,7 @@ public:
     };
 
 public:
-    Soldier(int id, EntityInfo::Team team, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue);
+    Soldier(int id, EntityInfo::Team team,sf::Vector2i objetif, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue);
 
     int getId() const;
 
@@ -70,8 +70,7 @@ public:
     Entity* getTarget();
 
     void travel();
-    void seekTarget();
-    void seekTarget(sf::Vector2f pos);
+    void seekTarget(sf::Vector2f pos = sf::Vector2f(-1,-1));
     void fleeTarget();
     void attackTarget();
     void roam(sf::Time dt);
@@ -102,6 +101,7 @@ private:
     std::vector<sf::Vector2f> mPath;
     float mSpeedBonus, mSpeedBase;
     float mDamages;
+    sf::Vector2f mObjectif;
     sf::Vector2f mDirection;
     sf::Vector2f mVelocity;
     sf::Vector2f mOrigin; // Point where entity is instantiated
@@ -116,6 +116,7 @@ private:
     int mId;
 
 public:
+    bool usePathFinding;
     int mTargetInSight;
     int mAllyInSight;
 

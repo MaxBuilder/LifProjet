@@ -29,37 +29,48 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
 
         mSceneGraph.attachChild(std::move(layer));
     }
+    sf::Vector2i redObjectif, blueObjectif;
+
+    // Adding buildings to the scene
+    auto builds = mMap.getBuildingsIt();
+    for (;builds.first != builds.second;builds.first++){
+        // std::cout<<builds.first->getID()<<" pos : "<<builds.first->getPosition().left<<"/"<<builds.first->getPosition().top<<std::endl;
+        std::unique_ptr<Building> build = std::make_unique<Building>(builds.first->getID(), builds.first->getTeam(),builds.first->getPosition(),mCommandQueue);
+        if(build->getBonusFlag() == EntityInfo::Castle){
+            if(build->getTeam() == EntityInfo::Blue)
+                redObjectif = build->getOnMapPosition();
+            else
+                blueObjectif = build->getOnMapPosition();
+        }
+        mBuildings.push_back(build.get());
+        mSceneLayers[Back]->attachChild(std::move(build));
+    }
 
     // Adding entities to the scene
     auto e = mMap.getEntitiesIt();
     int idr = 0;
     int idb = 0;
     int id;
+    sf::Vector2i objectif;
 
     for (; e.first != e.second ; e.first++) {
         if(e.first->getTeam() == EntityInfo::Blue) {
             id = idb;
             idb++;
+            objectif = blueObjectif;
         }
         else {
             id = idr;
             idr++;
+            objectif = redObjectif;
         }
-        createEntity(e.first->getPosition(), e.first->getTeam(), e.first->getID(), id);
+        createEntity(e.first->getPosition(), e.first->getTeam(),objectif, e.first->getID(), id);
     }
 
     // Initialisation of defender (to expand)
     for(auto &soldier : mSoldiers)
         soldier->init();
 
-    // Adding buildings to the scene
-    auto builds = mMap.getBuildingsIt();
-    for (;builds.first != builds.second;builds.first++){
-        std::cout<<builds.first->getID()<<" pos : "<<builds.first->getPosition().left<<"/"<<builds.first->getPosition().top<<std::endl;
-        std::unique_ptr<Building> build = std::make_unique<Building>(builds.first->getID(), builds.first->getTeam(),builds.first->getPosition(),mCommandQueue);
-        mBuildings.push_back(build.get());
-        mSceneLayers[Back]->attachChild(std::move(build));
-    }
 }
 
 void World::draw() {
@@ -237,12 +248,7 @@ void World::updateMovement() {
         if (mMap.getTile(pos).isCrossable(entity->getTeam()) and inMap(point))
             entity->travel();
         else{
-            sf::Vector2i pos1 = sf::Vector2i(point.x/20, entity->getPosition().y/20);
-            sf::Vector2i pos2 = sf::Vector2i((entity->getPosition().x)/20, point.y/20);
-            if (mMap.getTile(pos1).isCrossable(entity->getTeam()) and inMap(point))
-                entity->move(entity->getVelocity().x,0);
-            else if(mMap.getTile(pos2).isCrossable(entity->getTeam()) and inMap(point))
-                entity->move(0,entity->getVelocity().y);
+            entity->usePathFinding = true;
         }
         entity->setVelocity(tmpVeloce);
     }
@@ -299,9 +305,9 @@ void World::recBarrier(sf::Vector2i position){
     }
 }
 
-void World::createEntity(sf::Vector2f position, EntityInfo::Team team, EntityInfo::ID id, int indice){
+void World::createEntity(sf::Vector2f position, EntityInfo::Team team, sf::Vector2i objectif, EntityInfo::ID id, int indice){
 
-    std::unique_ptr<Soldier> soldier = std::make_unique<Soldier>(indice, team, mTextures, mFonts, mAstar, mCommandQueue);
+    std::unique_ptr<Soldier> soldier = std::make_unique<Soldier>(indice, team, objectif, mTextures, mFonts, mAstar, mCommandQueue);
     soldier->setPosition(position*mMap.getBlockSize());
 
     if(team ==  EntityInfo::Team::Red)

@@ -104,7 +104,6 @@ void TilesMap::save(const std::string &file) const{
     EntityInfo::Team buildTeam;
 
     std::size_t size = mBuildings.size();
-    std::cout<<"nb bulding "<<size<<std::endl;
     wf.write((char *) &(size), sizeof(std::size_t));
 
     for (const auto &b : mBuildings){
@@ -127,7 +126,6 @@ void TilesMap::save(const std::string &file) const{
     EntityInfo::ID id;
     EntityInfo::Team team;
     size = mEntities.size();
-    std::cout<<"nb entities "<<size<<std::endl;
 
     wf.write((char *) &(size), sizeof(std::size_t));
     for (const auto &e : mEntities){
@@ -181,7 +179,6 @@ void TilesMap::load(const std::string &file) {
     EntityInfo::Team buildTeam;
 
     rf.read((char *) &(nb_buildings), sizeof(std::size_t));
-    std::cout<<"nb bulding laoded"<<nb_buildings<<std::endl;
     if(nb_buildings > 100 ) return;
     for (std::size_t i(0); i<nb_buildings; i++){
 
@@ -204,7 +201,6 @@ void TilesMap::load(const std::string &file) {
     EntityInfo::Team team;
 
     rf.read((char *) &(nb_entities), sizeof(std::size_t));
-    std::cout<<"nb entities laoded"<<nb_entities<<std::endl;
     if(nb_entities > 100 ) return;
     for (std::size_t i(0); i<nb_entities; i++){
 
