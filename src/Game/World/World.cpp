@@ -340,6 +340,12 @@ void World::trackPrev() {
     mSoldiers[mTracked]->setAction(Soldier::Action::Override);
 }
 
+void World::switchDisplayDebug(){
+    for (auto e :mSoldiers)
+        e->swithDebugDisplay();
+    std::cout<<"switch diplay\n";
+}
+
 void World::untrack() {
     trackedReset();
     mTracked = -1;

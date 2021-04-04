@@ -22,6 +22,8 @@ public:
     World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder &fonts, SoundPlayer &sounds);
 
     void update(sf::Time dt);
+    void switchDisplayDebug();
+
     void draw();
 
     // Tracking functions :

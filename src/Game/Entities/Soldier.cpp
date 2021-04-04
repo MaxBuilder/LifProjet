@@ -10,6 +10,9 @@
 Soldier::Soldier(int id, EntityInfo::Team team, sf::Vector2i objectif, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue)
 : Entity(100,team, commandQueue)
 , mId(id)
+, mDisplayType(debug::life)
+, frontLife(sf::Quads,4)
+, fontLife(sf::Quads, 4)
 , mObjectif(objectif)
 , mVelocity(0,0)
 , mDirection(sf::Vector2f(0, 0))
@@ -46,10 +49,44 @@ Soldier::Soldier(int id, EntityInfo::Team team, sf::Vector2i objectif, const Tex
     setOrigin(blockSize/2.f,blockSize/2.f);
     mSpriteTime = sf::milliseconds(0);
 
-    // Font init
-    mLife.setFont(fonts.get(Fonts::Main));
-    mLife.setFillColor(sf::Color::Black);
-    mLife.setCharacterSize(10u);
+    // Display init
+    mDisplayID.setFont(fonts.get(Fonts::Main));
+    mDisplayID.setFillColor(sf::Color::Black);
+    mDisplayID.setCharacterSize(10u);
+    std::string str = toString(mId);
+    if (mTeam == EntityInfo::Team::Blue)
+        str+=std::string(" Blue");
+    else
+        str+=std::string(" Red");
+    mDisplayID.setString(str);
+    mDisplayID.setPosition(getPosition()+sf::Vector2f(0,-20));
+    centerOrigin(mDisplayID);
+
+    mDisplayAction.setFont(fonts.get(Fonts::Main));
+    mDisplayAction.setFillColor(sf::Color::Black);
+    mDisplayAction.setCharacterSize(10u);
+    mDisplayAction.setString("Moving");
+    mDisplayAction.setPosition(getPosition()+sf::Vector2f(0,-20));
+    centerOrigin(mDisplayID);
+
+    frontLife[0].position = getPosition()+sf::Vector2f(0,-21);
+    frontLife[0].color = sf::Color::Green;
+    frontLife[1].position = getPosition()+sf::Vector2f(blockSize,-21);
+    frontLife[1].color = sf::Color::Green;
+    frontLife[2].position = getPosition()+sf::Vector2f(blockSize,-18);
+    frontLife[2].color = sf::Color::Green;
+    frontLife[3].position = getPosition()+sf::Vector2f(0,-18);
+    frontLife[3].color = sf::Color::Green;
+
+    fontLife[0].position = getPosition()+sf::Vector2f(-1,-22);
+    fontLife[0].color = sf::Color::Black;
+    fontLife[1].position = getPosition()+sf::Vector2f(blockSize+1,-22);
+    fontLife[1].color = sf::Color::Black;
+    fontLife[2].position = getPosition()+sf::Vector2f(blockSize+1,-17);
+    fontLife[2].color = sf::Color::Black;
+    fontLife[3].position = getPosition()+sf::Vector2f(-1,-17);
+    fontLife[3].color = sf::Color::Black;
+
 }
 
 void Soldier::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const {
@@ -60,7 +97,32 @@ void Soldier::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) con
             sf::Vertex(sf::Vector2f(getPosition() + mDirection * 10.f), sf::Color::Red)
     };
     target.draw(line, 2, sf::Lines);
-    target.draw(mLife);
+
+    switch (mDisplayType) {
+        case debug::id :
+            target.draw(mDisplayID, states);
+            break;
+        case debug::action :
+            target.draw(mDisplayAction, states);
+            break;
+        case debug::life :
+            if(mHitPoints!=mMaxHintPoints){
+                target.draw(fontLife, states);
+                target.draw(frontLife, states);
+            }
+            break;
+        default :
+            break;
+    }
+}
+
+void Soldier::swithDebugDisplay(){
+    if(mDisplayType == debug::id)
+        mDisplayType = debug::action;
+    else if(mDisplayType == debug::action)
+        mDisplayType = debug::life;
+    else
+        mDisplayType = debug::id;
 }
 
 void Soldier::updateCurrent(sf::Time dt) {
@@ -85,15 +147,32 @@ void Soldier::updateCurrent(sf::Time dt) {
     }
 
     mTeam == EntityInfo::Team::Blue ? updateDefense(dt) : updateAttack(dt);
-    // mLife.setString(std::to_string(getHitPoints()));
-    std::string str = toString(mId);
-    if (mTeam == EntityInfo::Team::Blue)
-        str+=std::string(" Blue");
-    else
-        str+=std::string(" Red");
-    mLife.setString(str);
-    mLife.setPosition(getPosition()+sf::Vector2f(0,-20));
-    centerOrigin(mLife);
+
+    // update lifeDisplay
+    float blockSize = 20.f;
+    float xlife = float(mHitPoints)/float(mMaxHintPoints);
+    float lifeLength = blockSize*xlife;
+
+    frontLife[1].position = sf::Vector2f(lifeLength,-21);
+    frontLife[2].position = sf::Vector2f(lifeLength,-18);
+
+    if(xlife > 0.5f){
+        frontLife[0].color = sf::Color::Green;
+        frontLife[1].color = sf::Color::Green;
+        frontLife[2].color = sf::Color::Green;
+        frontLife[3].color = sf::Color::Green;
+    }else if(xlife > 0.25f){
+        frontLife[0].color = sf::Color::Yellow;
+        frontLife[1].color = sf::Color::Yellow;
+        frontLife[2].color = sf::Color::Yellow;
+        frontLife[3].color = sf::Color::Yellow;
+    }else{
+        frontLife[0].color = sf::Color::Red;
+        frontLife[1].color = sf::Color::Red;
+        frontLife[2].color = sf::Color::Red;
+        frontLife[3].color = sf::Color::Red;
+    }
+
 }
 
 void Soldier::updateAttack(sf::Time dt) {
@@ -355,6 +434,7 @@ void Soldier::setAction(Action act) {
     std::string str = mTeam ==EntityInfo::Team::Blue ? "Blue" : "Red";
     std::cout<<"id : "<<mId<<str<<" action :"<<name[mAction]<<" -> "<<name[act]<<std::endl;
     mAction = act;
+    mDisplayAction.setString(name[mAction]);
 }
 
 void Soldier::remove() {

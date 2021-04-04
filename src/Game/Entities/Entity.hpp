@@ -33,6 +33,7 @@ protected:
 protected:
     float mBorder;
     int mHitPoints;
+    int mMaxHintPoints;
     EntityInfo::Team mTeam;
     CommandQueue& mCommandQueue;
 

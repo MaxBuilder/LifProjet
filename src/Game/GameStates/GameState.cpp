@@ -73,6 +73,10 @@ bool GameState::handleEvent(const sf::Event &event) {
         mScroll = (int) event.mouseWheelScroll.delta;
     }
 
+    if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::E) {
+        mWorld.switchDisplayDebug();
+    }
+
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
         requestStackPush(States::Pause);
 

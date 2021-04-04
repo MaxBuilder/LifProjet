@@ -7,6 +7,7 @@
 
 Entity::Entity(int hitPoints, EntityInfo::Team team,CommandQueue &commandQueue)
 : mHitPoints(hitPoints),
+  mMaxHintPoints(hitPoints),
   mTeam(team),
   mBorder(0),
   down(false),
@@ -15,6 +16,8 @@ Entity::Entity(int hitPoints, EntityInfo::Team team,CommandQueue &commandQueue)
 
 void Entity::heal(int points) {
     mHitPoints += points;
+    if(mHitPoints > mMaxHintPoints)
+        mHitPoints = mMaxHintPoints;
 }
 
 void Entity::damage(int points) {

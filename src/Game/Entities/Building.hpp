@@ -25,9 +25,10 @@ public:
 private:
 
     void drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const override;
-    void updateCurrent();
+    void updateCurrent(sf::Time dt) override;
 
     float mRange;
+    sf::VertexArray fontLife,frontLife;
     EntityInfo::ID mBonusFlag;
     sf::CircleShape mZone;
     sf::IntRect mPosition;

@@ -37,10 +37,16 @@ public:
         Override
     };
 
+    enum debug{
+        id, action, life
+    };
+
 public:
     Soldier(int id, EntityInfo::Team team,sf::Vector2i objetif, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue);
 
     int getId() const;
+
+    void swithDebugDisplay();
 
     void changeBonus(EntityInfo::ID bonus);
     EntityInfo::ID getBonus();
@@ -94,9 +100,12 @@ private:
     EntityInfo::ID mBonus;
     sf::Sprite mSprite;
     sf::Sprite mGlow;
-    sf::Text mLife;
+    sf::Text mDisplayID,mDisplayAction;
+    sf::VertexArray fontLife,frontLife;
     sf::IntRect mSpriteRect;
     sf::Time mSpriteTime;
+
+    debug mDisplayType;
 
     std::vector<sf::Vector2f> mPath;
     float mSpeedBonus, mSpeedBase;
