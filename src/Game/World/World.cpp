@@ -339,44 +339,27 @@ bool World::inMap(sf::Vector2f dpl){
     return (dpl.x > 0 and dpl.x < 1280 and dpl.y > 0 and dpl.y < 720);
 }
 
-void World::trackNext() {
-    trackedReset();
-    mTracked++;
-    if(mTracked > mSoldiers.size() - 1)
-        mTracked = 0;
-    mSoldiers[mTracked]->setAction(Soldier::Action::Override);
-}
-
-void World::trackPrev() {
-    trackedReset();
-    mTracked--;
-    if(mTracked < 0)
-        mTracked = static_cast<int>(mSoldiers.size()) - 1;
-    mSoldiers[mTracked]->setAction(Soldier::Action::Override);
-}
-
 void World::switchDisplayDebug(){
     for (auto e :mSoldiers)
         e->switchDebugDisplay();
-    std::cout<<"switch diplay\n";
+}
+
+void World::trackNext() {
+    mTracked++;
+    if(mTracked > mSoldiers.size() - 1)
+        mTracked = 0;
+}
+
+void World::trackPrev() {
+    mTracked--;
+    if(mTracked < 0)
+        mTracked = static_cast<int>(mSoldiers.size()) - 1;
 }
 
 void World::untrack() {
-    trackedReset();
     mTracked = -1;
 }
 
 sf::Vector2f World::trackedPos() {
     return mSoldiers[mTracked]->getPosition();
-}
-
-void World::trackedMove(sf::Vector2f direction) {
-    mSoldiers[mTracked]->setDirection(direction);
-}
-
-void World::trackedReset() {
-    if(mTracked != -1) {
-        mSoldiers[mTracked]->setAction(Soldier::Action::Moving);
-        if(mSoldiers[mTracked]->getTeam() == EntityInfo::Team::Blue) mSoldiers[mTracked]->resetTravelledDistance();
-    }
 }

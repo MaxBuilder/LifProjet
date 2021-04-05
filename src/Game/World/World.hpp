@@ -31,8 +31,6 @@ public:
     void trackPrev();
     void untrack();
     sf::Vector2f trackedPos();
-    void trackedMove(sf::Vector2f direction);
-    void trackedReset();
 
     // Entity functions :
     void createEntity(sf::Vector2f position, EntityInfo::Team team, sf::Vector2i objectif, EntityInfo::ID type, int id);

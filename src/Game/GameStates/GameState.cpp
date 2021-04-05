@@ -48,7 +48,6 @@ bool GameState::update(sf::Time dt) {
     else {
         mView.setCenter(mWorld.trackedPos());
         mView.setSize(640, 360);
-        mWorld.trackedMove(mDirection);
     }
 
     mWorld.update(dt);
@@ -94,7 +93,6 @@ bool GameState::handleEvent(const sf::Event &event) {
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::F)) {
         if(mTracking) {
-            mWorld.trackedReset();
             mWorld.untrack();
         }
         mTracking = false;
