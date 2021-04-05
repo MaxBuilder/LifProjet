@@ -38,7 +38,7 @@ namespace Textures {
         ToolEraser,
         EditorEntityButton,
         EditorTeamColor,
-        EditorSoldier,
+        EditorKnight,
         EditorArcher,
         EditorTank,
         EditorBuilding,

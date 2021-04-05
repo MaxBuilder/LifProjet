@@ -83,7 +83,7 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
 
     auto teamColor = std::make_shared<GUI::CheckBox>(context, 60, 60, Textures::EditorTeamColor);
     teamColor->setToggle(true);
-    teamColor->setPosition(490, 10);
+    teamColor->setPosition(992, 10);
     teamColor->activate();
     teamColor->setCallback([this] (bool red) {
         if(red)
@@ -96,40 +96,13 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     teamColor->activate();
     mTeamSelection.pack(teamColor);
 
-    auto knight = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorSoldier);
-    knight->setToggle(true);
-    knight->setPosition(562, 10);
-    knight->setCallback([this] () {
-        mEntity = EntityInfo::ID::Knight ;
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mEditBar.pack(knight);
-
-    auto Archer = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorArcher);
-    Archer->setToggle(true);
-    Archer->setPosition(634, 10);
-    Archer->setCallback([this] () {
-        mEntity = EntityInfo::ID::Archer ;
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mEditBar.pack(Archer);
-
-    auto Tank = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorTank);
-    Tank->setToggle(true);
-    Tank->setPosition(706, 10);
-    Tank->setCallback([this] () {
-        mEntity = EntityInfo::ID::Tank ;
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mEditBar.pack(Tank);
-
     // Tool bar buttons :
 
     auto smallBrushButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::ToolSmallBrush);
     smallBrushButton->setPosition(16, 98);
     smallBrushButton->setToggle(true);
     smallBrushButton->activate();
-    smallBrushButton->setCallback([this](){
+    smallBrushButton->setCallback([this]() {
         tool = Editor::Tool::Standard;
         getContext().sounds.play(Sounds::Menu);
     });
@@ -138,43 +111,84 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     auto mediumBrushButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::ToolMediumBrush);
     mediumBrushButton->setPosition(16, 164);
     mediumBrushButton->setToggle(true);
-    mediumBrushButton->setCallback([this](){
+    mediumBrushButton->setCallback([this]() {
         tool = Editor::Tool::Square3;
         getContext().sounds.play(Sounds::Menu);
     });
     mToolBar.pack(mediumBrushButton);
 
+    auto bigBrushButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::ToolBigBrush);
+    bigBrushButton->setPosition(16, 230);
+    bigBrushButton->setToggle(true);
+    bigBrushButton->setCallback([this](){
+        tool = Editor::Tool::Standard;
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mToolBar.pack(bigBrushButton);
+
     auto eraserButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::ToolEraser);
-    eraserButton->setPosition(16, 230);
+    eraserButton->setPosition(16, 296);
     eraserButton->setToggle(true);
-    eraserButton->setCallback([this](){
+    eraserButton->setCallback([this]() {
         tool = Editor::Tool::Eraser;
         getContext().sounds.play(Sounds::Menu);
     });
     mToolBar.pack(eraserButton);
 
     auto fillButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::ToolFill);
-    fillButton->setPosition(16, 296);
+    fillButton->setPosition(16, 362);
     fillButton->setToggle(true);
-    fillButton->setCallback([this](){
+    fillButton->setCallback([this]() {
         tool = Editor::Tool::Fill;
         getContext().sounds.play(Sounds::Menu);
     });
     mToolBar.pack(fillButton);
 
-    auto EntityButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorEntityButton);
-    EntityButton->setToggle(true);
-    EntityButton->setPosition(16, 362);
-    EntityButton->setCallback([this] () {
+    auto knightButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorKnight);
+    knightButton->setToggle(true);
+    knightButton->setPosition(1064, 10);
+    knightButton->setCallback([this] () {
+        tool = Editor::Tool::PlaceSoldier;
+        mEntity = EntityInfo::ID::Knight;
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mToolBar.pack(knightButton);
+
+    auto archerButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorArcher);
+    archerButton->setToggle(true);
+    archerButton->setPosition(1136, 10);
+    archerButton->setCallback([this] () {
+        tool = Editor::Tool::PlaceSoldier;
+        mEntity = EntityInfo::ID::Archer;
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mToolBar.pack(archerButton);
+
+    auto tankButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorTank);
+    tankButton->setToggle(true);
+    tankButton->setPosition(1208, 10);
+    tankButton->setCallback([this] () {
+        tool = Editor::Tool::PlaceSoldier;
+        mEntity = EntityInfo::ID::Tank;
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mToolBar.pack(tankButton);
+
+    /*
+    auto entityButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorEntityButton);
+    entityButton->setToggle(true);
+    entityButton->setPosition(16, 362);
+    entityButton->setCallback([this] () {
         tool = Editor::Tool::PlaceSoldier;
         mEntity = EntityInfo::Knight;
         getContext().sounds.play(Sounds::Menu);
     });
-    mToolBar.pack(EntityButton);
+    mToolBar.pack(entityButton);
+    */
 
     auto buildingButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorBuilding);
     buildingButton->setToggle(true);
-    buildingButton->setPosition(16, 428);
+    buildingButton->setPosition(910, 10);
     buildingButton->setCallback([this] () {
         tool = Editor::Tool::PlaceBuilding;
         mEntity = EntityInfo::None;
@@ -204,19 +218,15 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     mRotationBar.pack(rotateRightButton);
 
     // Texture selection buttons :
-
     for(int y(0); y < 36; y++){
         for (int x(0); x < 3;x++){
-
             addButtonTexture(sf::Vector2i(x,y), sf::Vector2i(1134+44*x,100+44*y));
         }
     }
 
     // Buildings selection :
-
     for(int y(36); y < 46; y++){
         for (int x(0); x < 3;x++){
-
             addButtonBuilding(sf::Vector2i(x,y), sf::Vector2i(1134+44*x,100+44*(y-36)));
         }
     }
