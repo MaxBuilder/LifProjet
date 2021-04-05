@@ -138,7 +138,7 @@ void Application::loadTextures() {
     mTextures.load(Textures::Game1x, "data/Game/1xspeed.png");
     mTextures.load(Textures::Game3x, "data/Game/3xspeed.png");
     mTextures.load(Textures::Game5x, "data/Game/5xspeed.png");
-    // time
+    mTextures.load(Textures::GameTimeUI, "data/Game/Time.png");
 }
 
 void Application::registerStates() {

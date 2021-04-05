@@ -29,6 +29,10 @@ private:
     World mWorld;
 
     GUI::Container mUI;
+    sf::Sprite mTimeUI;
+    sf::Text mTrackText;
+    sf::Text mTimeText;
+    sf::Time mTime;
 
     sf::View mView;
     sf::Vector2f mDirection;
@@ -36,7 +40,7 @@ private:
     int mScroll;
     int mTimeSpeed;
     bool mTracking;
-    sf::Text mTrackText;
+
 };
 
 

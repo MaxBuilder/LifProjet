@@ -17,6 +17,9 @@ GameState::GameState(StateStack &stack, Context& context)
 , mTracking(false)
 , mTimeSpeed(1)
 , mTrackText("Tracking Soldier", context.fonts.get(Fonts::Main))
+, mTimeText("", context.fonts.get(Fonts::Main))
+, mTime()
+, mTimeUI(context.textures.get(Textures::GameTimeUI))
 {
     mView.setSize(1280, 720);
     mView.setCenter(640, 360);
@@ -24,7 +27,13 @@ GameState::GameState(StateStack &stack, Context& context)
     mTrackText.setPosition(2, 2);
     mTrackText.setCharacterSize(25u);
 
-    // Construction de l'UI
+    mTimeText.setCharacterSize(16u);
+    mTimeText.setPosition(571, 4);
+    mTimeText.setFillColor(sf::Color::Black);
+
+    mTimeUI.setPosition(560, 0);
+
+    // Construction de l'UI :
     auto pauseButton = std::make_shared<GUI::Button>(context, 40, 40, Textures::GamePause);
     pauseButton->setPosition(1120, 0);
     pauseButton->setToggle(true);
@@ -77,6 +86,8 @@ void GameState::draw() {
     }
 
     window.setView(window.getDefaultView());
+    window.draw(mTimeUI);
+    window.draw(mTimeText);
     window.draw(mUI);
 }
 
@@ -95,6 +106,11 @@ bool GameState::update(sf::Time dt) {
 
     dt = dt * (float)mTimeSpeed;
     mWorld.update(dt);
+
+    mTime += dt;
+    int min = (int)mTime.asSeconds() / 60;
+    int sec = (int)(mTime.asSeconds() - (float)min * 60);
+    mTimeText.setString("0" + std::to_string(min) + " : " + (sec < 10 ? "0" : "") + std::to_string(sec));
 
     return true;
 }
