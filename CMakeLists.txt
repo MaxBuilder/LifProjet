@@ -43,5 +43,5 @@ add_executable(LifProjet src/main.cpp
         src/Game/Entities/Building.cpp src/Game/Entities/Building.hpp
         src/Game/World/World.cpp src/Game/World/World.hpp
         src/Core/Commands/Command.cpp src/Core/Commands/Command.hpp
-        src/Core/Commands/CommandQueue.cpp src/Core/Commands/CommandQueue.hpp)
+        src/Core/Commands/CommandQueue.cpp src/Core/Commands/CommandQueue.hpp src/Core/Util/Utility.cpp)
 target_link_libraries(LifProjet sfml-graphics sfml-audio)

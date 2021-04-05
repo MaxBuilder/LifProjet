@@ -106,7 +106,7 @@ void Soldier::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) con
     }
 }
 
-void Soldier::switchDebugDisplay(){
+void Soldier::switchDebugDisplay() {
     if(mDisplayType == debug::id)
         mDisplayType = debug::action;
     else if(mDisplayType == debug::action)

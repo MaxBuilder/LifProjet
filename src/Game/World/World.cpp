@@ -66,6 +66,8 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
         }
         createEntity(e.first->getPosition(), e.first->getTeam(),objectif, e.first->getID(), id);
     }
+    mNbRed = idr;
+    mNbBlue = idb;
 
     // Initialisation of defender (to expand)
     for(auto &soldier : mSoldiers)
@@ -134,7 +136,7 @@ void World::onCommand() {
                 break;
 
             case CommandType::Dead :
-                std::cout<<"Entity died\n";
+                std::cout<<"Entity died" << std::endl;
                 updateDeath();
                 break;
         }
@@ -235,14 +237,14 @@ void World::updateBonus() {
 }
 
 void World::updateMovement() {
-    for (auto entity : mSoldiers){
+    for (auto entity : mSoldiers) {
         if(entity->isDestroyed()) continue;
 
         sf::Vector2f tmpVeloce = entity->getVelocity();
         entity->setVelocity(entity->getVelocity()*mMap.getTile(entity->getPosition()/20.f).getMoveSpeed());
         sf::Vector2f point = (entity->getPosition()+entity->getVelocity());
 
-        for (auto other : mSoldiers){
+        for (auto other : mSoldiers) {
             if (other == entity or other->isDestroyed() ) continue;
             if(distance(other->getPosition(), entity->getPosition())<10 ) {
                 sf::Vector2f diff = (entity->getPosition()-other->getPosition())/norm(entity->getPosition() - other->getPosition());
@@ -262,29 +264,29 @@ void World::updateMovement() {
         sf::Vector2i pos = sf::Vector2i(point.x/20, point.y/20);
         if (mMap.getTile(pos).isCrossable(entity->getTeam()) and inMap(point))
             entity->travel();
-        else{
+        else {
             entity->usePathFinding = true;
         }
         entity->setVelocity(tmpVeloce);
     }
 }
 
-void World::updateDeath(){
+void World::updateDeath() {
 
-    for (auto *e : mSoldiers){
+    for (auto *e : mSoldiers) {
         if (e->isDestroyed() and not e->down) {
             mSceneLayers[Back]->attachChild(mSceneLayers[Front]->detachChild(static_cast<SceneNode *>(e)));
             e->down = true;
-            std::cout<<"enter change scene\n";
+            e->getTeam() == EntityInfo::Red ? mNbRed-- : mNbBlue--;
         }
     }
 
-    for( auto &build : mBuildings)
+    for(auto &build : mBuildings)
         if(build->isDestroyed() and not build->down and build->getBonusFlag() == EntityInfo::Barrier)
             recBarrier(build->getOnMapPosition());
 
-    for (auto &build : mBuildings){
-        if(build->isDestroyed() and not build->down){
+    for (auto &build : mBuildings) {
+        if(build->isDestroyed() and not build->down) {
             auto size = build->getOnMapSize();
             auto pos = build->getOnMapPosition();
             auto id  = build->getMapId();
@@ -298,20 +300,17 @@ void World::updateDeath(){
     }
 }
 
-void World::recBarrier(sf::Vector2i position){
+void World::recBarrier(sf::Vector2i position) {
     sf::Vector2i dir[4]={position+sf::Vector2i(0,1),
                          position+sf::Vector2i(1,0),
                          position+sf::Vector2i(0,-1),
                          position+sf::Vector2i(-1,0)};
-    for (auto & i : dir){
-        if (i.x < 0 or i.y < 0 or i.x >= 64 or i.y >= 36 ) continue;
-        if(mMap.getTile(i).getTop().x == 2
-        and mMap.getTile(i).getTop().y >= 36
-        and mMap.getTile(i).getTop().y <= 39)
-            for(auto &b :mBuildings){
-                if (b->getOnMapPosition() == i
-                and not b->isDestroyed()
-                and b->getBonusFlag() == EntityInfo::Barrier){
+    for (auto & i : dir) {
+        if (i.x < 0 or i.y < 0 or i.x >= 64 or i.y >= 36 )
+            continue;
+        if(mMap.getTile(i).getTop().x == 2 and mMap.getTile(i).getTop().y >= 36 and mMap.getTile(i).getTop().y <= 39)
+            for(auto &b :mBuildings) {
+                if (b->getOnMapPosition() == i and not b->isDestroyed() and b->getBonusFlag() == EntityInfo::Barrier) {
                     b->destroy();
                     recBarrier(i);
                     break;
@@ -321,7 +320,6 @@ void World::recBarrier(sf::Vector2i position){
 }
 
 void World::createEntity(sf::Vector2f position, EntityInfo::Team team, sf::Vector2i objectif, EntityInfo::ID id, int indice){
-
     std::unique_ptr<Soldier> soldier = std::make_unique<Soldier>(indice, team, objectif, mTextures, mFonts, mAstar, mCommandQueue);
     soldier->setPosition(position*mMap.getBlockSize());
 
@@ -335,11 +333,15 @@ void World::createEntity(sf::Vector2f position, EntityInfo::Team team, sf::Vecto
 
 }
 
-bool World::inMap(sf::Vector2f dpl){
+std::pair<int, int> World::getRemaining() {
+    return std::make_pair(mNbRed, mNbBlue);
+}
+
+bool World::inMap(sf::Vector2f dpl) {
     return (dpl.x > 0 and dpl.x < 1280 and dpl.y > 0 and dpl.y < 720);
 }
 
-void World::switchDisplayDebug(){
+void World::switchDisplayDebug() {
     for (auto e :mSoldiers)
         e->switchDebugDisplay();
 }

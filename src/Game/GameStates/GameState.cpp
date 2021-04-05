@@ -3,13 +3,10 @@
 //
 
 #include "GameState.hpp"
-#include <cmath>
-#include <iostream>
 
 GameState::GameState(StateStack &stack, Context& context)
 : State(stack, context)
 , mView()
-//, mBackground(context.textures.get(Textures::None))
 , mWorld(context.window, context.textures, context.fonts, context.sounds)
 , mDirection(0, 0)
 , mScroll(0)
@@ -32,6 +29,11 @@ GameState::GameState(StateStack &stack, Context& context)
     mTimeText.setFillColor(sf::Color::Black);
 
     mTimeUI.setPosition(560, 0);
+
+    // Barres d'état des équipes :
+    mRedDisplay.setFillColor(sf::Color::Red);
+    mRedDisplay.setPosition(sf::Vector2f(627, 6));
+    mBlueDisplay.setFillColor(sf::Color::Blue);
 
     // Construction de l'UI :
     auto pauseButton = std::make_shared<GUI::Button>(context, 40, 40, Textures::GamePause);
@@ -88,6 +90,8 @@ void GameState::draw() {
     window.setView(window.getDefaultView());
     window.draw(mTimeUI);
     window.draw(mTimeText);
+    window.draw(mRedDisplay);
+    window.draw(mBlueDisplay);
     window.draw(mUI);
 }
 
@@ -111,6 +115,12 @@ bool GameState::update(sf::Time dt) {
     int min = (int)mTime.asSeconds() / 60;
     int sec = (int)(mTime.asSeconds() - (float)min * 60);
     mTimeText.setString("0" + std::to_string(min) + " : " + (sec < 10 ? "0" : "") + std::to_string(sec));
+
+    auto rem = mWorld.getRemaining();
+    float ratio = (float)rem.first / (float)(rem.first + rem.second);
+    mRedDisplay.setSize(sf::Vector2f(ratio * 80, 16));
+    mBlueDisplay.setPosition(mRedDisplay.getPosition().x + ratio * 80, 6);
+    mBlueDisplay.setSize(sf::Vector2f(80 - mRedDisplay.getSize().x, 16));
 
     return true;
 }

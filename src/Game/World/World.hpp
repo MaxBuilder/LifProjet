@@ -13,7 +13,6 @@
 #include "../Entities/Soldier.hpp"
 #include "../Entities/Building.hpp"
 
-
 #include <array>
 
 class World {
@@ -31,6 +30,7 @@ public:
     void trackPrev();
     void untrack();
     sf::Vector2f trackedPos();
+    std::pair<int, int> getRemaining();
 
     // Entity functions :
     void createEntity(sf::Vector2f position, EntityInfo::Team team, sf::Vector2i objectif, EntityInfo::ID type, int id);
@@ -68,6 +68,7 @@ private:
     std::vector<Soldier*> mRedTeam;
     std::vector<Soldier*> mSoldiers;
     std::vector<Building*> mBuildings;
+    int mNbRed, mNbBlue;
 
     // Pathfinding
     Pathfinding mAstar;
