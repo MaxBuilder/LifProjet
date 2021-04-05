@@ -14,14 +14,10 @@ Application::Application()
 , mFonts()
 , mSounds()
 , mStateStack(State::Context(mWindow, mTextures, mFonts, mSounds))
-, mStatisticsText()
-, mStatisticsUpdateTime()
-, mStatisticsNumFrames(0)
-, mAccelerate(false)
 {
     loadSettings();
 
-    mWindow.create(mVideoMode,"LifProjet",mWindowStyle);
+    mWindow.create(mVideoMode,"LifProjet", mWindowStyle);
     mView.setSize(1280,720);
     mView.setCenter(1280/2.f, 720/2.f);
     mView.setViewport(sf::FloatRect(0, 0, 1, 1));
@@ -34,10 +30,6 @@ Application::Application()
 
     // Chargement des effets sonores
     mSounds.load(Sounds::Menu, "data/audio/click.wav");
-
-    mStatisticsText.setFont(mFonts.get(Fonts::Main));
-    mStatisticsText.setPosition(.5f, .5f);
-    mStatisticsText.setCharacterSize(10u);
 
     // Initialisation de la statestack
     registerStates();
@@ -52,14 +44,12 @@ void Application::run() {
     while (mWindow.isOpen()) {
         sf::Time dt = clock.restart();
         timeSinceLastUpdate += dt;
+
         while (timeSinceLastUpdate > TimePerFrame) {
             timeSinceLastUpdate -= TimePerFrame;
 
             processInput();
-            if (mAccelerate)
-                update(Accelerate);
-            else
-                update(TimePerFrame);
+            update(TimePerFrame);
 
 
             // Check inside this loop, because stack might be empty before update() call
@@ -67,7 +57,6 @@ void Application::run() {
                 mWindow.close();
         }
 
-        updateStatistics(dt);
         render();
     }
 }
@@ -80,12 +69,6 @@ void Application::processInput() {
 
         if (event.type == sf::Event::Closed)
             mWindow.close();
-        if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::Space)
-            mAccelerate = not mAccelerate;
-        if(event.type ==sf::Event::MouseButtonPressed) {
-            // sf::Vector2i mouse = sf::Mouse::getPosition(mWindow);
-            // std::cout << mouse.x << " " << mouse.y<<std::endl;
-        }
     }
 }
 
@@ -103,17 +86,6 @@ void Application::render() {
     // mWindow.draw(mStatisticsText);
 
     mWindow.display();
-}
-
-void Application::updateStatistics(sf::Time dt) {
-    mStatisticsUpdateTime += dt;
-    mStatisticsNumFrames += 1;
-    if (mStatisticsUpdateTime >= sf::seconds(1.0f)) {
-        mStatisticsText.setString("FPS: " + toString(mStatisticsNumFrames));
-
-        mStatisticsUpdateTime -= sf::seconds(1.0f);
-        mStatisticsNumFrames = 0;
-    }
 }
 
 void Application::loadTextures() {
@@ -158,8 +130,15 @@ void Application::loadTextures() {
     mTextures.load(Textures::EditorRotateUpButton, "data/Editor/up.png");
     mTextures.load(Textures::EditorRotateRightButton, "data/Editor/right.png");
     mTextures.load(Textures::SubBackground, "data/Editor/subBackground.png");
+
     mTextures.load(Textures::EntitySoldier, "data/spritesSoldiers.png");
     mTextures.load(Textures::EntityGlow, "data/glow.png");
+
+    mTextures.load(Textures::GamePause, "data/Game/pause.png");
+    mTextures.load(Textures::Game1x, "data/Game/1xspeed.png");
+    mTextures.load(Textures::Game3x, "data/Game/3xspeed.png");
+    mTextures.load(Textures::Game5x, "data/Game/5xspeed.png");
+    // time
 }
 
 void Application::registerStates() {

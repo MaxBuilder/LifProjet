@@ -15,6 +15,7 @@ GameState::GameState(StateStack &stack, Context& context)
 , mScroll(0)
 , mSpeed(0)
 , mTracking(false)
+, mTimeSpeed(1)
 , mTrackText("Tracking Soldier", context.fonts.get(Fonts::Main))
 {
     mView.setSize(1280, 720);
@@ -22,6 +23,45 @@ GameState::GameState(StateStack &stack, Context& context)
 
     mTrackText.setPosition(2, 2);
     mTrackText.setCharacterSize(25u);
+
+    // Construction de l'UI
+    auto pauseButton = std::make_shared<GUI::Button>(context, 40, 40, Textures::GamePause);
+    pauseButton->setPosition(1120, 0);
+    pauseButton->setToggle(true);
+    pauseButton->setCallback([this] () {
+        mTimeSpeed = 0;
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mUI.pack(pauseButton);
+
+    auto x1Button = std::make_shared<GUI::Button>(context, 40, 40, Textures::Game1x);
+    x1Button->setPosition(1160, 0);
+    x1Button->setToggle(true);
+    x1Button->setCallback([this] () {
+        mTimeSpeed = 1;
+        getContext().sounds.play(Sounds::Menu);
+    });
+    x1Button->activate();
+    mUI.pack(x1Button);
+
+    auto x3Button = std::make_shared<GUI::Button>(context, 40, 40, Textures::Game3x);
+    x3Button->setPosition(1200, 0);
+    x3Button->setToggle(true);
+    x3Button->setCallback([this] () {
+        mTimeSpeed = 3;
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mUI.pack(x3Button);
+
+    auto x5Button = std::make_shared<GUI::Button>(context, 40, 40, Textures::Game5x);
+    x5Button->setPosition(1240, 0);
+    x5Button->setToggle(true);
+    x5Button->setCallback([this] () {
+        mTimeSpeed = 5;
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mUI.pack(x5Button);
+
 }
 
 void GameState::draw() {
@@ -35,6 +75,9 @@ void GameState::draw() {
         window.setView(window.getDefaultView());
         window.draw(mTrackText);
     }
+
+    window.setView(window.getDefaultView());
+    window.draw(mUI);
 }
 
 bool GameState::update(sf::Time dt) {
@@ -50,13 +93,13 @@ bool GameState::update(sf::Time dt) {
         mView.setSize(640, 360);
     }
 
+    dt = dt * (float)mTimeSpeed;
     mWorld.update(dt);
 
     return true;
 }
 
 bool GameState::handleEvent(const sf::Event &event) {
-    // Temp to move entity
     mDirection = sf::Vector2f(0.f, 0.f);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) mDirection += sf::Vector2f(0.f, -1.f);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) mDirection += sf::Vector2f(0.f, +1.f);
@@ -97,6 +140,8 @@ bool GameState::handleEvent(const sf::Event &event) {
         }
         mTracking = false;
     }
+
+    mUI.handleEvent(event, getContext().window);
 
     return false;
 }

@@ -35,6 +35,7 @@ Soldier::Soldier(int id, EntityInfo::Team team, sf::Vector2i objectif, const Tex
 , mPathfinding(Astar)
 , usePathFinding(false)
 , sendAck(false)
+, mEntityTime()
 {
     mBorder = 10;
     float blockSize = 20.f; // à modifier pour rendre dynamique
@@ -135,6 +136,7 @@ void Soldier::updateCurrent(sf::Time dt) {
         mSprite.setTextureRect(mSpriteRect);
     }
 
+    mEntityTime += dt;
     mTeam == EntityInfo::Team::Blue ? updateDefense(dt) : updateAttack(dt);
 
     // update lifeDisplay
@@ -195,7 +197,7 @@ void Soldier::updateAttack(sf::Time dt) {
         if(distance(getPosition(), mTargeted->getPosition()) < mBorder+mTargeted->getBorder()) {
             setAction(Attacking);
             mDirection = sf::Vector2f(0,0);
-            mEntityClock.restart();
+            mEntityTime = sf::seconds(0);
             mSpeedBase = 15;
             setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
             return;
@@ -310,7 +312,7 @@ void Soldier::updateDefense(sf::Time dt) {
             setAction(Attacking);
             mDirection = sf::Vector2f(0, 0);
             setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
-            mEntityClock.restart();
+            mEntityTime = sf::seconds(0);
             return;
         }
 
@@ -400,9 +402,9 @@ void Soldier::createTeam(int senderId) {
 }
 
 void Soldier::attackTarget() {
-    if(mEntityClock.getElapsedTime().asSeconds() > 1) {
+    if(mEntityTime.asSeconds() > 1) {
         mTargeted->damage(mDamages);
-        mEntityClock.restart();
+        mEntityTime = sf::seconds(0);
     }
     if(mTargeted->isDestroyed())
         mTargeted->remove();

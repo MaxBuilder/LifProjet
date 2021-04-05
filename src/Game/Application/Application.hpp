@@ -27,7 +27,6 @@ private:
     void update(sf::Time dt);
     void render();
 
-    void updateStatistics(sf::Time dt);
     void registerStates();
     void loadTextures();
     void loadSettings();
@@ -44,13 +43,8 @@ private:
 
     StateStack mStateStack;
 
-    sf::Text mStatisticsText;
-    sf::Time mStatisticsUpdateTime;
-    std::size_t mStatisticsNumFrames;
-
     sf::VideoMode mVideoMode;
     int mWindowStyle;
-    bool mAccelerate;
 };
 
 #endif //LIFPROJET_APPLICATION_HPP

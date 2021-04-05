@@ -114,7 +114,8 @@ private:
     sf::Vector2f mOrigin; // Point where entity is instantiated
     float mTravelled; // Distance travelled
     int mDistance; // Distance to travel
-    sf::Clock mEntityClock, mAstarDuration;
+    sf::Clock mAstarDuration;
+    sf::Time mEntityTime;
     Action mAction;
     bool prev;
     bool sendAck;

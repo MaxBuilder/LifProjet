@@ -13,6 +13,8 @@
 
 #include "../../Core/StateStack/State.hpp"
 #include "../../Core/Util/Utility.hpp"
+#include "../../Core/GUI/Button.hpp"
+#include "../../Core/GUI/Container.hpp"
 #include "../World/World.hpp"
 
 class GameState : public State {
@@ -26,10 +28,13 @@ public:
 private:
     World mWorld;
 
+    GUI::Container mUI;
+
     sf::View mView;
     sf::Vector2f mDirection;
     float mSpeed;
     int mScroll;
+    int mTimeSpeed;
     bool mTracking;
     sf::Text mTrackText;
 };
