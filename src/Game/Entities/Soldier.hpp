@@ -42,11 +42,11 @@ public:
     };
 
 public:
-    Soldier(int id, EntityInfo::Team team,sf::Vector2i objetif, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue);
+    Soldier(int id, EntityInfo::Team team, sf::Vector2i objectif, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue);
 
     int getId() const;
 
-    void swithDebugDisplay();
+    void switchDebugDisplay();
 
     void changeBonus(EntityInfo::ID bonus);
     EntityInfo::ID getBonus();
@@ -95,8 +95,6 @@ private:
 private:
     Pathfinding& mPathfinding;
 
-    // Needs adding of personal stats (atk, def, per, sp)
-
     EntityInfo::ID mBonus;
     sf::Sprite mSprite;
     sf::Sprite mGlow;
@@ -119,6 +117,7 @@ private:
     sf::Clock mEntityClock, mAstarDuration;
     Action mAction;
     bool prev;
+    bool sendAck;
 
     Entity * mTargeted;
     Soldier * mLeader;

@@ -90,42 +90,47 @@ void World::update(sf::Time dt) {
 void World::onCommand() {
     while(!mCommandQueue.isEmpty()) {
         Command command = mCommandQueue.pop();
+        
+        // Selection de l'équipe à affecter :
+        std::vector<Soldier*> selectedTeam;
+        selectedTeam = command.mTeam == EntityInfo::Blue ? mBlueTeam : mRedTeam;
+        float dist;
 
         switch(command.mType) {
             case CommandType::MakeTeam:
-                for(auto &red : mRedTeam) {
-                    if(red != mRedTeam[command.mSender] and distance(red->getPosition(), mRedTeam[command.mSender]->getPosition()) < 250) {
-                        red->createTeam(mRedTeam[command.mSender]->getId());
-                        mRedTeam[command.mSender]->nbRequested++;
+                dist = command.mTeam == EntityInfo::Blue ? 200 : 150;
+                for(auto &team : selectedTeam) {
+                    if(team != selectedTeam[command.mSender] and distance(team->getPosition(), selectedTeam[command.mSender]->getPosition()) < dist) {
+                        team->createTeam(selectedTeam[command.mSender]->getId());
+                        selectedTeam[command.mSender]->nbRequested++;
                     }
                 }
-                std::cout << mRedTeam[command.mSender]->getId() << " Demande de mise en groupe : " << mRedTeam[command.mSender]->nbRequested << std::endl;
+                std::cout << selectedTeam[command.mSender]->getId() << " Demande de mise en groupe : " << selectedTeam[command.mSender]->nbRequested << std::endl;
                 break;
 
             case CommandType::TeamAccept:
                 std::cout << "Accepted " << command.mSender << std::endl;
-                // Nommer receiver chef + associer les unités et modifier le comportement
-                mRedTeam[command.mReceiver]->nbResponse++;
-                mRedTeam[command.mReceiver]->mSquadSize++;
-                mRedTeam[command.mReceiver]->mSquadIds.push_back(command.mSender);
-                mRedTeam[command.mSender]->setAction(Soldier::WithSquad);
-                mRedTeam[command.mSender]->setLeader(mRedTeam[command.mReceiver]);
+                selectedTeam[command.mReceiver]->nbResponse++;
+                selectedTeam[command.mReceiver]->mSquadSize++;
+                selectedTeam[command.mReceiver]->mSquadIds.push_back(command.mSender);
+                selectedTeam[command.mSender]->setAction(Soldier::WithSquad);
+                selectedTeam[command.mSender]->setLeader(selectedTeam[command.mReceiver]);
                 break;
 
             case CommandType::TeamDeny:
                 std::cout << "Declined " << command.mSender << std::endl;
-                mRedTeam[command.mReceiver]->nbResponse++;
+                selectedTeam[command.mReceiver]->nbResponse++;
                 break;
 
             case CommandType::InPosition:
                 std::cout << command.mSender << " " << command.mReceiver << " In position";
-                mRedTeam[command.mReceiver]->nbInPlace++;
-                std::cout << " nb in position : " << mRedTeam[command.mReceiver]->nbInPlace << std::endl;
+                selectedTeam[command.mReceiver]->nbInPlace++;
+                std::cout << " nb in position : " << selectedTeam[command.mReceiver]->nbInPlace << std::endl;
                 break;
 
             case CommandType::Assault:
                 std::cout << "Assault ordred " << command.mReceiver << std::endl;
-                mRedTeam[command.mReceiver]->setAction(Soldier::Assaulting);
+                selectedTeam[command.mReceiver]->setAction(Soldier::Assaulting);
                 break;
 
             case CommandType::Dead :
@@ -181,23 +186,33 @@ void World::updateTargets() {
 
     // Cibles des défenseurs
     for(auto &blue : mBlueTeam) {
+        blue->mTargetInSight = 0;
         bool gotAssigned = false;
         float distMin = 99999999.0;
 
         for(auto &red : mRedTeam) {
             float dist = distance(red->getPosition(), blue->getPosition());
-            if(dist < distMin and dist < 80 and !red->isDestroyed()) {
-                blue->setTarget(static_cast<Entity*>(red));
-                distMin = dist;
-                gotAssigned = true;
+            if(dist < 80 and !red->isDestroyed()) { // In sight
+                blue->mTargetInSight++;
+                if(dist < distMin and dist < 60 and !red->isDestroyed()) {
+                    blue->setTarget(static_cast<Entity *>(red));
+                    distMin = dist;
+                    gotAssigned = true;
+                }
             }
         }
+
         if(!gotAssigned)
             blue->setTarget(nullptr);
+
+        for(auto &ally : mBlueTeam) { // Pertinent (on sait jamais)
+            if (ally != blue and distance(ally->getPosition(), blue->getPosition()) < 150)
+                blue->mAllyInSight++;
+        }
     }
 }
 
-void World::updateBonus(){
+void World::updateBonus() {
     bool entityHaveBonus;
     for (auto &entity : mSoldiers){
 
@@ -342,7 +357,7 @@ void World::trackPrev() {
 
 void World::switchDisplayDebug(){
     for (auto e :mSoldiers)
-        e->swithDebugDisplay();
+        e->switchDebugDisplay();
     std::cout<<"switch diplay\n";
 }
 

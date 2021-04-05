@@ -34,6 +34,7 @@ Soldier::Soldier(int id, EntityInfo::Team team, sf::Vector2i objectif, const Tex
 , nbInPlace(0)
 , mPathfinding(Astar)
 , usePathFinding(false)
+, sendAck(false)
 {
     mBorder = 10;
     float blockSize = 20.f; // à modifier pour rendre dynamique
@@ -104,7 +105,7 @@ void Soldier::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) con
     }
 }
 
-void Soldier::swithDebugDisplay(){
+void Soldier::switchDebugDisplay(){
     if(mDisplayType == debug::id)
         mDisplayType = debug::action;
     else if(mDisplayType == debug::action)
@@ -163,7 +164,7 @@ void Soldier::updateAttack(sf::Time dt) {
     if(mAction == Moving) {
         if(mTargetInSight > 1 and mTargeted == nullptr) {
             // Lancement du signal et mise en groupe
-            mCommandQueue.push(Command(true, mId, 9999, CommandType::MakeTeam));
+            mCommandQueue.push(Command(mTeam, mId, 9999, CommandType::MakeTeam));
             setAction(Calling);
             nbResponse = 0;
             nbRequested = 0;
@@ -238,7 +239,7 @@ void Soldier::updateAttack(sf::Time dt) {
         if(nbInPlace == mSquadSize) {
             // Attack
             for (auto id : mSquadIds)
-                mCommandQueue.push(Command(true, mId, id, CommandType::Assault));
+                mCommandQueue.push(Command(mTeam, mId, id, CommandType::Assault));
             setAction(Assaulting);
             mSquadSize = 0;
             nbInPlace = 0;
@@ -253,13 +254,14 @@ void Soldier::updateAttack(sf::Time dt) {
         else { // Standby
             mVelocity = sf::Vector2f(0, 0);
             if(!prev) {
-                mCommandQueue.push(Command(true, mId, mLeader->getId(), CommandType::InPosition));
+                mCommandQueue.push(Command(mTeam, mId, mLeader->getId(), CommandType::InPosition));
                 prev = true;
             }
         }
     }
     else if(mAction == Assaulting) {
         prev = false;
+        sendAck = false;
         if(mTargeted == nullptr) {
             setDirection(1, 0);
             setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
@@ -280,6 +282,14 @@ void Soldier::updateDefense(sf::Time dt) {
     if(mAction == Moving) {
         if(mTravelled == 0)
             setDirection(randomDirection());
+
+        if(mTargetInSight > 1 and mTargeted == nullptr) {
+            // Lancement du signal et mise en groupe
+            mCommandQueue.push(Command(mTeam, mId, 9999, CommandType::MakeTeam));
+            setAction(Calling);
+            nbResponse = 0;
+            nbRequested = 0;
+        }
 
         if(mTargeted == nullptr) {
             roam(dt);
@@ -325,12 +335,68 @@ void Soldier::updateDefense(sf::Time dt) {
             setAction(Moving);
         }
     }
+    else if(mAction == Calling) {
+        if(nbRequested != 0 and nbResponse == nbRequested) {
+            if(mSquadSize == 0)
+                setAction(Assaulting);
+            else
+                setAction(Leading);
+            nbResponse = 0;
+            nbRequested = 0;
+        }
+        else if(mTargeted != nullptr)
+            setAction(Seeking);
+        mVelocity = sf::Vector2f(0, 0);
+    }
+    else if(mAction == Leading) {
+        if(nbInPlace == mSquadSize) {
+            // Attack
+            for (auto id : mSquadIds)
+                mCommandQueue.push(Command(mTeam, mId, id, CommandType::Assault));
+            setAction(Assaulting);
+            mSquadSize = 0;
+            nbInPlace = 0;
+            mSquadIds.clear();
+        }
+    }
+    else if(mAction == WithSquad) {
+        if(distance(getPosition(), mLeader->getPosition()) > 30) {
+            setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
+            seekTarget(mLeader->getPosition());
+        }
+        else { // Standby
+            mVelocity = sf::Vector2f(0, 0);
+            if(!prev) {
+                mCommandQueue.push(Command(mTeam, mId, mLeader->getId(), CommandType::InPosition));
+                prev = true;
+            }
+        }
+    }
+    else if(mAction == Assaulting) {
+        prev = false;
+        sendAck = false;
+
+        if(mLeader == nullptr) {
+            setAction(Moving);
+            return;
+        }
+        if(mTargeted == nullptr) {
+            setDirection(-1, 0);
+            setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
+        }
+        else {
+            setAction(Seeking);
+            mLeader = nullptr;
+        }
+    }
 }
 
 void Soldier::createTeam(int senderId) {
-    if(mAction == Moving)
-        mCommandQueue.push(Command(true, mId, senderId, CommandType::TeamAccept));
-    else mCommandQueue.push(Command(true, mId, senderId, CommandType::TeamDeny));
+    if(mAction == Moving and !sendAck) {
+        mCommandQueue.push(Command(mTeam, mId, senderId, CommandType::TeamAccept));
+        sendAck = true;
+    }
+    else mCommandQueue.push(Command(mTeam, mId, senderId, CommandType::TeamDeny));
 }
 
 void Soldier::attackTarget() {

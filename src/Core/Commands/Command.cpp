@@ -4,7 +4,7 @@
 
 #include "Command.hpp"
 
-Command::Command(bool team, int sender, int receiver, CommandType::ID type)
+Command::Command(EntityInfo::Team team, int sender, int receiver, CommandType::ID type)
 : mTeam(team)
 , mSender(sender)
 , mReceiver(receiver)

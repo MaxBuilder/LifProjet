@@ -5,6 +5,8 @@
 #ifndef LIFPROJET_COMMAND_HPP
 #define LIFPROJET_COMMAND_HPP
 
+#include "../../Game/Map/EntityInfo.hpp"
+
 namespace CommandType {
     enum ID {
         MakeTeam,
@@ -17,12 +19,12 @@ namespace CommandType {
 }
 
 struct Command {
-    bool mTeam; // true -> red | false -> blue
+    EntityInfo::Team mTeam; // true -> red | false -> blue
     int mSender;
     int mReceiver; // 9999 -> whole team
     CommandType::ID mType;
 
-    Command(bool t, int mSender, int mReceiver, CommandType::ID type);
+    Command(EntityInfo::Team team, int sender, int receiver, CommandType::ID type);
 };
 
 
