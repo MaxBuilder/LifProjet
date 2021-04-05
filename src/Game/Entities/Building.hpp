@@ -7,6 +7,7 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include "SFML/Graphics/CircleShape.hpp"
+#include "SFML/Graphics/RectangleShape.hpp"
 
 
 #include "Entity.hpp"
@@ -28,7 +29,7 @@ private:
     void updateCurrent(sf::Time dt) override;
 
     float mRange;
-    sf::VertexArray fontLife,frontLife;
+    sf::RectangleShape backLife,frontLife;
     EntityInfo::ID mBonusFlag;
     sf::CircleShape mZone;
     sf::IntRect mPosition;

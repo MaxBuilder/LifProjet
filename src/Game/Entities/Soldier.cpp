@@ -11,8 +11,6 @@ Soldier::Soldier(int id, EntityInfo::Team team, sf::Vector2i objectif, const Tex
 : Entity(100,team, commandQueue)
 , mId(id)
 , mDisplayType(debug::life)
-, frontLife(sf::Quads,4)
-, fontLife(sf::Quads, 4)
 , mObjectif(objectif)
 , mVelocity(0,0)
 , mDirection(sf::Vector2f(0, 0))
@@ -69,23 +67,13 @@ Soldier::Soldier(int id, EntityInfo::Team team, sf::Vector2i objectif, const Tex
     mDisplayAction.setPosition(getPosition()+sf::Vector2f(0,-20));
     centerOrigin(mDisplayID);
 
-    frontLife[0].position = getPosition()+sf::Vector2f(0,-21);
-    frontLife[0].color = sf::Color::Green;
-    frontLife[1].position = getPosition()+sf::Vector2f(blockSize,-21);
-    frontLife[1].color = sf::Color::Green;
-    frontLife[2].position = getPosition()+sf::Vector2f(blockSize,-18);
-    frontLife[2].color = sf::Color::Green;
-    frontLife[3].position = getPosition()+sf::Vector2f(0,-18);
-    frontLife[3].color = sf::Color::Green;
+    backLife.setPosition(0,-11);
+    backLife.setSize(sf::Vector2f(blockSize+1,5));
+    backLife.setFillColor(sf::Color::Black);
 
-    fontLife[0].position = getPosition()+sf::Vector2f(-1,-22);
-    fontLife[0].color = sf::Color::Black;
-    fontLife[1].position = getPosition()+sf::Vector2f(blockSize+1,-22);
-    fontLife[1].color = sf::Color::Black;
-    fontLife[2].position = getPosition()+sf::Vector2f(blockSize+1,-17);
-    fontLife[2].color = sf::Color::Black;
-    fontLife[3].position = getPosition()+sf::Vector2f(-1,-17);
-    fontLife[3].color = sf::Color::Black;
+    frontLife.setPosition(1,-10);
+    frontLife.setSize(sf::Vector2f(blockSize-1,3));
+    frontLife.setFillColor(sf::Color::Green);
 
 }
 
@@ -106,8 +94,8 @@ void Soldier::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) con
             target.draw(mDisplayAction, states);
             break;
         case debug::life :
-            if(mHitPoints!=mMaxHintPoints){
-                target.draw(fontLife, states);
+            if(mHitPoints!=mMaxHintPoints and mHitPoints != 0){
+                target.draw(backLife, states);
                 target.draw(frontLife, states);
             }
             break;
@@ -153,24 +141,14 @@ void Soldier::updateCurrent(sf::Time dt) {
     float xlife = float(mHitPoints)/float(mMaxHintPoints);
     float lifeLength = blockSize*xlife;
 
-    frontLife[1].position = sf::Vector2f(lifeLength,-21);
-    frontLife[2].position = sf::Vector2f(lifeLength,-18);
+    frontLife.setSize(sf::Vector2f(lifeLength,3));
 
     if(xlife > 0.5f){
-        frontLife[0].color = sf::Color::Green;
-        frontLife[1].color = sf::Color::Green;
-        frontLife[2].color = sf::Color::Green;
-        frontLife[3].color = sf::Color::Green;
+        frontLife.setFillColor(sf::Color::Green);
     }else if(xlife > 0.25f){
-        frontLife[0].color = sf::Color::Yellow;
-        frontLife[1].color = sf::Color::Yellow;
-        frontLife[2].color = sf::Color::Yellow;
-        frontLife[3].color = sf::Color::Yellow;
+        frontLife.setFillColor(sf::Color::Yellow);
     }else{
-        frontLife[0].color = sf::Color::Red;
-        frontLife[1].color = sf::Color::Red;
-        frontLife[2].color = sf::Color::Red;
-        frontLife[3].color = sf::Color::Red;
+        frontLife.setFillColor(sf::Color::Red);
     }
 
 }

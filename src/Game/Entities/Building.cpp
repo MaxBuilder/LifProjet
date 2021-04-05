@@ -6,9 +6,7 @@
 #include <iostream>
 
 Building::Building(EntityInfo::ID ID,EntityInfo::Team team, sf::IntRect position,  CommandQueue& commandQueue) :
-   Entity(0,EntityInfo::Team::Blue, commandQueue),
-   frontLife(sf::Quads, 4),
-   fontLife(sf::Quads, 4)
+   Entity(0,EntityInfo::Team::Blue, commandQueue)
  {
 
     mPosition = position;
@@ -58,23 +56,13 @@ Building::Building(EntityInfo::ID ID,EntityInfo::Team team, sf::IntRect position
     mZone.setFillColor(sf::Color::Transparent);
     float blockSize = 20.f;
 
-    frontLife[0].position = sf::Vector2f(-blockSize*mPosition.width/2.f,-22);
-    frontLife[0].color = sf::Color::Green;
-    frontLife[1].position = sf::Vector2f(blockSize*mPosition.width/2.f,-22);
-    frontLife[1].color = sf::Color::Green;
-    frontLife[2].position = sf::Vector2f(blockSize*mPosition.width/2.f,-18);
-    frontLife[2].color = sf::Color::Green;
-    frontLife[3].position = sf::Vector2f(-blockSize*mPosition.width/2.f,-18);
-    frontLife[3].color = sf::Color::Green;
+     backLife.setPosition(-blockSize*mPosition.width/2.f,-22);
+     backLife.setSize(sf::Vector2f(blockSize*mPosition.width+1,5));
+     backLife.setFillColor(sf::Color::Black);
 
-    fontLife[0].position = sf::Vector2f(-blockSize*mPosition.width/2.f -1,-23);
-    fontLife[0].color = sf::Color::Black;
-    fontLife[1].position = sf::Vector2f(blockSize*mPosition.width/2.f+1,-23);
-    fontLife[1].color = sf::Color::Black;
-    fontLife[2].position = sf::Vector2f(blockSize*mPosition.width/2.f+1,-17);
-    fontLife[2].color = sf::Color::Black;
-    fontLife[3].position = sf::Vector2f(-blockSize*mPosition.width/2.f -1,-17);
-    fontLife[3].color = sf::Color::Black;
+     frontLife.setPosition(-blockSize*mPosition.width/2.f+1,-21);
+     frontLife.setSize(sf::Vector2f(blockSize*mPosition.width-1,3));
+     frontLife.setFillColor(sf::Color::Green);
 }
 
 float Building::getRange() const{
@@ -88,7 +76,7 @@ EntityInfo::ID Building::getBonusFlag() const{
 void Building::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const {
     if (not isDestroyed()) {
         if (mHitPoints != mMaxHintPoints) {
-            target.draw(fontLife, states);
+            target.draw(backLife, states);
             target.draw(frontLife, states);
         }
         target.draw(mZone, states);
@@ -112,24 +100,14 @@ void Building::updateCurrent(sf::Time dt){
     float xlife = float(mHitPoints)/float(mMaxHintPoints);
     float lifeLength = blockSize*mPosition.width*xlife;
 
-    frontLife[1].position = sf::Vector2f(-blockSize*mPosition.width/2.f + lifeLength,-22);
-    frontLife[2].position = sf::Vector2f(-blockSize*mPosition.width/2.f + lifeLength,-18);
+    frontLife.setSize(sf::Vector2f(lifeLength,3));
 
     if(xlife > 0.5f){
-        frontLife[0].color = sf::Color::Green;
-        frontLife[1].color = sf::Color::Green;
-        frontLife[2].color = sf::Color::Green;
-        frontLife[3].color = sf::Color::Green;
+        frontLife.setFillColor(sf::Color::Green);
     }else if(xlife > 0.25f){
-        frontLife[0].color = sf::Color::Yellow;
-        frontLife[1].color = sf::Color::Yellow;
-        frontLife[2].color = sf::Color::Yellow;
-        frontLife[3].color = sf::Color::Yellow;
+        frontLife.setFillColor(sf::Color::Yellow);
     }else{
-        frontLife[0].color = sf::Color::Red;
-        frontLife[1].color = sf::Color::Red;
-        frontLife[2].color = sf::Color::Red;
-        frontLife[3].color = sf::Color::Red;
+        frontLife.setFillColor(sf::Color::Red);
     }
 
 }

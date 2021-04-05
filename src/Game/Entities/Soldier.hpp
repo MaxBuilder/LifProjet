@@ -101,7 +101,7 @@ private:
     sf::Sprite mSprite;
     sf::Sprite mGlow;
     sf::Text mDisplayID,mDisplayAction;
-    sf::VertexArray fontLife,frontLife;
+    sf::RectangleShape backLife,frontLife;
     sf::IntRect mSpriteRect;
     sf::Time mSpriteTime;
 
