@@ -11,6 +11,7 @@ GameState::GameState(StateStack &stack, Context& context)
 , mDirection(0, 0)
 , mScroll(0)
 , mSpeed(0)
+, mFactor(1.f)
 , mTracking(false)
 , mTimeSpeed(1)
 , mTrackText("Tracking Soldier", context.fonts.get(Fonts::Main))
@@ -97,10 +98,16 @@ void GameState::draw() {
 
 bool GameState::update(sf::Time dt) {
     if(!mTracking) {
-        mView.move(mDirection.x * mSpeed * dt.asSeconds(), mDirection.y * mSpeed * dt.asSeconds());
+        mView.move(mDirection.x * mSpeed *dt.asSeconds() * mFactor, mDirection.y * mSpeed *dt.asSeconds() * mFactor );
 
-        if (mScroll < 0) mView.zoom(2.f);
-        if (mScroll > 0) mView.zoom(0.5f);
+        if (mScroll < 0){
+            mView.zoom(1.5f);
+            mFactor *= 1.5f;
+        }
+        if (mScroll > 0){
+            mView.zoom(1.f/1.5f);
+            mFactor *= (1.f/1.5f);
+        }
         mScroll = 0;
     }
     else {
@@ -109,13 +116,18 @@ bool GameState::update(sf::Time dt) {
     }
 
     dt = dt * (float)mTimeSpeed;
+
+    if (mWorld.isEnded()){
+        mTimeText.setString("Ended");
+        return true;
+    }
+
     mWorld.update(dt);
 
     mTime += dt;
     int min = (int)mTime.asSeconds() / 60;
     int sec = (int)(mTime.asSeconds() - (float)min * 60);
     mTimeText.setString("0" + std::to_string(min) + " : " + (sec < 10 ? "0" : "") + std::to_string(sec));
-
     auto rem = mWorld.getRemaining();
     float ratio = (float)rem.first / (float)(rem.first + rem.second);
     mRedDisplay.setSize(sf::Vector2f(ratio * 80, 16));

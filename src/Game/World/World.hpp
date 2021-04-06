@@ -22,6 +22,7 @@ public:
 
     void update(sf::Time dt);
     void switchDisplayDebug();
+    bool isEnded();
 
     void draw();
 
@@ -33,7 +34,7 @@ public:
     std::pair<int, int> getRemaining();
 
     // Entity functions :
-    void createEntity(sf::Vector2f position, EntityInfo::Team team, sf::Vector2i objectif, EntityInfo::ID type, int id);
+    void createEntity();
     void onCommand();
     void updateMovement(); // Updates entity relative to the environment
     void updateTargets(); // Updates entity target from perspective
@@ -52,6 +53,7 @@ private:
     };
 
 private:
+    bool ended;
     sf::RenderTarget& mTarget;
     TextureHolder& mTextures;
     FontHolder& mFonts;

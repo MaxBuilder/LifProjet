@@ -36,7 +36,6 @@ add_executable(LifProjet src/main.cpp
         src/Game/GameStates/GameState.cpp src/Game/GameStates/GameState.hpp
         src/Core/Scene/TextNode.cpp src/Core/Scene/TextNode.hpp
         src/Game/GameStates/PauseState.cpp src/Game/GameStates/PauseState.hpp
-        src/Game/Map/BuildInfo.cpp src/Game/Map/BuildInfo.hpp
         src/Game/Map/EntityInfo.cpp src/Game/Map/EntityInfo.hpp
         src/Game/Entities/Entity.cpp src/Game/Entities/Entity.hpp
         src/Game/Entities/Soldier.cpp src/Game/Entities/Soldier.hpp

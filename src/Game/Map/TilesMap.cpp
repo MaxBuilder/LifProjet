@@ -99,7 +99,7 @@ void TilesMap::save(const std::string &file) const{
         }
     }
 
-    int left, top, width, height;
+    float x,y;
     EntityInfo::ID buildID;
     EntityInfo::Team buildTeam;
 
@@ -107,22 +107,18 @@ void TilesMap::save(const std::string &file) const{
     wf.write((char *) &(size), sizeof(std::size_t));
 
     for (const auto &b : mBuildings){
-        left = b.getPosition().left;
-        top = b.getPosition().top;
-        width = b.getPosition().width;
-        height = b.getPosition().height;
+        x = b.getPosition().x;
+        y = b.getPosition().y;
         buildID = b.getID();
         buildTeam = b.getTeam();
 
         wf.write((char *) &(buildID), sizeof(EntityInfo::ID));
         wf.write((char *) &(buildTeam), sizeof(EntityInfo::Team));
-        wf.write((char *) &(left), sizeof(int));
-        wf.write((char *) &(top), sizeof(int));
-        wf.write((char *) &(width), sizeof(int));
-        wf.write((char *) &(height), sizeof(int));
+        wf.write((char *) &(x), sizeof(float));
+        wf.write((char *) &(y), sizeof(float));
+
     }
 
-    float x,y;
     EntityInfo::ID id;
     EntityInfo::Team team;
     size = mEntities.size();
@@ -174,7 +170,7 @@ void TilesMap::load(const std::string &file) {
     }
 
     std::size_t nb_buildings = 0;
-    int left, top, width, height;
+    float x,y;
     EntityInfo::ID buildID = EntityInfo::ID::None;
     EntityInfo::Team buildTeam;
 
@@ -184,19 +180,14 @@ void TilesMap::load(const std::string &file) {
 
         rf.read((char *) &(buildID), sizeof(EntityInfo::ID));
         rf.read((char *) &(buildTeam), sizeof(EntityInfo::Team));
-        rf.read((char *) &(left), sizeof(int));
-        rf.read((char *) &(top), sizeof(int));
-        rf.read((char *) &(width), sizeof(int));
-        rf.read((char *) &(height), sizeof(int));
+        rf.read((char *) &(x), sizeof(float));
+        rf.read((char *) &(y), sizeof(float));
 
-        sf::IntRect rect1 ={left, top, width, height};
-
-        mBuildings.emplace_back(BuildInfo(buildID,buildTeam, rect1));
+        mBuildings.emplace_back(EntityInfo(sf::Vector2f(x,y),buildID,buildTeam,EntityInfo::Building));
 
     }
 
     std::size_t nb_entities = 0;
-    float x,y;
     EntityInfo::ID id;
     EntityInfo::Team team;
 
@@ -217,8 +208,8 @@ void TilesMap::load(const std::string &file) {
 
 }
 
-std::pair<std::vector<BuildInfo>::iterator,
-        std::vector<BuildInfo>::iterator> TilesMap::getBuildingsIt(){
+std::pair<std::vector<EntityInfo>::iterator,
+        std::vector<EntityInfo>::iterator> TilesMap::getBuildingsIt(){
     return std::make_pair(mBuildings.begin(),mBuildings.end());
 }
 
@@ -227,11 +218,11 @@ std::pair<std::vector<EntityInfo>::iterator,
     return std::make_pair(mEntities.begin(),mEntities.end());
 }
 
-void TilesMap::addBuildings(BuildInfo build){
+void TilesMap::addBuildings(EntityInfo build){
     mBuildings.push_back(build);
 }
 
-void TilesMap::supBuildings(std::vector<BuildInfo>::iterator it){
+void TilesMap::supBuildings(std::vector<EntityInfo>::iterator it){
     mBuildings.erase(it);
 }
 

@@ -558,24 +558,36 @@ void MapEditorState::createBuildings(sf::Vector2i pos){
             }
         }
 
-        map.addBuildings(BuildInfo(mEntity, mTeam, rect1));
+        map.addBuildings(EntityInfo(sf::Vector2f(rect1.left,rect1.top),mEntity, mTeam, EntityInfo::Building));
     }
 }
 
 
 bool MapEditorState::supressBuildings(sf::Vector2i pos) {
-    sf::IntRect rect2;
+    sf::Vector2f v2;
+    sf::Vector2i size;
     auto b = map.getBuildingsIt();
     for(; b.first !=  b.second; b.first++){
-        rect2 = b.first->getPosition();
-        if (pos.x < rect2.left + rect2.width &&
-            pos.x >= rect2.left &&
-            pos.y < rect2.top + rect2.height &&
-            pos.y >= rect2.top) {
+        v2 = b.first->getPosition();
+        switch (b.first->getID()) {
+            case EntityInfo::Castle :
+                v2.x = 3; v2.y = 3;
+                break;
+            case EntityInfo::Village :
+                v2.x = 2; v2.y = 2;
+                break;
+            default :
+                v2.x = 1; v2.y = 1;
+                break;
+        }
+        if (pos.x < v2.x + size.x &&
+            pos.x >= v2.x &&
+            pos.y < v2.y + size.y &&
+            pos.y >= v2.y) {
 
-            for (int y(0); y < b.first->getPosition().height;y++){
-                for (int x(0); x <b.first->getPosition().width;x++){
-                    map.getTile(x+b.first->getPosition().left,y+b.first->getPosition().top).paint(sf::Vector2i(0,0),0);
+            for (int y(0); y < size.y ;y++){
+                for (int x(0); x < size.x ;x++){
+                    map.getTile(x+v2.x,y+v2.y).paint(sf::Vector2i(0,0),0);
                 }
             }
 

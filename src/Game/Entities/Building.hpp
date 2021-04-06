@@ -14,7 +14,7 @@
 
 class Building : public Entity {
 public:
-    Building(EntityInfo::ID ID,EntityInfo::Team team, sf::IntRect position,  CommandQueue& commandQueue);
+    Building(EntityInfo::ID ID,EntityInfo::Team team, sf::Vector2f position,  CommandQueue& commandQueue);
 
     float getRange() const;
 

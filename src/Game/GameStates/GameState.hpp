@@ -37,6 +37,7 @@ private:
     sf::View mView;
     sf::Vector2f mDirection;
     float mSpeed;
+    float mFactor;
     int mScroll;
     int mTimeSpeed;
     bool mTracking;

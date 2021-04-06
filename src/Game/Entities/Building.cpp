@@ -5,12 +5,12 @@
 #include "Building.hpp"
 #include <iostream>
 
-Building::Building(EntityInfo::ID ID,EntityInfo::Team team, sf::IntRect position,  CommandQueue& commandQueue) :
+Building::Building(EntityInfo::ID ID,EntityInfo::Team team, sf::Vector2f position,  CommandQueue& commandQueue) :
    Entity(0,EntityInfo::Team::Blue, commandQueue)
  {
 
-    mPosition = position;
-    setPosition(float(mPosition.left)*20+float(mPosition.width)*20/2,float(mPosition.top)*20+float(mPosition.width)*20/2);
+    mPosition.left = position.x ;
+    mPosition.top = position.y ;
 
     switch (ID){
         case EntityInfo::ID::Castle :
@@ -20,6 +20,7 @@ Building::Building(EntityInfo::ID ID,EntityInfo::Team team, sf::IntRect position
             mRange = 150;
             mBonusFlag = ID;
             mTextureId.y = 53; mTextureId.x = 0;
+            mPosition.width = 3; mPosition.height = 3;
             break;
 
         case EntityInfo::ID::Village :
@@ -29,6 +30,7 @@ Building::Building(EntityInfo::ID ID,EntityInfo::Team team, sf::IntRect position
             mRange = 100;
             mBonusFlag = ID;
             mTextureId.y = 48; mTextureId.x = 0;
+            mPosition.width = 2; mPosition.height = 2;
             break;
 
 
@@ -39,11 +41,13 @@ Building::Building(EntityInfo::ID ID,EntityInfo::Team team, sf::IntRect position
             mRange = 0;
             mBonusFlag = ID;
             mTextureId.y = 49; mTextureId.x = 2;
+            mPosition.width = 1; mPosition.height = 1;
             break;
 
         default:
             break;
     }
+     setPosition(float(mPosition.left)*20+float(mPosition.width)*20/2,float(mPosition.top)*20+float(mPosition.width)*20/2);
      mMaxHintPoints = mHitPoints;
 
     mZone.setRadius(mRange);

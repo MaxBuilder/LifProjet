@@ -6,7 +6,6 @@
 #define LIFPROJET_TILESMAP_HPP
 
 #include "Tile.hpp"
-#include "BuildInfo.hpp"
 #include "EntityInfo.hpp"
 #include "../../Game/Resources/ResourceIdentifiers.hpp"
 
@@ -35,13 +34,13 @@ public:
     Tile& getTile(sf::Vector2f position);
     Tile& getTile(sf::Vector2i position);
 
-    std::pair<std::vector<BuildInfo>::iterator,
-            std::vector<BuildInfo>::iterator> getBuildingsIt();
+    std::pair<std::vector<EntityInfo>::iterator,
+            std::vector<EntityInfo>::iterator> getBuildingsIt();
     std::pair<std::vector<EntityInfo>::iterator,
             std::vector<EntityInfo>::iterator> getEntitiesIt();
 
-    void addBuildings(BuildInfo build);
-    void supBuildings(std::vector<BuildInfo>::iterator it);
+    void addBuildings(EntityInfo build);
+    void supBuildings(std::vector<EntityInfo>::iterator it);
 
     void addEntity(EntityInfo entity);
     void supEntity(std::vector<EntityInfo>::iterator it);
@@ -57,7 +56,7 @@ private:
     sf::Sprite mSprite;
     sf::Sprite mEntitySprite;
 
-    std::vector<BuildInfo> mBuildings;
+    std::vector<EntityInfo> mBuildings;
     std::vector<EntityInfo> mEntities;
 
     float mBlockSize;
