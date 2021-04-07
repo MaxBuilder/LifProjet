@@ -60,6 +60,8 @@ namespace Textures {
         EditorRotateRightButton,
 
         EntitySoldier,
+        EntityKnightBlue,
+        EntityKnightRed,
         EntityGlow,
 
         GamePause,

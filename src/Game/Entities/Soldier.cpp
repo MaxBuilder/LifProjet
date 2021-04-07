@@ -15,7 +15,7 @@ Soldier::Soldier(int id, EntityInfo::Team team, sf::Vector2i objectif, const Tex
 , mVelocity(0,0)
 , mDirection(sf::Vector2f(0, 0))
 , mOrigin(sf::Vector2f(0, 0))
-, mSprite(textures.get(Textures::EntitySoldier))
+, mSprite()
 , mGlow(textures.get(Textures::EntityGlow))
 , mSpeedBase(15)
 , mSpeedBonus(0)
@@ -37,14 +37,16 @@ Soldier::Soldier(int id, EntityInfo::Team team, sf::Vector2i objectif, const Tex
 , sendAck(false)
 , mEntityTime()
 {
+    team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityKnightBlue)):
+                               mSprite.setTexture(textures.get(Textures::EntityKnightRed ));
     mBorder = 10;
     float blockSize = 20.f; // à modifier pour rendre dynamique
 
     // Fix origin and texture selection
     mGlow.setTextureRect(sf::IntRect(0,0,32,32));
-    mTeam == EntityInfo::Team::Blue ? mSpriteRect= sf::IntRect(32,0,32,32) : mSpriteRect = sf::IntRect(32,32,32,32);
+    mSpriteRect = sf::IntRect(0,0,64,32);
     mSprite.setTextureRect(mSpriteRect);
-    mSprite.setScale(blockSize/mSprite.getLocalBounds().width,blockSize/mSprite.getLocalBounds().height);
+    mSprite.setScale(blockSize*2/mSprite.getLocalBounds().width,blockSize/mSprite.getLocalBounds().height);
     mGlow.setScale(blockSize/mSprite.getLocalBounds().width,blockSize/mSprite.getLocalBounds().height);
     setOrigin(blockSize/2.f,blockSize/2.f);
     mSpriteTime = sf::milliseconds(0);
@@ -116,28 +118,12 @@ void Soldier::switchDebugDisplay() {
 }
 
 void Soldier::updateCurrent(sf::Time dt) {
-    mSpriteTime = sf::milliseconds(dt.asMilliseconds()+mSpriteTime.asMilliseconds());
-    if (mSpriteTime.asMilliseconds() > 200){
-        if(getHitPoints() > 0)
-            mSpriteRect.left += 32;
-        else
-            mSpriteRect.left = 0;
-        if (mDirection.x > 0 and mSpriteRect.left >= 32*7){
-            mSpriteRect.left = 32;
-        }else if (mDirection.x < 0 and  mSpriteRect.left >= 32*13 )
-            mSpriteRect.left = 32*7;
-        if(mDirection.x == 0 and mTargeted != nullptr and getHitPoints() > 0 ){
-            if (mTargeted->getPosition().x < getPosition().x)
-                mSpriteRect.left = 32*7;
-            else
-                mSpriteRect.left = 32;
-        }
-        mSpriteTime = sf::milliseconds(0);
-        mSprite.setTextureRect(mSpriteRect);
-    }
 
-    mEntityTime += dt;
+    // update mecanics
     mTeam == EntityInfo::Team::Blue ? updateDefense(dt) : updateAttack(dt);
+
+    //update sprites
+    updateSprite(dt);
 
     // update lifeDisplay
     float blockSize = 20.f;
@@ -153,6 +139,70 @@ void Soldier::updateCurrent(sf::Time dt) {
     }else{
         frontLife.setFillColor(sf::Color::Red);
     }
+
+}
+
+void Soldier::updateSprite(sf::Time dt){
+
+    mSpriteTime = sf::milliseconds(dt.asMilliseconds()+mSpriteTime.asMilliseconds());
+    if (mSpriteTime.asMilliseconds() > 130 ){
+
+        if(mSpriteRect.top < 96)
+            mSpriteRect.left += 64;
+        else
+            mSpriteRect.left -= 64;
+
+        if(isDestroyed()){
+            if(mSpriteRect.top < 96) {
+                if(mSpriteRect.top != 64){
+                    mSpriteRect.top = 64;
+                    mSpriteRect.left = 0;
+                }
+                if(mSpriteRect.left > 64*5)
+                    mSpriteRect.left = 64*5;
+            }
+            else{
+                if(mSpriteRect.top != 32*5){
+                    mSpriteRect.top = 32*5;
+                    mSpriteRect.left = 64*5;
+                }
+                if(mSpriteRect.left <= 0)
+                    mSpriteRect.left = 0;
+            }
+
+        }
+        else if(mAction == Attacking){
+            float x = getPosition().x - mTargeted->getPosition().x;
+            if (x < 0 and (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 32) ){
+                mSpriteRect.left = 0;
+                mSpriteRect.top = 32;
+            }
+            else if(x > 0 and (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 32*4)){
+                mSpriteRect.left = 64*5;
+                mSpriteRect.top = 32*4;
+            }
+
+        }
+        else if (mDirection.x > 0 and (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 0)){
+            mSpriteRect.left = 0;
+            mSpriteRect.top = 0;
+
+        }else if (mDirection.x < 0 and  (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 32*3) ) {
+            mSpriteRect.left = 64 * 5;
+            mSpriteRect.top = 32 * 3;
+        }
+
+        if(mSpriteRect.top < 96)
+            mSprite.setPosition(0,0);
+        else
+            mSprite.setPosition(-20,0);
+
+        mSpriteTime = sf::milliseconds(0);
+        mSprite.setTextureRect(mSpriteRect);
+    }
+
+
+    mEntityTime += dt;
 
 }
 

@@ -132,6 +132,8 @@ void Application::loadTextures() {
     mTextures.load(Textures::SubBackground, "data/Editor/subBackground.png");
 
     mTextures.load(Textures::EntitySoldier, "data/spritesSoldiers.png");
+    mTextures.load(Textures::EntityKnightBlue, "data/spriteknightBlue.png");
+    mTextures.load(Textures::EntityKnightRed, "data/spriteknightRed.png");
     mTextures.load(Textures::EntityGlow, "data/glow.png");
 
     mTextures.load(Textures::GamePause, "data/Game/pause.png");

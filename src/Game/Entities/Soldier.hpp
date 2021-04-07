@@ -54,6 +54,7 @@ public:
     Action getAction();
     void setAction(Action act);
 
+    void updateSprite(sf::Time dt);
     void updateAttack(sf::Time dt);
     void updateDefense(sf::Time dt);
 
