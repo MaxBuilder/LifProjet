@@ -39,6 +39,7 @@ Soldier::Soldier(int id, EntityInfo::Team team, sf::Vector2i objectif, const Tex
 {
     team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityKnightBlue)):
                                mSprite.setTexture(textures.get(Textures::EntityKnightRed ));
+
     mBorder = 10;
     float blockSize = 20.f; // à modifier pour rendre dynamique
 
