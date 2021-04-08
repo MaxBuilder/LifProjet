@@ -173,12 +173,12 @@ bool GameState::update(sf::Time dt) {
 
     dt = dt * (float)mTimeSpeed;
 
+    mWorld.update(dt);
+
     if (mWorld.isEnded()){
         mTimeText.setString("Ended");
         return true;
     }
-
-    mWorld.update(dt);
 
     mTime += dt;
     int min = (int)mTime.asSeconds() / 60;

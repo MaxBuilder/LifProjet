@@ -17,7 +17,11 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
 , mCommandQueue()
 {
     // Map initialization
-    mMap.load("data/Maps/demo1.map");
+    mMap.load("data/Maps/blank.map");
+}
+
+void World::init(const std::string &mapPath) {
+    mMap.load(mapPath);
     std::cout << "Map loaded" << std::endl;
 
     // Setting up mPathfinding
@@ -37,7 +41,6 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
     // Initialisation of defender (to expand)
     for(auto &soldier : mSoldiers)
         soldier->init();
-
 }
 
 void World::createEntity(){
