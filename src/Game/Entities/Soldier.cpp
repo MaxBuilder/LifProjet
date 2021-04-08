@@ -470,14 +470,14 @@ void Soldier::roam(sf::Time dt) {
         mDistance = 10;
         mTravelled = 0;
         setDirection(mOrigin - getPosition());
-        setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
+        setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
         return;
     }
     if(mTravelled < (float)mDistance) { // If there is still distance to travel
         // sf::Vector2f prev = getPosition();
-        sf::Vector2f dpl = mDirection * dt.asSeconds() * (10.f+mSpeedBonus);
+        sf::Vector2f dpl = mDirection * dt.asSeconds() * (10.f + mSpeedBonus);
         setVelocity(dpl);
-        mTravelled += distance(sf::Vector2f(0,0),mVelocity);
+        mTravelled += distance(sf::Vector2f(0,0), mVelocity);
         return;
     }
     // If distance has been travelled, find a new one
@@ -496,7 +496,7 @@ void Soldier::seekTarget(sf::Vector2f pos) {
         target = mTargeted->getPosition();
     else
         target = pos;
-    if(usePathFinding){
+    if(usePathFinding) {
         if(mPath.empty()) {
             mAstarDuration.restart();
             mPathfinding.getPath(getPosition(), target/20.f, mPath, 2) ;
@@ -532,8 +532,8 @@ void Soldier::setAction(Action act) {
     mPath.clear();
     usePathFinding = false;
     std::string name[10] = {"None","Moving","Seeking","Fleeing","Attacking","Calling","Leading","WithSquad","Assaulting","controlling"};
-    std::string str = mTeam ==EntityInfo::Team::Blue ? "Blue" : "Red";
-    std::cout<<"id : "<<mId<<str<<" action :"<<name[mAction]<<" -> "<<name[act]<<std::endl;
+    std::string str = mTeam == EntityInfo::Team::Blue ? "Blue" : "Red";
+    std::cout << "id : " << mId << str << " action :" << name[mAction] << " -> " << name[act] << std::endl;
     mAction = act;
     mDisplayAction.setString(name[mAction]);
 }
@@ -558,7 +558,7 @@ sf::Vector2f Soldier::getDirection() const {
 }
 
 float Soldier::getSpeed() const {
-    return mSpeedBase+mSpeedBonus;
+    return mSpeedBase + mSpeedBonus;
 }
 
 void Soldier::setSpeed(float speed) {
@@ -594,19 +594,19 @@ void Soldier::travel(){
 }
 
 void Soldier::changeBonus(EntityInfo::ID bonus) {
-    if(bonus == EntityInfo::Castle){
+    if(bonus == EntityInfo::Castle) {
         mGlow.setTextureRect(sf::IntRect(64,0,32,32));
         mBonus = bonus;
         mSpeedBonus = 15;
         mDamages = 25;
     }
-    else if(bonus == EntityInfo::Village and mBonus == EntityInfo::None){
+    else if(bonus == EntityInfo::Village and mBonus == EntityInfo::None) {
         mGlow.setTextureRect(sf::IntRect(32,0,32,32));
         mBonus = bonus;
         mSpeedBonus = 15;
         mDamages = 25;
     }
-    else if(bonus == EntityInfo::None){
+    else if(bonus == EntityInfo::None) {
         mGlow.setTextureRect(sf::IntRect(0,0,32,32));
         mBonus = bonus;
         mSpeedBonus = 0;

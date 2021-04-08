@@ -17,7 +17,7 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
 , mCommandQueue()
 {
     // Map initialization
-    mMap.load("data/Maps/blank.map");
+    mMap.load("data/MapData/blank.map");
 }
 
 void World::init(const std::string &mapPath) {

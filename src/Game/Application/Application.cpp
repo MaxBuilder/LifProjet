@@ -7,7 +7,6 @@
 #include "../GameStates/PauseState.hpp"
 
 const sf::Time Application::TimePerFrame = sf::seconds(1.f/60.f);
-const sf::Time Accelerate = sf::seconds(1.f/12.f);
 
 Application::Application()
 : mTextures()
@@ -19,22 +18,22 @@ Application::Application()
 
     mWindow.create(mVideoMode,"LifProjet", mWindowStyle);
     mView.setSize(1280,720);
-    mView.setCenter(1280/2.f, 720/2.f);
+    mView.setCenter(1280 / 2.f, 720 / 2.f);
     mView.setViewport(sf::FloatRect(0, 0, 1, 1));
 
-    // Chargement des ressources
+    // Chargement des textures
     loadTextures();
 
     // Chargement des polices de texte
-    mFonts.load(Fonts::Main, "data/font.ttf");
+    mFonts.load(Fonts::Main, "data/Fonts/font.ttf");
 
     // Chargement des effets sonores
-    mSounds.load(Sounds::Menu, "data/audio/click.wav");
+    mSounds.load(Sounds::Menu, "data/Audio/click.wav");
 
     // Initialisation de la statestack
     registerStates();
     mStateStack.pushState(States::MainMenu);
-    mStateStack.handleEvent(sf::Event()); // Pas mieux pour l'instant
+    mStateStack.handleEvent(sf::Event());
 }
 
 void Application::run() {
@@ -51,8 +50,6 @@ void Application::run() {
             processInput();
             update(TimePerFrame);
 
-
-            // Check inside this loop, because stack might be empty before update() call
             if (mStateStack.isEmpty())
                 mWindow.close();
         }
@@ -82,25 +79,23 @@ void Application::render() {
     mWindow.setView(mView);
     mStateStack.draw();
 
-    // mWindow.setView(mWindow.getDefaultView());
-    // mWindow.draw(mStatisticsText);
-
     mWindow.display();
 }
 
 void Application::loadTextures() {
-    mTextures.load(Textures::MenuBackground1, "data/background/background_menu1.png");
-    mTextures.load(Textures::MenuBackground2, "data/background/background_menu2.png");
-    mTextures.load(Textures::MenuBackground3, "data/background/background_menu3.png");
-    mTextures.load(Textures::MenuBackground4, "data/background/background_menu4.png");
-    mTextures.load(Textures::EditorBackground, "data/background/mapEditorBackGround.png");
-    mTextures.load(Textures::MenuButton, "data/menuButton.png");
-    mTextures.load(Textures::MenuTitle, "data/menuTitle.png");
-    mTextures.load(Textures::Checkbox, "data/checkbox.png");
-    mTextures.load(Textures::SettingsButton, "data/settingsButton.png");
+    mTextures.load(Textures::MenuBackground1, "data/Menu/background_menu1.png");
+    mTextures.load(Textures::MenuBackground2, "data/Menu/background_menu2.png");
+    mTextures.load(Textures::MenuBackground3, "data/Menu/background_menu3.png");
+    mTextures.load(Textures::MenuBackground4, "data/Menu/background_menu4.png");
+    mTextures.load(Textures::SettingsButton, "data/Menu/settingsButton.png");
+    mTextures.load(Textures::MenuButton, "data/Menu/menuButton.png");
+    mTextures.load(Textures::MenuTitle, "data/Menu/menuTitle.png");
+    mTextures.load(Textures::Checkbox, "data/Menu/checkbox.png");
 
-    mTextures.load(Textures::MapGround, "data/texturesMap.png");
+    mTextures.load(Textures::MapGround, "data/Tiles/texturesMap.png");
 
+    mTextures.load(Textures::EditorBackground, "data/Editor/mapEditorBackGround.png");
+    mTextures.load(Textures::SubBackground, "data/Editor/subBackground.png");
     mTextures.load(Textures::EditorBackButton, "data/Editor/back.png");
     mTextures.load(Textures::EditorNewButton, "data/Editor/new.png");
     mTextures.load(Textures::EditorLoadButton, "data/Editor/load.png");
@@ -129,14 +124,13 @@ void Application::loadTextures() {
     mTextures.load(Textures::EditorCastleButton, "data/Editor/castle.png");
     mTextures.load(Textures::EditorRotateUpButton, "data/Editor/up.png");
     mTextures.load(Textures::EditorRotateRightButton, "data/Editor/right.png");
-    mTextures.load(Textures::SubBackground, "data/Editor/subBackground.png");
 
-    mTextures.load(Textures::EntitySoldier, "data/spritesSoldiers.png");
-    mTextures.load(Textures::EntityKnightBlue, "data/spriteKnightBlue.png");
-    mTextures.load(Textures::EntityKnightRed, "data/spriteKnightRed.png");
-    mTextures.load(Textures::EntityArcherBlue, "data/spriteArcherBlue.png");
-    mTextures.load(Textures::EntityArcherRed, "data/spriteArcherRed.png");
-    mTextures.load(Textures::EntityGlow, "data/glow.png");
+    mTextures.load(Textures::EntitySoldier, "data/Entities/spritesSoldiers.png");
+    mTextures.load(Textures::EntityKnightBlue, "data/Entities/spriteKnightBlue.png");
+    mTextures.load(Textures::EntityKnightRed, "data/Entities/spriteKnightRed.png");
+    mTextures.load(Textures::EntityArcherBlue, "data/Entities/spriteArcherBlue.png");
+    mTextures.load(Textures::EntityArcherRed, "data/Entities/spriteArcherRed.png");
+    mTextures.load(Textures::EntityGlow, "data/Entities/glow.png");
 
     mTextures.load(Textures::GamePause, "data/Game/pause.png");
     mTextures.load(Textures::Game1x, "data/Game/1xspeed.png");
@@ -154,12 +148,10 @@ void Application::registerStates() {
     mStateStack.registerState<GameState>(States::Game);
     mStateStack.registerState<PauseState>(States::Pause);
     mStateStack.registerState<SettingsState>(States::Settings);
-
-
 }
 
 void Application::loadSettings() {
-    std::ifstream settings("data/Settings/Settings.txt");
+    std::ifstream settings("data/Settings/settings.txt");
 
     if(!settings.is_open()) {
         std::cout << "Cannot open Settings file!" << std::endl;
@@ -175,6 +167,6 @@ void Application::loadSettings() {
     settings >> tmp;
     settings >> height;
 
-    mVideoMode = sf::VideoMode(width,height);
+    mVideoMode = sf::VideoMode(width, height);
     settings.close();
 }

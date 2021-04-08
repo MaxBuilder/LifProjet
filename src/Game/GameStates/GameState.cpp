@@ -20,7 +20,7 @@ GameState::GameState(StateStack &stack, Context& context)
 , mTimeUI(context.textures.get(Textures::GameTimeUI))
 , isLoaded(false)
 , mMapSelectBackground(context.textures.get(Textures::GameMapSelectionBackground))
-, mMapSelectText("Choisissez un scenario a charger : ", context.fonts.get(Fonts::Main))
+, mMapSelectText("Choose a scenario : ", context.fonts.get(Fonts::Main))
 {
     mView.setSize(1280, 720);
     mView.setCenter(640, 360);
@@ -84,7 +84,7 @@ GameState::GameState(StateStack &stack, Context& context)
 
     // Construction de l'UI de selection de scénario :
 
-    std::vector<std::string> mapPath = {"demo1.map", "demo2.map", "demo3.map", "demo1.map", "demo1.map", "demo1.map", "demo1.map", "demo1.map", "demo1.map", "demo1.map"};
+    std::vector<std::string> mapPath = {"demo1", "demo2", "demo3", "demo1", "demo1", "demo1", "demo1", "demo1", "demo1", "demo1"};
     for(int i = 0 ; i < mapPath.size() ; i++) {
         auto temp = std::make_shared<GUI::Button>(getContext(), 500, 40, Textures::GameMapSelectionButton);
         temp->setText(mapPath.at(i));
@@ -92,7 +92,7 @@ GameState::GameState(StateStack &stack, Context& context)
         temp->setPosition(390, 155 + i * 40);
         temp->setCallback([=] () {
             getContext().sounds.play(Sounds::Menu);
-            mMapPath = "Data/Maps/" + mapPath.at(i);
+            mMapPath = "data/MapData/" + mapPath.at(i) + ".map";
         });
         if(i == 0) temp->activate();
 
@@ -101,7 +101,7 @@ GameState::GameState(StateStack &stack, Context& context)
 
     auto confirmButton = std::make_shared<GUI::Button>(getContext(), 170, 40, Textures::GameMapSelectionConfButton);
     confirmButton->setPosition(470, 567);
-    confirmButton->setText("Confirmer");
+    confirmButton->setText("Confirm");
     confirmButton->setCallback([this] () {
         getContext().sounds.play(Sounds::Menu);
         initializeSimulation();
@@ -110,7 +110,7 @@ GameState::GameState(StateStack &stack, Context& context)
 
     auto cancelButton  = std::make_shared<GUI::Button>(getContext(), 170, 40, Textures::GameMapSelectionConfButton);
     cancelButton->setPosition(640, 567);
-    cancelButton->setText("Retour");
+    cancelButton->setText("Back");
     cancelButton->setCallback([this] () {
         getContext().sounds.play(Sounds::Menu);
         requestStackClear();
