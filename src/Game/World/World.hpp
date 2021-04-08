@@ -19,6 +19,7 @@ class World {
 
 public:
     World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder &fonts, SoundPlayer &sounds);
+    void init(const std::string& mapPath);
 
     void update(sf::Time dt);
     void switchDisplayDebug();

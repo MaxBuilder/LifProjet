@@ -143,6 +143,9 @@ void Application::loadTextures() {
     mTextures.load(Textures::Game3x, "data/Game/3xspeed.png");
     mTextures.load(Textures::Game5x, "data/Game/5xspeed.png");
     mTextures.load(Textures::GameTimeUI, "data/Game/Time.png");
+    mTextures.load(Textures::GameMapSelectionButton, "data/Game/mapSelectButton.png");
+    mTextures.load(Textures::GameMapSelectionConfButton, "data/Game/mapConfButton.png");
+    mTextures.load(Textures::GameMapSelectionBackground, "data/Game/mapSelectionBackground.png");
 }
 
 void Application::registerStates() {

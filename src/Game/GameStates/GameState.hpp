@@ -26,9 +26,18 @@ public:
     bool handleEvent(const sf::Event& event) override;
 
 private:
+    void initializeSimulation();
+
     World mWorld;
 
     GUI::Container mUI;
+    GUI::Container mMapSelectionUI;
+
+    std::string mMapPath;
+    bool isLoaded;
+    sf::Sprite mMapSelectBackground;
+    sf::Text mMapSelectText;
+
     sf::Sprite mTimeUI;
     sf::Text mTrackText;
     sf::Text mTimeText;

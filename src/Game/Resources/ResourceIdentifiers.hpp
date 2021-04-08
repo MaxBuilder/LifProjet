@@ -70,7 +70,10 @@ namespace Textures {
         Game1x,
         Game3x,
         Game5x,
-        GameTimeUI
+        GameTimeUI,
+        GameMapSelectionButton,
+        GameMapSelectionConfButton,
+        GameMapSelectionBackground
     };
 }
 

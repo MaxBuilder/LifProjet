@@ -18,6 +18,9 @@ GameState::GameState(StateStack &stack, Context& context)
 , mTimeText("", context.fonts.get(Fonts::Main))
 , mTime()
 , mTimeUI(context.textures.get(Textures::GameTimeUI))
+, isLoaded(false)
+, mMapSelectBackground(context.textures.get(Textures::GameMapSelectionBackground))
+, mMapSelectText("Choisissez un scenario a charger : ", context.fonts.get(Fonts::Main))
 {
     mView.setSize(1280, 720);
     mView.setCenter(640, 360);
@@ -31,12 +34,17 @@ GameState::GameState(StateStack &stack, Context& context)
 
     mTimeUI.setPosition(560, 0);
 
+    mMapSelectBackground.setPosition(374, 97);
+    centerOrigin(mMapSelectText);
+    mMapSelectText.setPosition(640, 129);
+
     // Barres d'état des équipes :
     mRedDisplay.setFillColor(sf::Color::Red);
     mRedDisplay.setPosition(sf::Vector2f(627, 6));
     mBlueDisplay.setFillColor(sf::Color::Blue);
 
     // Construction de l'UI :
+
     auto pauseButton = std::make_shared<GUI::Button>(context, 40, 40, Textures::GamePause);
     pauseButton->setPosition(1120, 0);
     pauseButton->setToggle(true);
@@ -74,10 +82,51 @@ GameState::GameState(StateStack &stack, Context& context)
     });
     mUI.pack(x5Button);
 
+    // Construction de l'UI de selection de scénario :
+
+    std::vector<std::string> mapPath = {"demo1.map", "demo2.map", "demo3.map", "demo1.map", "demo1.map", "demo1.map", "demo1.map", "demo1.map", "demo1.map", "demo1.map"};
+    for(int i = 0 ; i < mapPath.size() ; i++) {
+        auto temp = std::make_shared<GUI::Button>(getContext(), 500, 40, Textures::GameMapSelectionButton);
+        temp->setText(mapPath.at(i));
+        temp->setToggle(true);
+        temp->setPosition(390, 155 + i * 40);
+        temp->setCallback([=] () {
+            getContext().sounds.play(Sounds::Menu);
+            mMapPath = "Data/Maps/" + mapPath.at(i);
+        });
+        if(i == 0) temp->activate();
+
+        mMapSelectionUI.pack(temp);
+    }
+
+    auto confirmButton = std::make_shared<GUI::Button>(getContext(), 170, 40, Textures::GameMapSelectionConfButton);
+    confirmButton->setPosition(470, 567);
+    confirmButton->setText("Confirmer");
+    confirmButton->setCallback([this] () {
+        getContext().sounds.play(Sounds::Menu);
+        initializeSimulation();
+    });
+    mMapSelectionUI.pack(confirmButton);
+
+    auto cancelButton  = std::make_shared<GUI::Button>(getContext(), 170, 40, Textures::GameMapSelectionConfButton);
+    cancelButton->setPosition(640, 567);
+    cancelButton->setText("Retour");
+    cancelButton->setCallback([this] () {
+        getContext().sounds.play(Sounds::Menu);
+        requestStackClear();
+        requestStackPush(States::MainMenu);
+    });
+    mMapSelectionUI.pack(cancelButton);
+}
+
+void GameState::initializeSimulation() {
+    mWorld.init(mMapPath);
+    isLoaded = true;
 }
 
 void GameState::draw() {
     sf::RenderWindow& window = getContext().window;
+    auto tempView = window.getView();
 
     window.setView(mView);
 
@@ -88,12 +137,19 @@ void GameState::draw() {
         window.draw(mTrackText);
     }
 
-    window.setView(window.getDefaultView());
-    window.draw(mTimeUI);
-    window.draw(mTimeText);
-    window.draw(mRedDisplay);
-    window.draw(mBlueDisplay);
-    window.draw(mUI);
+    window.setView(tempView);
+    if(isLoaded) {
+        window.draw(mTimeUI);
+        window.draw(mTimeText);
+        window.draw(mRedDisplay);
+        window.draw(mBlueDisplay);
+        window.draw(mUI);
+    }
+    else {
+        window.draw(mMapSelectBackground);
+        window.draw(mMapSelectText);
+        window.draw(mMapSelectionUI);
+    }
 }
 
 bool GameState::update(sf::Time dt) {
@@ -138,6 +194,11 @@ bool GameState::update(sf::Time dt) {
 }
 
 bool GameState::handleEvent(const sf::Event &event) {
+    if(!isLoaded) {
+        mMapSelectionUI.handleEvent(event, getContext().window);
+        return false;
+    }
+
     mDirection = sf::Vector2f(0.f, 0.f);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) mDirection += sf::Vector2f(0.f, -1.f);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) mDirection += sf::Vector2f(0.f, +1.f);
@@ -183,3 +244,4 @@ bool GameState::handleEvent(const sf::Event &event) {
 
     return false;
 }
+
