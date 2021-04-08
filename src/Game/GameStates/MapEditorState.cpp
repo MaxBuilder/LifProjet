@@ -174,18 +174,6 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     });
     mToolBar.pack(tankButton);
 
-    /*
-    auto entityButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorEntityButton);
-    entityButton->setToggle(true);
-    entityButton->setPosition(16, 362);
-    entityButton->setCallback([this] () {
-        tool = Editor::Tool::PlaceSoldier;
-        mEntity = EntityInfo::Knight;
-        getContext().sounds.play(Sounds::Menu);
-    });
-    mToolBar.pack(entityButton);
-    */
-
     auto buildingButton = std::make_shared<GUI::Button>(context, 60, 60, Textures::EditorBuilding);
     buildingButton->setToggle(true);
     buildingButton->setPosition(910, 10);
@@ -237,7 +225,7 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     map1->setPosition(380, 200);
     map1->setText("Save 1");
     map1->setCallback([this] () {
-        mMapPath = "data/Maps/demo1.map";
+        mMapPath = "data/MapData/demo1.map";
         subMenu = false;
         if(saveload) map.save(MapEditorState::mMapPath);
         else {
@@ -251,7 +239,7 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     map2->setPosition(380, 280);
     map2->setText("Save 2");
     map2->setCallback([this] () {
-        mMapPath = "data/Maps/demo2.map";
+        mMapPath = "data/MapData/demo2.map";
         subMenu = false;
         if(saveload) map.save(MapEditorState::mMapPath);
         else {
@@ -265,7 +253,7 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     map3->setPosition(380, 360);
     map3->setText("Save 3");
     map3->setCallback([this] () {
-        mMapPath = "data/Maps/demo3.map";
+        mMapPath = "data/MapData/demo3.map";
         subMenu = false;
         if(saveload) map.save(MapEditorState::mMapPath);
         else {

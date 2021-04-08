@@ -102,7 +102,6 @@ void Application::loadTextures() {
     mTextures.load(Textures::EditorSaveButton, "data/Editor/save.png");
     mTextures.load(Textures::EditorUndoButton, "data/Editor/undo.png");
     mTextures.load(Textures::EditorRedoButton, "data/Editor/redo.png");
-    mTextures.load(Textures::EditorEntityButton, "data/Editor/entityButton.png");
     mTextures.load(Textures::EditorTeamColor, "data/Editor/teamColor.png");
     mTextures.load(Textures::EditorKnight, "data/Editor/soldier.png");
     mTextures.load(Textures::EditorArcher, "data/Editor/archer.png");
@@ -114,18 +113,9 @@ void Application::loadTextures() {
     mTextures.load(Textures::ToolBigBrush, "data/Editor/big.png");
     mTextures.load(Textures::ToolEraser, "data/Editor/Eraser.png");
     mTextures.load(Textures::ToolFill, "data/Editor/Fill.png");
-    mTextures.load(Textures::EditorGrassButton, "data/Editor/grass.png");
-    mTextures.load(Textures::EditorSandButton, "data/Editor/sand.png");
-    mTextures.load(Textures::EditorWaterButton, "data/Editor/water.png");
-    mTextures.load(Textures::EditorWoodButton, "data/Editor/wood.png");
-    mTextures.load(Textures::EditorStoneButton, "data/Editor/stone.png");
-    mTextures.load(Textures::EditorBarrierButton, "data/Editor/barrier.png");
-    mTextures.load(Textures::EditorHomeButton, "data/Editor/home.png");
-    mTextures.load(Textures::EditorCastleButton, "data/Editor/castle.png");
     mTextures.load(Textures::EditorRotateUpButton, "data/Editor/up.png");
     mTextures.load(Textures::EditorRotateRightButton, "data/Editor/right.png");
 
-    mTextures.load(Textures::EntitySoldier, "data/Entities/spritesSoldiers.png");
     mTextures.load(Textures::EntityKnightBlue, "data/Entities/spriteKnightBlue.png");
     mTextures.load(Textures::EntityKnightRed, "data/Entities/spriteKnightRed.png");
     mTextures.load(Textures::EntityArcherBlue, "data/Entities/spriteArcherBlue.png");
