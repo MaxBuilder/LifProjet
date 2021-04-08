@@ -64,7 +64,8 @@ namespace Textures {
         GameTimeUI,
         GameMapSelectionButton,
         GameMapSelectionConfButton,
-        GameMapSelectionBackground
+        GameMapSelectionBackground,
+        GameVictoryScreen
     };
 }
 

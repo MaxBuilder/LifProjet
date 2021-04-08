@@ -130,6 +130,7 @@ void Application::loadTextures() {
     mTextures.load(Textures::GameMapSelectionButton, "data/Game/mapSelectButton.png");
     mTextures.load(Textures::GameMapSelectionConfButton, "data/Game/mapConfButton.png");
     mTextures.load(Textures::GameMapSelectionBackground, "data/Game/mapSelectionBackground.png");
+    mTextures.load(Textures::GameVictoryScreen, "data/Game/victoryScreen.png");
 }
 
 void Application::registerStates() {

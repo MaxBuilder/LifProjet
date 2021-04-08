@@ -23,7 +23,8 @@ public:
 
     void update(sf::Time dt);
     void switchDisplayDebug();
-    bool isEnded();
+    bool isEnded() const;
+    bool returnVictoryState() const;
 
     void draw();
 
@@ -54,7 +55,7 @@ private:
     };
 
 private:
-    bool ended;
+    bool mBlueVictory, mRedVictory;
     sf::RenderTarget& mTarget;
     TextureHolder& mTextures;
     FontHolder& mFonts;

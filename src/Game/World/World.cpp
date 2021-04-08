@@ -11,7 +11,8 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
 , mFonts(fonts)
 , mSceneLayers()
 , mSoldiers()
-, ended(false)
+, mBlueVictory(false)
+, mRedVictory(false)
 , mTracked(-1)
 , mMap(textures.get(Textures::MapGround), 20.f)
 , mCommandQueue()
@@ -301,8 +302,8 @@ void World::updateDeath() {
             mSceneLayers[Back]->attachChild(mSceneLayers[Front]->detachChild(static_cast<SceneNode *>(e)));
             e->down = true;
             e->getTeam() == EntityInfo::Red ? mNbRed-- : mNbBlue--;
-            if (mNbBlue == 0 or mNbRed == 0)
-                ended = true;
+            if (mNbRed == 0)
+                mBlueVictory = true;
         }
     }
 
@@ -321,8 +322,8 @@ void World::updateDeath() {
                 }
             }
             build->down = true;
-            if (build->getBonusFlag()==EntityInfo::Castle)
-                ended = true;
+            if (build->getBonusFlag() == EntityInfo::Castle)
+                mRedVictory = true;
         }
     }
 }
@@ -380,6 +381,12 @@ sf::Vector2f World::trackedPos() {
     return mSoldiers[mTracked]->getPosition();
 }
 
-bool World::isEnded() {
-    return ended;
+bool World::isEnded() const {
+    return mBlueVictory or mRedVictory;
+}
+
+bool World::returnVictoryState() const {
+    if(mRedVictory)
+        return true;
+    return false;
 }

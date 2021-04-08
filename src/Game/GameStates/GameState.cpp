@@ -21,9 +21,14 @@ GameState::GameState(StateStack &stack, Context& context)
 , isLoaded(false)
 , mMapSelectBackground(context.textures.get(Textures::GameMapSelectionBackground))
 , mMapSelectText("Choose a scenario : ", context.fonts.get(Fonts::Main))
+, mVictoryText("Victory", context.fonts.get(Fonts::Main))
+, mVictoryScreen(context.textures.get(Textures::GameVictoryScreen))
+, ended(false)
 {
     mView.setSize(1280, 720);
     mView.setCenter(640, 360);
+
+    // Initialisation des affichages :
 
     mTrackText.setPosition(2, 2);
     mTrackText.setCharacterSize(25u);
@@ -38,7 +43,14 @@ GameState::GameState(StateStack &stack, Context& context)
     centerOrigin(mMapSelectText);
     mMapSelectText.setPosition(640, 129);
 
+    mVictoryText.setCharacterSize(100u);
+    mVictoryText.setStyle(sf::Text::Bold);
+    centerOrigin(mVictoryText);
+    mVictoryText.setPosition(640, 300);
+    mVictoryScreen.setPosition(340, 220);
+
     // Barres d'état des équipes :
+
     mRedDisplay.setFillColor(sf::Color::Red);
     mRedDisplay.setPosition(sf::Vector2f(627, 6));
     mBlueDisplay.setFillColor(sf::Color::Blue);
@@ -112,11 +124,22 @@ GameState::GameState(StateStack &stack, Context& context)
     cancelButton->setPosition(640, 567);
     cancelButton->setText("Back");
     cancelButton->setCallback([this] () {
-        getContext().sounds.play(Sounds::Menu);
         requestStackClear();
         requestStackPush(States::MainMenu);
+        getContext().sounds.play(Sounds::Menu);
     });
     mMapSelectionUI.pack(cancelButton);
+
+    // Bouton retour lors de la fin de la simulation :
+
+    auto returnButton = std::make_shared<GUI::Button>(getContext(), 60, 60, Textures::EditorBackButton);
+    returnButton->setPosition(20, 640);
+    returnButton->setCallback([this] () {
+        requestStackClear();
+        requestStackPush(States::MainMenu);
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mBack.pack(returnButton);
 }
 
 void GameState::initializeSimulation() {
@@ -138,6 +161,12 @@ void GameState::draw() {
     }
 
     window.setView(tempView);
+    if(ended) {
+        window.draw(mVictoryScreen);
+        window.draw(mVictoryText);
+        window.draw(mBack);
+        return;
+    }
     if(isLoaded) {
         window.draw(mTimeUI);
         window.draw(mTimeText);
@@ -153,6 +182,13 @@ void GameState::draw() {
 }
 
 bool GameState::update(sf::Time dt) {
+    if (mWorld.isEnded()){
+        mTimeText.setString("Ended");
+        mWorld.returnVictoryState() ? mVictoryText.setFillColor(sf::Color::Red) : mVictoryText.setFillColor(sf::Color::Blue);
+        ended = true;
+        return true;
+    }
+
     if(!mTracking) {
         mView.move(mDirection.x * mSpeed *dt.asSeconds() * mFactor, mDirection.y * mSpeed *dt.asSeconds() * mFactor );
 
@@ -175,11 +211,6 @@ bool GameState::update(sf::Time dt) {
 
     mWorld.update(dt);
 
-    if (mWorld.isEnded()){
-        mTimeText.setString("Ended");
-        return true;
-    }
-
     mTime += dt;
     int min = (int)mTime.asSeconds() / 60;
     int sec = (int)(mTime.asSeconds() - (float)min * 60);
@@ -196,6 +227,10 @@ bool GameState::update(sf::Time dt) {
 bool GameState::handleEvent(const sf::Event &event) {
     if(!isLoaded) {
         mMapSelectionUI.handleEvent(event, getContext().window);
+        return false;
+    }
+    else if(ended) {
+        mBack.handleEvent(event, getContext().window);
         return false;
     }
 

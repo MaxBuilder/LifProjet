@@ -32,11 +32,16 @@ private:
 
     GUI::Container mUI;
     GUI::Container mMapSelectionUI;
+    GUI::Container mBack;
 
     std::string mMapPath;
     bool isLoaded;
     sf::Sprite mMapSelectBackground;
     sf::Text mMapSelectText;
+
+    sf::Sprite mVictoryScreen;
+    sf::Text mVictoryText;
+    bool ended;
 
     sf::Sprite mTimeUI;
     sf::Text mTrackText;
