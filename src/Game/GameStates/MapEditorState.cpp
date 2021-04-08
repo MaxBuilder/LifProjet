@@ -571,13 +571,13 @@ bool MapEditorState::supressBuildings(sf::Vector2i pos) {
         v2 = b.first->getPosition();
         switch (b.first->getID()) {
             case EntityInfo::Castle :
-                v2.x = 3; v2.y = 3;
+                size.x = 3; size.y = 3;
                 break;
             case EntityInfo::Village :
-                v2.x = 2; v2.y = 2;
+                size.x = 2; size.y = 2;
                 break;
             default :
-                v2.x = 1; v2.y = 1;
+                size.x = 1; size.y = 1;
                 break;
         }
         if (pos.x < v2.x + size.x &&

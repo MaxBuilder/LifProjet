@@ -191,6 +191,10 @@ void Soldier::updateSprite(sf::Time dt){
         }else if (mDirection.x < 0 and  (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 32*3) ) {
             mSpriteRect.left = 64 * 5;
             mSpriteRect.top = 32 * 3;
+        }else if(mSpriteRect.left > 64*5){
+            mSpriteRect.left = 0;
+        }else if(mSpriteRect.left < 0){
+            mSpriteRect.left = 64*5;
         }
 
         if(mSpriteRect.top < 96)
