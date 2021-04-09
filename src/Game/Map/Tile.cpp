@@ -47,7 +47,7 @@ void Tile::paint(const sf::Vector2i &id,const float &rotation ){
         moveSpeed = 1.1f;
         crossable = true;
     }else if ( id.x == 2 and (id.y < 3 or id.y == 20 or id.y == 19) ) { // eau
-        moveSpeed = 0.2f;
+        moveSpeed = 0.35f;
         crossable = false;
     }else if(id.y<6) {
         moveSpeed = 0.85f;
@@ -62,7 +62,7 @@ void Tile::paint(const sf::Vector2i &id,const float &rotation ){
         topMoveSpeed = 0.85f;
         topCrossable = true;
     }else if (id.y < 40){ // batiment + montagnes + foret
-        topMoveSpeed = 0.6f;
+        topMoveSpeed = 0.75f;
         topCrossable = false;
     }else{
         topMoveSpeed = 0.75f;

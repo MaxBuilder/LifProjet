@@ -47,6 +47,9 @@ Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::
     else if (mSoldierType == EntityInfo::Archer)
         team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityArcherBlue)):
                                    mSprite.setTexture(textures.get(Textures::EntityArcherRed ));
+    else if (mSoldierType == EntityInfo::Tank)
+        team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityPaladinBlue)):
+        mSprite.setTexture(textures.get(Textures::EntityPaladinRed));
 
     mBorder = 10;
     float blockSize = 20.f; // à modifier pour rendre dynamique

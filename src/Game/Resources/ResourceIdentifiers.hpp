@@ -58,8 +58,8 @@ namespace Textures {
         EntityKnightRed,
         EntityArcherBlue,
         EntityArcherRed,
-        EntityTankBlue,
-        EntityTankRed,
+        EntityPaladinBlue,
+        EntityPaladinRed,
         EntityGlow,
 
         GamePause,

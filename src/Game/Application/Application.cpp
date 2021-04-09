@@ -125,6 +125,8 @@ void Application::loadTextures() {
     mTextures.load(Textures::EntityKnightRed, "data/Entities/spriteKnightRed.png");
     mTextures.load(Textures::EntityArcherBlue, "data/Entities/spriteArcherBlue.png");
     mTextures.load(Textures::EntityArcherRed, "data/Entities/spriteArcherRed.png");
+    mTextures.load(Textures::EntityPaladinRed, "data/Entities/spritePaladinRed.png");
+    mTextures.load(Textures::EntityPaladinBlue, "data/Entities/spritePaladinBlue.png");
     mTextures.load(Textures::EntityGlow, "data/Entities/glow.png");
 
     mTextures.load(Textures::GamePause, "data/Game/pause.png");
