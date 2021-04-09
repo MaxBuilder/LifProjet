@@ -8,34 +8,26 @@ SettingsState::SettingsState(StateStack& stack, Context context) :
  State(stack, context)
 , mGUIContainer()
 , mHeight(720)
+, mBackground(context.textures.get(Textures::SettingsBackground))
 , mWindowStyle(sf::Style::Close)
 , mWidth(1280){
 
-
-    mTextGraphisme.setFont(context.fonts.get(Fonts::Main));
     mTextWindowSize.setFont(context.fonts.get(Fonts::Main));
     mTextFullscreen.setFont(context.fonts.get(Fonts::Main));
-    mTextSound.setFont(context.fonts.get(Fonts::Main));
 
-    mTextGraphisme.setPosition(200,100);
     mTextWindowSize.setPosition(250,180);
     mTextFullscreen.setPosition(250,240);
-    mTextSound.setPosition(200,340);
 
-    mTextGraphisme.setCharacterSize(40u);
     mTextWindowSize.setCharacterSize(20u);
     mTextFullscreen.setCharacterSize(20u);
-    mTextSound.setCharacterSize(40u);
 
-    mTextGraphisme.setString("Graphisme : ");
     mTextWindowSize.setString("Size of Window");
     mTextFullscreen.setString("Fullscreen");
-    mTextSound.setString("Sound : ");
 
 
-    auto backButton = std::make_shared<GUI::Button>(context, 130, 70, Textures::MenuButton);
-    backButton->setPosition(20, 20);
-    backButton->setText("Back");
+    auto backButton = std::make_shared<GUI::Button>(context, 50, 50, Textures::SettingsBack);
+    backButton->setPosition(10, 10);
+    backButton->setText("");
     backButton->setCallback([this](){
         requestStackPop();
         requestStackPush(States::MainMenu);
@@ -43,25 +35,25 @@ SettingsState::SettingsState(StateStack& stack, Context context) :
     });
     mGUIContainer.pack(backButton);
 
-    auto applyButton = std::make_shared<GUI::Button>(context, 130, 70, Textures::MenuButton);
-    applyButton->setPosition(1280-130-20,720-70-20 );
-    applyButton->setText("Apply");
+    auto applyButton = std::make_shared<GUI::Button>(context, 130, 40, Textures::SettingsApply);
+    applyButton->setPosition(1280-130-20,720-40-20 );
+    applyButton->setText("");
     applyButton->setCallback([this](){
         apply();
         getContext().sounds.play(Sounds::Menu);
     });
     mGUIContainer.pack(applyButton);
 
-    auto saveButton = std::make_shared<GUI::Button>(context, 130, 70, Textures::MenuButton);
-    saveButton->setPosition(1280-2*130-2*20,720-70-20 );
-    saveButton->setText("Save");
+    auto saveButton = std::make_shared<GUI::Button>(context, 130, 40, Textures::SettingsSave);
+    saveButton->setPosition(1280-2*130-2*20,720-40-20 );
+    saveButton->setText("");
     saveButton->setCallback([this](){
         saveSettings();
         getContext().sounds.play(Sounds::Menu);
     });
     mGUIContainer.pack(saveButton);
 
-    auto vidMode = std::make_shared<GUI::ButtonList>(context, 200, 60,20u, Textures::MenuButton);
+    auto vidMode = std::make_shared<GUI::ButtonList>(context, 200, 60,20u, Textures::SettingsSave);
     vidMode->setPosition(900-100,180-30 );
     vidMode->setCallback([this](int count){
         switch (count) {
@@ -123,11 +115,10 @@ void SettingsState::apply(){
 
 void SettingsState::draw() {
     sf::RenderWindow &window = getContext().window;
+    window.draw(mBackground);
     window.draw(mGUIContainer);
-    window.draw(mTextGraphisme);
     window.draw(mTextWindowSize);
     window.draw(mTextFullscreen);
-    window.draw(mTextSound);
     window.draw(mButtonList);
     window.draw(mCheckBox);
 }

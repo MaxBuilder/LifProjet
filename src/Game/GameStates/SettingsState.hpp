@@ -36,10 +36,9 @@ private :
     GUI::Container mButtonList;
     GUI::Container mCheckBox;
 
-    sf::Text mTextGraphisme;
     sf::Text mTextWindowSize;
     sf::Text mTextFullscreen;
-    sf::Text mTextSound;
+
 
 
     int mWidth, mHeight;

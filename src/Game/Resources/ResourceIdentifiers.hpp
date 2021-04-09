@@ -22,8 +22,13 @@ namespace Textures {
         MenuBackground3,
         MenuBackground4,
         MenuTitle,
-        MenuButton,
         SettingsButton,
+        MenuButton,
+
+        SettingsBack,
+        SettingsBackground,
+        SettingsSave,
+        SettingsApply,
         Checkbox,
 
         MapGround,
