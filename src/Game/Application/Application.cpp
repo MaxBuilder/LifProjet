@@ -91,7 +91,7 @@ void Application::loadTextures() {
     mTextures.load(Textures::MenuTitle, "data/Menu/menuTitle.png");
     mTextures.load(Textures::SettingsButton, "data/Menu/settingsButton.png");
 
-    mTextures.load(Textures::Checkbox, "data/Menu/checkbox.png");
+    mTextures.load(Textures::Checkbox, "data/Settings/checkbox.png");
     mTextures.load(Textures::SettingsBack, "data/Settings/back.png");
     mTextures.load(Textures::SettingsBackground, "data/Settings/background.png");
     mTextures.load(Textures::SettingsSave, "data/Settings/save.png");

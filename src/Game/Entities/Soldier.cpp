@@ -39,6 +39,8 @@ Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::
 , sendAck(false)
 , mEntityTime()
 {
+    //std::cout << objectif.x << " " << objectif.y << std::endl;
+
     if (mSoldierType == EntityInfo::Knight)
         team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityKnightBlue)):
                                    mSprite.setTexture(textures.get(Textures::EntityKnightRed ));
@@ -126,7 +128,7 @@ void Soldier::switchDebugDisplay() {
 
 void Soldier::updateCurrent(sf::Time dt) {
 
-    // update mecanics
+    // Update mecanics
     mTeam == EntityInfo::Team::Blue ? updateDefense(dt) : updateAttack(dt);
 
     //update sprites
@@ -135,17 +137,15 @@ void Soldier::updateCurrent(sf::Time dt) {
     // update lifeDisplay
     float blockSize = 20.f;
     float xlife = float(mHitPoints)/float(mMaxHintPoints);
-    float lifeLength = blockSize*xlife;
+    float lifeLength = blockSize * xlife;
 
     frontLife.setSize(sf::Vector2f(lifeLength,3));
 
-    if(xlife > 0.5f){
+    if(xlife > 0.5f)
         frontLife.setFillColor(sf::Color::Green);
-    }else if(xlife > 0.25f){
+    else if(xlife > 0.25f)
         frontLife.setFillColor(sf::Color::Yellow);
-    }else{
-        frontLife.setFillColor(sf::Color::Red);
-    }
+    else frontLife.setFillColor(sf::Color::Red);
 
 }
 
@@ -161,14 +161,14 @@ void Soldier::updateSprite(sf::Time dt){
 
         if(isDestroyed()){
             if(mSpriteRect.top < 96) {
-                if(mSpriteRect.top != 64){
+                if(mSpriteRect.top != 64) {
                     mSpriteRect.top = 64;
                     mSpriteRect.left = 0;
                 }
                 if(mSpriteRect.left > 64*5)
                     mSpriteRect.left = 64*5;
             }
-            else{
+            else {
                 if(mSpriteRect.top != 32*5){
                     mSpriteRect.top = 32*5;
                     mSpriteRect.left = 64*5;
@@ -180,17 +180,17 @@ void Soldier::updateSprite(sf::Time dt){
         }
         else if(mAction == Attacking){
             float x = getPosition().x - mTargeted->getPosition().x;
-            if (x < 0 and (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 32) ){
+            if (x < 0 and (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 32) ) {
                 mSpriteRect.left = 0;
                 mSpriteRect.top = 32;
             }
-            else if(x > 0 and (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 32*4)){
+            else if(x > 0 and (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 32*4)) {
                 mSpriteRect.left = 64*5;
                 mSpriteRect.top = 32*4;
             }
 
         }
-        else if (mDirection.x > 0 and (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 0)){
+        else if (mDirection.x > 0 and (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 0)) {
             mSpriteRect.left = 0;
             mSpriteRect.top = 0;
 
@@ -219,11 +219,8 @@ void Soldier::updateSprite(sf::Time dt){
 
 void Soldier::updateAttack(sf::Time dt) {
 
-    if(mAction == None or isDestroyed()) return;
-    else if(mAction == Override) {
-        setVelocity(mDirection * dt.asSeconds() * (80.f+mSpeedBonus));
+    if(mAction == None or isDestroyed())
         return;
-    }
     if(mAction == Moving) {
         if(mTargetInSight > 1 and mTargeted == nullptr) {
             // Lancement du signal et mise en groupe
@@ -274,7 +271,7 @@ void Soldier::updateAttack(sf::Time dt) {
             return;
         }
 
-        if(distance(getPosition(), mTargeted->getPosition()) >= mBorder+mTargeted->getBorder()+10) {
+        if(distance(getPosition(), mTargeted->getPosition()) >= mBorder+mTargeted->getBorder() + 10) {
             setAction(Seeking);
             return;
         }
@@ -311,7 +308,7 @@ void Soldier::updateAttack(sf::Time dt) {
     }
     else if(mAction == WithSquad) {
         if(distance(getPosition(), mLeader->getPosition()) > 30) {
-            setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
+            setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
             seekTarget(mLeader->getPosition());
         }
         else { // Standby
@@ -327,7 +324,7 @@ void Soldier::updateAttack(sf::Time dt) {
         sendAck = false;
         if(mTargeted == nullptr) {
             setDirection(1, 0);
-            setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
+            setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
         }
         else {
             setAction(Seeking);
@@ -337,11 +334,8 @@ void Soldier::updateAttack(sf::Time dt) {
 }
 
 void Soldier::updateDefense(sf::Time dt) {
-    if(mAction == None or isDestroyed()) return;
-    else if(mAction == Override) {
-        setVelocity(mDirection * dt.asSeconds() * (80.f+mSpeedBonus));
+    if(mAction == None or isDestroyed())
         return;
-    }
     if(mAction == Moving) {
         if(mTravelled == 0)
             setDirection(randomDirection());
@@ -372,13 +366,13 @@ void Soldier::updateDefense(sf::Time dt) {
         if(distance(getPosition(), mTargeted->getPosition()) < mBorder+mTargeted->getBorder()) {
             setAction(Attacking);
             mDirection = sf::Vector2f(0, 0);
-            setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
+            setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
             mEntityTime = sf::seconds(0);
             return;
         }
 
         seekTarget();
-        setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
+        setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
     }
     else if(mAction == Attacking) {
         if(mTargeted == nullptr){
@@ -386,7 +380,7 @@ void Soldier::updateDefense(sf::Time dt) {
             return;
         }
 
-        if(distance(getPosition(), mTargeted->getPosition()) >= mBorder+mTargeted->getBorder()+10) {
+        if(distance(getPosition(), mTargeted->getPosition()) >= mBorder+mTargeted->getBorder() + 10) {
             setAction(Seeking);
             return;
         }
@@ -424,7 +418,7 @@ void Soldier::updateDefense(sf::Time dt) {
     }
     else if(mAction == WithSquad) {
         if(distance(getPosition(), mLeader->getPosition()) > 30) {
-            setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
+            setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
             seekTarget(mLeader->getPosition());
         }
         else { // Standby
@@ -445,11 +439,24 @@ void Soldier::updateDefense(sf::Time dt) {
         }
         if(mTargeted == nullptr) {
             setDirection(-1, 0);
-            setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
+            setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
         }
         else {
             setAction(Seeking);
             mLeader = nullptr;
+        }
+    }
+    else if(mAction == DefendingCastle) {
+        usePathFinding = true;
+        seekTarget(mObjectif * 20.f);
+        setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
+
+        if(mTargeted != nullptr) {
+            setAction(Attacking);
+            mDirection = sf::Vector2f(0, 0);
+            setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
+            mEntityTime = sf::seconds(0);
+            return;
         }
     }
 }
@@ -513,7 +520,7 @@ void Soldier::seekTarget(sf::Vector2f pos) {
             mPath.pop_back();
         setDirection((target-getPosition())/norm(target-getPosition()));
     }
-    else{
+    else {
         target = target - getPosition();
         mDirection = target / norm(target);
     }
@@ -537,7 +544,7 @@ Soldier::Action Soldier::getAction() {
 void Soldier::setAction(Action act) {
     mPath.clear();
     usePathFinding = false;
-    std::string name[10] = {"None","Moving","Seeking","Fleeing","Attacking","Calling","Leading","WithSquad","Assaulting","controlling"};
+    std::string name[10] = {"None", "Moving", "Seeking", "Attacking", "Calling", "Leading", "WithSquad", "Assaulting", "DefendingCastle"};
     std::string str = mTeam == EntityInfo::Team::Blue ? "Blue" : "Red";
     std::cout << "id : " << mId << str << " action :" << name[mAction] << " -> " << name[act] << std::endl;
     mAction = act;
@@ -559,40 +566,12 @@ void Soldier::setDirection(float vx, float vy) {
     norme > 0 ? mDirection = sf::Vector2f(vx, vy) / norme : mDirection = sf::Vector2f(0, 0);
 }
 
-sf::Vector2f Soldier::getDirection() const {
-    return mDirection;
-}
-
-float Soldier::getSpeed() const {
-    return mSpeedBase + mSpeedBonus;
-}
-
-void Soldier::setSpeed(float speed) {
-    mSpeedBase = speed;
-}
-
 void Soldier::setTarget(Entity* target) {
     mTargeted = target;
 }
 
-void Soldier::dropTarget() {
-    mTargeted = nullptr;
-}
-
-Entity* Soldier::getTarget() {
-    return mTargeted;
-}
-
 void Soldier::init() {
     mOrigin = getPosition();
-}
-
-void Soldier::resetTravelledDistance() {
-    mTravelled = 0;
-}
-
-sf::Vector2f Soldier::getOrigin() {
-    return mOrigin;
 }
 
 void Soldier::travel(){
@@ -619,9 +598,6 @@ void Soldier::changeBonus(EntityInfo::ID bonus) {
         mDamages = 20;
     }
 }
-EntityInfo::ID Soldier::getBonus(){
-    return mBonus;
-}
 
 void Soldier::setVelocity(sf::Vector2f dpl){
     mVelocity = dpl;
@@ -637,8 +613,4 @@ int Soldier::getId() const {
 
 void Soldier::setLeader(Soldier* leader) {
     mLeader = leader;
-}
-
-void Soldier::dropLeader() {
-    mLeader = nullptr;
 }

@@ -26,15 +26,14 @@ public:
 
     enum Action {
         None,
-        Moving, // Attackers -> go to objective | Defenders -> roam defended mZone
+        Moving,
         Seeking,
-        Fleeing,
         Attacking,
         Calling,
         Leading,
         WithSquad,
         Assaulting,
-        Override
+        DefendingCastle
     };
 
     enum debug{
@@ -109,7 +108,7 @@ private:
 
     std::vector<sf::Vector2f> mPath;
     float mSpeedBonus, mSpeedBase;
-    float mDamages;
+    int mDamages;
     sf::Vector2f mObjectif;
     sf::Vector2f mDirection;
     sf::Vector2f mVelocity;

@@ -16,6 +16,8 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
 , mTracked(-1)
 , mMap(textures.get(Textures::MapGround), 20.f)
 , mCommandQueue()
+, mNbRed(0)
+, mNbBlue(0)
 {
     // Map initialization
     mMap.load("data/MapData/blank.map");
@@ -49,10 +51,10 @@ void World::createEntity(){
 
     // Adding buildings to the scene
     auto builds = mMap.getBuildingsIt();
-    for (;builds.first != builds.second;builds.first++){
-        // std::cout<<builds.first->getID()<<" pos : "<<builds.first->getPosition().left<<"/"<<builds.first->getPosition().top<<std::endl;
-        std::unique_ptr<Building> build = std::make_unique<Building>(builds.first->getID(), builds.first->getTeam(),builds.first->getPosition(),mCommandQueue);
-        if(build->getBonusFlag() == EntityInfo::Castle){
+    for (; builds.first != builds.second ; builds.first++) {
+        std::unique_ptr<Building> build = std::make_unique<Building>(builds.first->getID(), builds.first->getTeam(), builds.first->getPosition(), mCommandQueue);
+
+        if(build->getBonusFlag() == EntityInfo::Castle) {
             if(build->getTeam() == EntityInfo::Blue)
                 redObjectif = build->getOnMapPosition();
             else
@@ -62,7 +64,7 @@ void World::createEntity(){
         mSceneLayers[Back]->attachChild(std::move(build));
     }
 
-    // Adding entities to the scene
+    // Adding soldiers to the scene
     auto e = mMap.getEntitiesIt();
     int idr = 0;
     int idb = 0;
@@ -73,7 +75,7 @@ void World::createEntity(){
         if(e.first->getTeam() == EntityInfo::Blue) {
             indice = idb;
             idb++;
-            objectif = blueObjectif;
+            objectif = redObjectif;
         }
         else {
             indice = idr;
@@ -159,9 +161,15 @@ void World::onCommand() {
                 selectedTeam[command.mReceiver]->setAction(Soldier::Assaulting);
                 break;
 
-            case CommandType::Dead :
+            case CommandType::Dead:
                 std::cout<<"Entity died" << std::endl;
                 updateDeath();
+                break;
+
+            case CommandType::CastleAssaulted:
+                std::cout << "All defenders called to defend castle" << std::endl;
+                for(auto defender : mBlueTeam)
+                    defender->setAction(Soldier::DefendingCastle);
                 break;
         }
     }

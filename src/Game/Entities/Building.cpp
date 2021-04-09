@@ -5,17 +5,17 @@
 #include "Building.hpp"
 #include <iostream>
 
-Building::Building(EntityInfo::ID ID,EntityInfo::Team team, sf::Vector2f position,  CommandQueue& commandQueue) :
-   Entity(0,EntityInfo::Team::Blue, commandQueue)
- {
+Building::Building(EntityInfo::ID ID,EntityInfo::Team team, sf::Vector2f position, CommandQueue& commandQueue)
+: Entity(0, team, commandQueue)
+, previouslyHit(false)
+{
+    mPosition.left = position.x;
+    mPosition.top = position.y;
 
-    mPosition.left = position.x ;
-    mPosition.top = position.y ;
-
-    switch (ID){
+    switch(ID) {
         case EntityInfo::ID::Castle :
             mBorder = 40;
-            mHitPoints = 500;
+            mHitPoints = 5000;
             mTeam = team;
             mRange = 150;
             mBonusFlag = ID;
@@ -26,7 +26,7 @@ Building::Building(EntityInfo::ID ID,EntityInfo::Team team, sf::Vector2f positio
         case EntityInfo::ID::Village :
             mBorder = 27;
             mHitPoints = 300;
-            mTeam =team;
+            mTeam = team;
             mRange = 100;
             mBonusFlag = ID;
             mTextureId.y = 48; mTextureId.x = 0;
@@ -34,7 +34,7 @@ Building::Building(EntityInfo::ID ID,EntityInfo::Team team, sf::Vector2f positio
             break;
 
 
-        case  EntityInfo::ID::Barrier :
+        case EntityInfo::ID::Barrier :
             mBorder = 15;
             mHitPoints = 200;
             mTeam = team;
@@ -49,6 +49,7 @@ Building::Building(EntityInfo::ID ID,EntityInfo::Team team, sf::Vector2f positio
     }
      setPosition(float(mPosition.left)*20+float(mPosition.width)*20/2,float(mPosition.top)*20+float(mPosition.width)*20/2);
      mMaxHintPoints = mHitPoints;
+     prevHealth = mHitPoints;
 
     mZone.setRadius(mRange);
     mZone.setOrigin(mRange, mRange);
@@ -69,11 +70,11 @@ Building::Building(EntityInfo::ID ID,EntityInfo::Team team, sf::Vector2f positio
      frontLife.setFillColor(sf::Color::Green);
 }
 
-float Building::getRange() const{
+float Building::getRange() const {
     return mRange;
 }
 
-EntityInfo::ID Building::getBonusFlag() const{
+EntityInfo::ID Building::getBonusFlag() const {
     return mBonusFlag;
 }
 
@@ -87,31 +88,42 @@ void Building::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) co
     }
 }
 
-sf::Vector2i Building::getOnMapPosition() const{
+sf::Vector2i Building::getOnMapPosition() const {
     return sf::Vector2i(mPosition.left,mPosition.top);
 }
 
-sf::Vector2i Building::getOnMapSize() const{
+sf::Vector2i Building::getOnMapSize() const {
     return sf::Vector2i(mPosition.width,mPosition.height);
 }
 
-sf::Vector2i Building::getMapId() const{
+sf::Vector2i Building::getMapId() const {
     return mTextureId;
 }
 
-void Building::updateCurrent(sf::Time dt){
+void Building::updateCurrent(sf::Time dt) {
     float blockSize = 20.f;
     float xlife = float(mHitPoints)/float(mMaxHintPoints);
     float lifeLength = blockSize*mPosition.width*xlife;
 
     frontLife.setSize(sf::Vector2f(lifeLength,3));
 
-    if(xlife > 0.5f){
+    if(xlife > 0.5f)
         frontLife.setFillColor(sf::Color::Green);
-    }else if(xlife > 0.25f){
+    else if(xlife > 0.25f)
         frontLife.setFillColor(sf::Color::Yellow);
-    }else{
-        frontLife.setFillColor(sf::Color::Red);
+    else frontLife.setFillColor(sf::Color::Red);
+
+    if(mBonusFlag == EntityInfo::Castle) {
+        if(mHitPoints < prevHealth and !previouslyHit) {
+            mCommandQueue.push(Command(EntityInfo::Blue, 0, 0, CommandType::CastleAssaulted));
+            previouslyHit = true;
+            mBuildingTime = sf::seconds(0);
+            prevHealth = mHitPoints;
+        }
     }
 
+    mBuildingTime += dt;
+
+    if(mBuildingTime.asSeconds() > 5)
+        previouslyHit = false;
 }

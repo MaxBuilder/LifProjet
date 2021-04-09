@@ -9,7 +9,6 @@
 #include "SFML/Graphics/CircleShape.hpp"
 #include "SFML/Graphics/RectangleShape.hpp"
 
-
 #include "Entity.hpp"
 
 class Building : public Entity {
@@ -34,6 +33,9 @@ private:
     sf::CircleShape mZone;
     sf::IntRect mPosition;
     sf::Vector2i mTextureId;
+    bool previouslyHit;
+    sf::Time mBuildingTime;
+    int prevHealth;
 };
 
 

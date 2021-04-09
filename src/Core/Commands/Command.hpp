@@ -15,6 +15,7 @@ namespace CommandType {
         InPosition,
         Assault,
         Dead,
+        CastleAssaulted
     };
 }
 
