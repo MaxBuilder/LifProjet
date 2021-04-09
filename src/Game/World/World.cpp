@@ -81,7 +81,7 @@ void World::createEntity(){
             objectif = redObjectif;
         }
 
-        std::unique_ptr<Soldier> soldier = std::make_unique<Soldier>(indice, e.first->getTeam(), objectif, mTextures, mFonts, mAstar, mCommandQueue);
+        std::unique_ptr<Soldier> soldier = std::make_unique<Soldier>(indice,e.first->getID() ,e.first->getTeam(), objectif, mTextures, mFonts, mAstar, mCommandQueue);
         soldier->setPosition(e.first->getPosition()*mMap.getBlockSize());
 
         if(e.first->getTeam() ==  EntityInfo::Team::Red)

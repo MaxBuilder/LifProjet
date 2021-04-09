@@ -7,9 +7,10 @@
 #include <iostream>
 
 // Archer faire : ajouter les tables de données pour les entités
-Soldier::Soldier(int id, EntityInfo::Team team, sf::Vector2i objectif, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue)
+Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::Vector2i objectif, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue)
 : Entity(100,team, commandQueue)
 , mId(id)
+, mSoldierType(soldierType)
 , mDisplayType(debug::life)
 , mObjectif(objectif)
 , mVelocity(0,0)
@@ -21,6 +22,7 @@ Soldier::Soldier(int id, EntityInfo::Team team, sf::Vector2i objectif, const Tex
 , mSpeedBonus(0)
 , mBonus(EntityInfo::ID::None)
 , mDamages(20)
+, mDistance(0)
 , mTargeted(nullptr)
 , mAction(Moving)
 , mTravelled(0.f)
@@ -37,8 +39,12 @@ Soldier::Soldier(int id, EntityInfo::Team team, sf::Vector2i objectif, const Tex
 , sendAck(false)
 , mEntityTime()
 {
-    team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityKnightBlue)):
-                               mSprite.setTexture(textures.get(Textures::EntityKnightRed ));
+    if (mSoldierType == EntityInfo::Knight)
+        team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityKnightBlue)):
+                                   mSprite.setTexture(textures.get(Textures::EntityKnightRed ));
+    else if (mSoldierType == EntityInfo::Archer)
+        team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityArcherBlue)):
+                                   mSprite.setTexture(textures.get(Textures::EntityArcherRed ));
 
     mBorder = 10;
     float blockSize = 20.f; // à modifier pour rendre dynamique

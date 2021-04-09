@@ -42,7 +42,7 @@ public:
     };
 
 public:
-    Soldier(int id, EntityInfo::Team team, sf::Vector2i objectif, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue);
+    Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::Vector2i objectif, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue);
 
     int getId() const;
 
@@ -97,6 +97,7 @@ private:
     Pathfinding& mPathfinding;
 
     EntityInfo::ID mBonus;
+    EntityInfo::ID mSoldierType;
     sf::Sprite mSprite;
     sf::Sprite mGlow;
     sf::Text mDisplayID,mDisplayAction;
