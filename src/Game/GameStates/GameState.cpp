@@ -57,8 +57,8 @@ GameState::GameState(StateStack &stack, Context& context)
 
     // Construction de l'UI :
 
-    auto pauseButton = std::make_shared<GUI::Button>(context, 40, 40, Textures::GamePause);
-    pauseButton->setPosition(1120, 0);
+    auto pauseButton = std::make_shared<GUI::Button>(context, 45, 45, Textures::GamePause);
+    pauseButton->setPosition(1055, 0);
     pauseButton->setToggle(true);
     pauseButton->setCallback([this] () {
         mTimeSpeed = 0;
@@ -66,8 +66,17 @@ GameState::GameState(StateStack &stack, Context& context)
     });
     mUI.pack(pauseButton);
 
-    auto x1Button = std::make_shared<GUI::Button>(context, 40, 40, Textures::Game1x);
-    x1Button->setPosition(1160, 0);
+    auto slowButton = std::make_shared<GUI::Button>(context, 45, 45, Textures::GameSlow);
+    slowButton->setPosition(1100, 0);
+            slowButton->setToggle(true);
+    slowButton->setCallback([this] () {
+        mTimeSpeed = 0.5;
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mUI.pack(slowButton);
+
+    auto x1Button = std::make_shared<GUI::Button>(context, 45, 45, Textures::Game1x);
+    x1Button->setPosition(1145, 0);
     x1Button->setToggle(true);
     x1Button->setCallback([this] () {
         mTimeSpeed = 1;
@@ -76,8 +85,8 @@ GameState::GameState(StateStack &stack, Context& context)
     x1Button->activate();
     mUI.pack(x1Button);
 
-    auto x3Button = std::make_shared<GUI::Button>(context, 40, 40, Textures::Game3x);
-    x3Button->setPosition(1200, 0);
+    auto x3Button = std::make_shared<GUI::Button>(context, 45, 45, Textures::Game3x);
+    x3Button->setPosition(1190, 0);
     x3Button->setToggle(true);
     x3Button->setCallback([this] () {
         mTimeSpeed = 0.25f;
@@ -85,8 +94,8 @@ GameState::GameState(StateStack &stack, Context& context)
     });
     mUI.pack(x3Button);
 
-    auto x5Button = std::make_shared<GUI::Button>(context, 40, 40, Textures::Game5x);
-    x5Button->setPosition(1240, 0);
+    auto x5Button = std::make_shared<GUI::Button>(context, 45, 45, Textures::Game5x);
+    x5Button->setPosition(1235, 0);
     x5Button->setToggle(true);
     x5Button->setCallback([this] () {
         mTimeSpeed = 5;
@@ -207,7 +216,7 @@ bool GameState::update(sf::Time dt) {
         mView.setSize(640, 360);
     }
 
-    dt = dt * (float)mTimeSpeed;
+    dt = dt * mTimeSpeed;
 
     mWorld.update(dt);
 

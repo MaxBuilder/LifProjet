@@ -14,7 +14,6 @@ namespace States {
         Settings,
         Game,
         Pause,
-        Army // Grrrr
     };
 }
 

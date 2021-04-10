@@ -63,6 +63,7 @@ namespace Textures {
         EntityGlow,
 
         GamePause,
+        GameSlow,
         Game1x,
         Game3x,
         Game5x,

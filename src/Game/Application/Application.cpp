@@ -130,6 +130,7 @@ void Application::loadTextures() {
     mTextures.load(Textures::EntityGlow, "data/Entities/glow.png");
 
     mTextures.load(Textures::GamePause, "data/Game/pause.png");
+    mTextures.load(Textures::GameSlow, "data/Game/slowMode.png");
     mTextures.load(Textures::Game1x, "data/Game/1xspeed.png");
     mTextures.load(Textures::Game3x, "data/Game/3xspeed.png");
     mTextures.load(Textures::Game5x, "data/Game/5xspeed.png");
