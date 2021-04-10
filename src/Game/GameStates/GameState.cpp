@@ -80,7 +80,7 @@ GameState::GameState(StateStack &stack, Context& context)
     x3Button->setPosition(1200, 0);
     x3Button->setToggle(true);
     x3Button->setCallback([this] () {
-        mTimeSpeed = 3;
+        mTimeSpeed = 0.25f;
         getContext().sounds.play(Sounds::Menu);
     });
     mUI.pack(x3Button);

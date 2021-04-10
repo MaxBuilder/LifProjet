@@ -53,7 +53,7 @@ private:
     float mSpeed;
     float mFactor;
     int mScroll;
-    int mTimeSpeed;
+    float mTimeSpeed;
     bool mTracking;
     sf::Time mTime;
 
