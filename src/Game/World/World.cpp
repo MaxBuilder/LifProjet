@@ -46,7 +46,7 @@ void World::init(const std::string &mapPath) {
         soldier->init();
 }
 
-void World::createEntity(){
+void World::createEntity() {
     sf::Vector2i redObjectif, blueObjectif;
 
     // Adding buildings to the scene
@@ -104,7 +104,6 @@ void World::createEntity(){
 void World::draw() {
     mTarget.draw(mMap);
     mTarget.draw(mSceneGraph);
-
 }
 
 void World::update(sf::Time dt) {
@@ -226,9 +225,9 @@ void World::updateTargets() {
 
         for(auto &red : mRedTeam) {
             float dist = distance(red->getPosition(), blue->getPosition());
-            if(dist < 80 and !red->isDestroyed()) { // In sight
+            if(dist < 100 and !red->isDestroyed()) { // In sight
                 blue->mTargetInSight++;
-                if(dist < distMin and dist < 60 and !red->isDestroyed()) {
+                if(dist < distMin and dist < 80 and !red->isDestroyed()) {
                     blue->setTarget(static_cast<Entity *>(red));
                     distMin = dist;
                     gotAssigned = true;

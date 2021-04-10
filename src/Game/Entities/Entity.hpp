@@ -13,9 +13,6 @@
 class Entity : public SceneNode {
 
 public:
-
-    bool down;
-
     explicit Entity(int hitPoints, EntityInfo::Team team, CommandQueue &commandQueue);
 
     EntityInfo::Team getTeam();
@@ -27,10 +24,11 @@ public:
     virtual void remove();
     virtual bool isDestroyed() const;
 
+    bool down;
+
 protected:
     void updateCurrent(sf::Time dt) override;
 
-protected:
     float mBorder;
     int mHitPoints;
     int mMaxHintPoints;

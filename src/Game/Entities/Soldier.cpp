@@ -6,12 +6,11 @@
 
 #include <iostream>
 
-// Archer faire : ajouter les tables de données pour les entités
 Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::Vector2i objectif, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue)
 : Entity(100,team, commandQueue)
 , mId(id)
 , mSoldierType(soldierType)
-, mDisplayType(debug::life)
+, mDisplayType(Debug::Life)
 , mObjectif(objectif)
 , mVelocity(0,0)
 , mDirection(sf::Vector2f(0, 0))
@@ -39,15 +38,30 @@ Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::
 , sendAck(false)
 , mEntityTime()
 {
-    if (mSoldierType == EntityInfo::Knight)
-        team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityKnightBlue)):
-                                   mSprite.setTexture(textures.get(Textures::EntityKnightRed ));
-    else if (mSoldierType == EntityInfo::Archer)
-        team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityArcherBlue)):
-                                   mSprite.setTexture(textures.get(Textures::EntityArcherRed ));
-    else if (mSoldierType == EntityInfo::Tank)
-        team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityTankBlue)):
-        mSprite.setTexture(textures.get(Textures::EntityTankRed));
+    switch (mSoldierType) {
+        case EntityInfo::Knight:
+            team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityKnightBlue)) :
+            mSprite.setTexture(textures.get(Textures::EntityKnightRed));
+            mRange = 0;
+            break;
+
+        case EntityInfo::Archer:
+            team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityArcherBlue)) :
+            mSprite.setTexture(textures.get(Textures::EntityArcherRed));
+            mRange = 60;
+            break;
+
+        case EntityInfo::Tank:
+            team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityTankBlue)) :
+            mSprite.setTexture(textures.get(Textures::EntityTankRed));
+            mRange = 0;
+            mHitPoints = 200;
+            mMaxHintPoints = 200;
+            break;
+
+        default:
+            break;
+    }
 
     mBorder = 10;
     float blockSize = 20.f; // à modifier pour rendre dynamique
@@ -101,13 +115,13 @@ void Soldier::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) con
     target.draw(line, 2, sf::Lines);
 
     switch (mDisplayType) {
-        case debug::id :
+        case Debug::Id :
             target.draw(mDisplayID, states);
             break;
-        case debug::action :
+        case Debug::cAction :
             target.draw(mDisplayAction, states);
             break;
-        case debug::life :
+        case Debug::Life :
             if(mHitPoints!=mMaxHintPoints and mHitPoints != 0){
                 target.draw(backLife, states);
                 target.draw(frontLife, states);
@@ -116,15 +130,6 @@ void Soldier::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) con
         default :
             break;
     }
-}
-
-void Soldier::switchDebugDisplay() {
-    if(mDisplayType == debug::id)
-        mDisplayType = debug::action;
-    else if(mDisplayType == debug::action)
-        mDisplayType = debug::life;
-    else
-        mDisplayType = debug::id;
 }
 
 void Soldier::updateCurrent(sf::Time dt) {
@@ -137,7 +142,7 @@ void Soldier::updateCurrent(sf::Time dt) {
 
     // update lifeDisplay
     float blockSize = 20.f;
-    float xlife = float(mHitPoints)/float(mMaxHintPoints);
+    float xlife = float(mHitPoints) / float(mMaxHintPoints);
     float lifeLength = blockSize * xlife;
 
     frontLife.setSize(sf::Vector2f(lifeLength,3));
@@ -147,74 +152,6 @@ void Soldier::updateCurrent(sf::Time dt) {
     else if(xlife > 0.25f)
         frontLife.setFillColor(sf::Color::Yellow);
     else frontLife.setFillColor(sf::Color::Red);
-
-}
-
-void Soldier::updateSprite(sf::Time dt){
-
-    mSpriteTime = sf::milliseconds(dt.asMilliseconds()+mSpriteTime.asMilliseconds());
-    if (mSpriteTime.asMilliseconds() > 130 ){
-
-        if(mSpriteRect.top < 96)
-            mSpriteRect.left += 64;
-        else
-            mSpriteRect.left -= 64;
-
-        if(isDestroyed()){
-            if(mSpriteRect.top < 96) {
-                if(mSpriteRect.top != 64) {
-                    mSpriteRect.top = 64;
-                    mSpriteRect.left = 0;
-                }
-                if(mSpriteRect.left > 64*5)
-                    mSpriteRect.left = 64*5;
-            }
-            else {
-                if(mSpriteRect.top != 32*5){
-                    mSpriteRect.top = 32*5;
-                    mSpriteRect.left = 64*5;
-                }
-                if(mSpriteRect.left <= 0)
-                    mSpriteRect.left = 0;
-            }
-
-        }
-        else if(mAction == Attacking){
-            float x = getPosition().x - mTargeted->getPosition().x;
-            if (x < 0 and (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 32) ) {
-                mSpriteRect.left = 0;
-                mSpriteRect.top = 32;
-            }
-            else if(x > 0 and (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 32*4)) {
-                mSpriteRect.left = 64*5;
-                mSpriteRect.top = 32*4;
-            }
-
-        }
-        else if (mDirection.x > 0 and (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 0)) {
-            mSpriteRect.left = 0;
-            mSpriteRect.top = 0;
-
-        }else if (mDirection.x < 0 and  (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 32*3) ) {
-            mSpriteRect.left = 64 * 5;
-            mSpriteRect.top = 32 * 3;
-        }else if(mSpriteRect.left > 64*5){
-            mSpriteRect.left = 0;
-        }else if(mSpriteRect.left < 0){
-            mSpriteRect.left = 64*5;
-        }
-
-        if(mSpriteRect.top < 96)
-            mSprite.setPosition(0,0);
-        else
-            mSprite.setPosition(-20,0);
-
-        mSpriteTime = sf::milliseconds(0);
-        mSprite.setTextureRect(mSpriteRect);
-    }
-
-
-    mEntityTime += dt;
 
 }
 
@@ -238,10 +175,10 @@ void Soldier::updateAttack(sf::Time dt) {
                 std::cout << "Pathfinding Duration :" << mAstarDuration.getElapsedTime().asMicroseconds() << std::endl;
             }
             sf::Vector2f &target = mPath.back();
-            if (distance(getPosition(), target) < 2 )
+            if (distance(getPosition(), target) < 2)
                 mPath.pop_back();
-            setDirection((target-getPosition())/norm(target-getPosition()));
-            setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
+            setDirection((target-getPosition()) / norm(target-getPosition()));
+            setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
         }
         else setAction(Seeking);
     }
@@ -253,26 +190,26 @@ void Soldier::updateAttack(sf::Time dt) {
             return;
         }
 
-        if(distance(getPosition(), mTargeted->getPosition()) < mBorder+mTargeted->getBorder()) {
+        if(distance(getPosition(), mTargeted->getPosition()) < mBorder + mTargeted->getBorder() + (float)mRange) {
             setAction(Attacking);
             mDirection = sf::Vector2f(0,0);
             mEntityTime = sf::seconds(0);
             mSpeedBase = 15;
-            setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
+            setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
             return;
         }
 
         seekTarget();
-        setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus+mSpeedBase));
+        setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
     }
     else if(mAction == Attacking) {
 
-        if(mTargeted == nullptr){
+        if(mTargeted == nullptr) {
             setAction(Moving);
             return;
         }
 
-        if(distance(getPosition(), mTargeted->getPosition()) >= mBorder+mTargeted->getBorder() + 10) {
+        if(distance(getPosition(), mTargeted->getPosition()) >= mBorder + mTargeted->getBorder() + 10 + (float)mRange) {
             setAction(Seeking);
             return;
         }
@@ -364,7 +301,7 @@ void Soldier::updateDefense(sf::Time dt) {
             return;
         }
 
-        if(distance(getPosition(), mTargeted->getPosition()) < mBorder+mTargeted->getBorder()) {
+        if(distance(getPosition(), mTargeted->getPosition()) < mBorder+mTargeted->getBorder() + (float)mRange) {
             setAction(Attacking);
             mDirection = sf::Vector2f(0, 0);
             setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
@@ -376,12 +313,12 @@ void Soldier::updateDefense(sf::Time dt) {
         setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
     }
     else if(mAction == Attacking) {
-        if(mTargeted == nullptr){
+        if(mTargeted == nullptr) {
             setAction(Moving);
             return;
         }
 
-        if(distance(getPosition(), mTargeted->getPosition()) >= mBorder+mTargeted->getBorder() + 10) {
+        if(distance(getPosition(), mTargeted->getPosition()) >= mBorder + mTargeted->getBorder() + 10 + (float)mRange) {
             setAction(Seeking);
             return;
         }
@@ -528,18 +465,85 @@ void Soldier::seekTarget(sf::Vector2f pos) {
     mSpeedBase = 30;
 }
 
-void Soldier::fleeTarget() {
-    if(mTargeted != nullptr) {
-        sf::Vector2f target = mTargeted->getPosition();
-        target = getPosition() - target;
-        mDirection = target / norm(target);
-        mSpeedBase = 30;
-    }
-    else mSpeedBase = 15;
-}
-
 Soldier::Action Soldier::getAction() {
     return mAction;
+}
+
+void Soldier::updateSprite(sf::Time dt) {
+
+    mSpriteTime = sf::milliseconds(dt.asMilliseconds() + mSpriteTime.asMilliseconds());
+    if (mSpriteTime.asMilliseconds() > 130) {
+
+        if(mSpriteRect.top < 96)
+            mSpriteRect.left += 64;
+        else
+            mSpriteRect.left -= 64;
+
+        if(isDestroyed()) {
+            if(mSpriteRect.top < 96) {
+                if(mSpriteRect.top != 64) {
+                    mSpriteRect.top = 64;
+                    mSpriteRect.left = 0;
+                }
+                if(mSpriteRect.left > 64*5)
+                    mSpriteRect.left = 64*5;
+            }
+            else {
+                if(mSpriteRect.top != 32*5) {
+                    mSpriteRect.top = 32*5;
+                    mSpriteRect.left = 64*5;
+                }
+                if(mSpriteRect.left <= 0)
+                    mSpriteRect.left = 0;
+            }
+
+        }
+        else if(mAction == Attacking){
+            float x = getPosition().x - mTargeted->getPosition().x;
+            if (x < 0 and (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 32) ) {
+                mSpriteRect.left = 0;
+                mSpriteRect.top = 32;
+            }
+            else if(x > 0 and (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 32*4)) {
+                mSpriteRect.left = 64*5;
+                mSpriteRect.top = 32*4;
+            }
+
+        }
+        else if (mDirection.x > 0 and (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 0)) {
+            mSpriteRect.left = 0;
+            mSpriteRect.top = 0;
+
+        }else if (mDirection.x < 0 and  (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 32*3) ) {
+            mSpriteRect.left = 64 * 5;
+            mSpriteRect.top = 32 * 3;
+        }else if(mSpriteRect.left > 64*5){
+            mSpriteRect.left = 0;
+        }else if(mSpriteRect.left < 0){
+            mSpriteRect.left = 64*5;
+        }
+
+        if(mSpriteRect.top < 96)
+            mSprite.setPosition(0,0);
+        else
+            mSprite.setPosition(-20,0);
+
+        mSpriteTime = sf::milliseconds(0);
+        mSprite.setTextureRect(mSpriteRect);
+    }
+
+
+    mEntityTime += dt;
+
+}
+
+void Soldier::switchDebugDisplay() {
+    if(mDisplayType == Debug::Id)
+        mDisplayType = Debug::cAction;
+    else if(mDisplayType == Debug::cAction)
+        mDisplayType = Debug::Life;
+    else
+        mDisplayType = Debug::Id;
 }
 
 void Soldier::setAction(Action act) {
@@ -547,7 +551,7 @@ void Soldier::setAction(Action act) {
     usePathFinding = false;
     std::string name[10] = {"None", "Moving", "Seeking", "Attacking", "Calling", "Leading", "WithSquad", "Assaulting", "DefendingCastle"};
     std::string str = mTeam == EntityInfo::Team::Blue ? "Blue" : "Red";
-    std::cout << "id : " << mId << str << " action :" << name[mAction] << " -> " << name[act] << std::endl;
+    std::cout << "Id : " << mId << str << " cAction :" << name[mAction] << " -> " << name[act] << std::endl;
     mAction = act;
     mDisplayAction.setString(name[mAction]);
 }

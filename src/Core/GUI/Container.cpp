@@ -43,7 +43,7 @@ namespace GUI {
         }
     }
 
-    // Reserved for buttons (click action)
+    // Reserved for buttons (click cAction)
     void Container::handleEvent(const sf::Event &event, const sf::RenderWindow& window) {
 
         if (event.type != sf::Event::MouseButtonPressed) return;

@@ -36,8 +36,8 @@ public:
         DefendingCastle
     };
 
-    enum debug{
-        id, action, life
+    enum Debug {
+        Id, cAction, Life
     };
 
 public:
@@ -48,7 +48,6 @@ public:
     void switchDebugDisplay();
 
     void changeBonus(EntityInfo::ID bonus);
-    EntityInfo::ID getBonus();
 
     Action getAction();
     void setAction(Action act);
@@ -59,32 +58,21 @@ public:
 
     void setDirection(sf::Vector2f velocity);
     void setDirection(float vx, float vy);
-    sf::Vector2f getDirection() const;
-
-    sf::Vector2f getOrigin();
-
-    float getSpeed() const;
-    void setSpeed(float speed);
 
     sf::Vector2f getVelocity();
     void setVelocity(sf::Vector2f dpl);
 
     void setTarget(Entity* target);
-    void dropTarget();
     void setLeader(Soldier* leader);
-    void dropLeader();
-    Entity* getTarget();
 
     void travel();
     void seekTarget(sf::Vector2f pos = sf::Vector2f(-1,-1));
-    void fleeTarget();
     void attackTarget();
     void roam(sf::Time dt);
     void createTeam(int senderId);
 
     void remove() override;
     void init(); // Initiate mOrigin variable (for defense reference)
-    void resetTravelledDistance();
 
 private:
     void drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -95,8 +83,16 @@ private:
 private:
     Pathfinding& mPathfinding;
 
-    EntityInfo::ID mBonus;
+    int mId;
     EntityInfo::ID mSoldierType;
+    EntityInfo::ID mBonus;
+    sf::Time mEntityTime;
+    Action mAction;
+    int mRange;
+
+    Entity * mTargeted;
+    Soldier * mLeader;
+
     sf::Sprite mSprite;
     sf::Sprite mGlow;
     sf::Text mDisplayID,mDisplayAction;
@@ -104,7 +100,7 @@ private:
     sf::IntRect mSpriteRect;
     sf::Time mSpriteTime;
 
-    debug mDisplayType;
+    Debug mDisplayType;
 
     std::vector<sf::Vector2f> mPath;
     float mSpeedBonus, mSpeedBase;
@@ -116,16 +112,12 @@ private:
     float mTravelled; // Distance travelled
     int mDistance; // Distance to travel
     sf::Clock mAstarDuration;
-    sf::Time mEntityTime;
-    Action mAction;
+
     bool prev;
     bool sendAck;
 
-    Entity * mTargeted;
-    Soldier * mLeader;
-    int mId;
-
 public:
+    // Special behavior variables :
     bool usePathFinding;
     int mTargetInSight;
     int mAllyInSight;
