@@ -49,6 +49,8 @@ Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::
             team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityArcherBlue)) :
             mSprite.setTexture(textures.get(Textures::EntityArcherRed));
             mRange = 60;
+            mHitPoints = 60;
+            mMaxHintPoints = 60;
             break;
 
         case EntityInfo::Tank:
@@ -57,6 +59,7 @@ Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::
             mRange = 0;
             mHitPoints = 200;
             mMaxHintPoints = 200;
+            mDamages = 15;
             break;
 
         default:
@@ -588,19 +591,22 @@ void Soldier::changeBonus(EntityInfo::ID bonus) {
         mGlow.setTextureRect(sf::IntRect(64,0,32,32));
         mBonus = bonus;
         mSpeedBonus = 15;
-        mDamages = 25;
+        if(mSoldierType == EntityInfo::Tank) mDamages = 20;
+        else mDamages = 25;
     }
     else if(bonus == EntityInfo::Village and mBonus == EntityInfo::None) {
         mGlow.setTextureRect(sf::IntRect(32,0,32,32));
         mBonus = bonus;
         mSpeedBonus = 15;
-        mDamages = 25;
+        if(mSoldierType == EntityInfo::Tank) mDamages = 20;
+        else mDamages = 25;
     }
     else if(bonus == EntityInfo::None) {
         mGlow.setTextureRect(sf::IntRect(0,0,32,32));
         mBonus = bonus;
         mSpeedBonus = 0;
-        mDamages = 20;
+        if(mSoldierType == EntityInfo::Tank) mDamages = 15;
+        else mDamages = 20;
     }
 }
 
