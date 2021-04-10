@@ -112,7 +112,7 @@ void Application::loadTextures() {
     mTextures.load(Textures::EditorArcher, "data/Editor/archer.png");
     mTextures.load(Textures::EditorTank, "data/Editor/tank.png");
     mTextures.load(Textures::EditorBuilding, "data/Editor/building.png");
-    mTextures.load(Textures::EditorAllSoldiers, "data/Editor/allSoldiers.png");
+    mTextures.load(Textures::EditorAllSoldiers, "data/Editor/icons.png");
     mTextures.load(Textures::ToolSmallBrush, "data/Editor/small.png");
     mTextures.load(Textures::ToolMediumBrush, "data/Editor/medium.png");
     mTextures.load(Textures::ToolBigBrush, "data/Editor/big.png");
@@ -125,8 +125,8 @@ void Application::loadTextures() {
     mTextures.load(Textures::EntityKnightRed, "data/Entities/spriteKnightRed.png");
     mTextures.load(Textures::EntityArcherBlue, "data/Entities/spriteArcherBlue.png");
     mTextures.load(Textures::EntityArcherRed, "data/Entities/spriteArcherRed.png");
-    mTextures.load(Textures::EntityPaladinRed, "data/Entities/spritePaladinRed.png");
-    mTextures.load(Textures::EntityPaladinBlue, "data/Entities/spritePaladinBlue.png");
+    mTextures.load(Textures::EntityTankRed, "data/Entities/spriteTankRed.png");
+    mTextures.load(Textures::EntityTankBlue, "data/Entities/spriteTankBlue.png");
     mTextures.load(Textures::EntityGlow, "data/Entities/glow.png");
 
     mTextures.load(Textures::GamePause, "data/Game/pause.png");

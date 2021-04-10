@@ -39,8 +39,6 @@ Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::
 , sendAck(false)
 , mEntityTime()
 {
-    //std::cout << objectif.x << " " << objectif.y << std::endl;
-
     if (mSoldierType == EntityInfo::Knight)
         team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityKnightBlue)):
                                    mSprite.setTexture(textures.get(Textures::EntityKnightRed ));
@@ -48,8 +46,8 @@ Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::
         team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityArcherBlue)):
                                    mSprite.setTexture(textures.get(Textures::EntityArcherRed ));
     else if (mSoldierType == EntityInfo::Tank)
-        team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityPaladinBlue)):
-        mSprite.setTexture(textures.get(Textures::EntityPaladinRed));
+        team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityTankBlue)):
+        mSprite.setTexture(textures.get(Textures::EntityTankRed));
 
     mBorder = 10;
     float blockSize = 20.f; // à modifier pour rendre dynamique
