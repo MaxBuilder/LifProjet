@@ -108,10 +108,10 @@ void World::draw() {
 
 void World::update(sf::Time dt) {
     mSceneGraph.update(dt);
+    onCommand();
     updateMovement();
     updateTargets();
     updateBonus();
-    onCommand();
 }
 
 void World::onCommand() {
@@ -163,6 +163,19 @@ void World::onCommand() {
             case CommandType::Dead:
                 std::cout<<"Entity died" << std::endl;
                 updateDeath();
+                break;
+
+            case CommandType::MakeArrow:
+            {
+                Soldier * s = selectedTeam[command.mSender];
+                std::unique_ptr<Projectile> arrow = std::make_unique<Projectile>(s->getPosition(),s->getTarget(), mTextures.get(Textures::EntityArrow), s->getDamage());
+                mArrows.push_back(arrow.get());
+                if(mArrows.size() > size_t(30)){
+                    mSceneLayers[Layer::flying]->detachChild(static_cast<SceneNode*>(mArrows.front()));
+                    mArrows.pop_front();
+                }
+                mSceneLayers[Layer::flying]->attachChild(std::move(arrow));
+            }
                 break;
 
             case CommandType::CastleAssaulted:

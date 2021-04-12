@@ -40,7 +40,7 @@ private:
     void drawChildren(sf::RenderTarget& target, sf::RenderStates states) const;
     void drawBoundingRect(sf::RenderTarget& target, sf::RenderStates states) const;
 
-private:
+protected:
     std::vector<Ptr> mChildren;
     SceneNode* mParent;
 

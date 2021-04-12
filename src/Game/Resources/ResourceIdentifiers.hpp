@@ -61,6 +61,7 @@ namespace Textures {
         EntityTankBlue,
         EntityTankRed,
         EntityGlow,
+        EntityArrow,
 
         GamePause,
         GameSlow,

@@ -18,6 +18,7 @@
 #include "../Resources/ResourceIdentifiers.hpp"
 #include "../Resources/ResourceHolder.hpp"
 #include "../Map/TilesMap.hpp"
+#include "Projectile.hpp"
 
 
 class Soldier : public Entity {
@@ -73,6 +74,9 @@ public:
 
     void remove() override;
     void init(); // Initiate mOrigin variable (for defense reference)
+
+    Entity* getTarget();
+    int getDamage();
 
 private:
     void drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const override;

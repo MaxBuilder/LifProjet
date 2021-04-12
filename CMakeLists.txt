@@ -39,6 +39,7 @@ add_executable(LifProjet src/main.cpp
         src/Game/Map/EntityInfo.cpp src/Game/Map/EntityInfo.hpp
         src/Game/Entities/Entity.cpp src/Game/Entities/Entity.hpp
         src/Game/Entities/Soldier.cpp src/Game/Entities/Soldier.hpp
+        src/Game/Entities/Projectile.cpp src/Game/Entities/Projectile.hpp
         src/Game/Entities/Building.cpp src/Game/Entities/Building.hpp
         src/Game/World/World.cpp src/Game/World/World.hpp
         src/Core/Commands/Command.cpp src/Core/Commands/Command.hpp

@@ -14,6 +14,7 @@
 #include "../Entities/Building.hpp"
 
 #include <array>
+#include <list>
 
 class World {
 
@@ -51,6 +52,7 @@ private:
     enum Layer {
         Back,
         Front,
+        flying,
         LayerCount
     };
 
@@ -72,6 +74,7 @@ private:
     std::vector<Soldier*> mRedTeam;
     std::vector<Soldier*> mSoldiers;
     std::vector<Building*> mBuildings;
+    std::list<Projectile*> mArrows;
     int mNbRed, mNbBlue;
 
     // Pathfinding

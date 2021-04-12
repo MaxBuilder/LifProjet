@@ -128,6 +128,7 @@ void Application::loadTextures() {
     mTextures.load(Textures::EntityTankRed, "data/Entities/spriteTankRed.png");
     mTextures.load(Textures::EntityTankBlue, "data/Entities/spriteTankBlue.png");
     mTextures.load(Textures::EntityGlow, "data/Entities/glow.png");
+    mTextures.load(Textures::EntityArrow, "data/Entities/arrow.png");
 
     mTextures.load(Textures::GamePause, "data/Game/pause.png");
     mTextures.load(Textures::GameSlow, "data/Game/slowMode.png");

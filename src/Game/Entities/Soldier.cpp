@@ -125,7 +125,7 @@ void Soldier::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) con
             target.draw(mDisplayAction, states);
             break;
         case Debug::Life :
-            if(mHitPoints!=mMaxHintPoints and mHitPoints != 0){
+            if(mHitPoints!=mMaxHintPoints and mHitPoints > 0){
                 target.draw(backLife, states);
                 target.draw(frontLife, states);
             }
@@ -411,8 +411,12 @@ void Soldier::createTeam(int senderId) {
 }
 
 void Soldier::attackTarget() {
-    if(mEntityTime.asSeconds() > 1) {
-        mTargeted->damage(mDamages);
+    if(mEntityTime.asMilliseconds() > 780) {
+        if (mSoldierType == EntityInfo::Archer){
+            mCommandQueue.push(Command(mTeam, mId, 0, CommandType::MakeArrow));
+        }else{
+            mTargeted->damage(mDamages);
+        }
         mEntityTime = sf::seconds(0);
     }
     if(mTargeted->isDestroyed())
@@ -624,4 +628,12 @@ int Soldier::getId() const {
 
 void Soldier::setLeader(Soldier* leader) {
     mLeader = leader;
+}
+
+Entity* Soldier::getTarget(){
+    return mTargeted;
+}
+
+int Soldier::getDamage(){
+    return mDamages;
 }
