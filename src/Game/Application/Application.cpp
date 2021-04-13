@@ -117,8 +117,8 @@ void Application::loadTextures() {
     mTextures.load(Textures::ToolSmallBrush, "data/Editor/small.png");
     mTextures.load(Textures::ToolMediumBrush, "data/Editor/medium.png");
     mTextures.load(Textures::ToolBigBrush, "data/Editor/big.png");
-    mTextures.load(Textures::ToolEraser, "data/Editor/Eraser.png");
-    mTextures.load(Textures::ToolFill, "data/Editor/Fill.png");
+    mTextures.load(Textures::ToolEraser, "data/Editor/eraser.png");
+    mTextures.load(Textures::ToolFill, "data/Editor/fill.png");
     mTextures.load(Textures::EditorRotateUpButton, "data/Editor/up.png");
     mTextures.load(Textures::EditorRotateRightButton, "data/Editor/right.png");
 
@@ -152,7 +152,7 @@ void Application::registerStates() {
 }
 
 void Application::loadSettings() {
-    std::ifstream settings("data/Settings/settings.txt");
+    std::ifstream settings("data/Settings/Settings.txt");
 
     if(!settings.is_open()) {
         std::cout << "Cannot open Settings file!" << std::endl;

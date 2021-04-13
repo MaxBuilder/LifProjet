@@ -3,8 +3,10 @@ project(LifProjet)
 
 set(CMAKE_CXX_STANDARD 17)
 
-set(SFML_STATIC_LIBRARIES TRUE)
-set(SFML_DIR "lib/SFML-2.5.1/lib/cmake/SFML")
+if(WIN32)
+    set(SFML_STATIC_LIBRARIES TRUE)
+    set(SFML_DIR "lib/SFML-2.5.1/lib/cmake/SFML")
+endif(WIN32)
 
 find_package(SFML 2.5.1 COMPONENTS graphics audio REQUIRED)
 add_executable(LifProjet src/main.cpp
