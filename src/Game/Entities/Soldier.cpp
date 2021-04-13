@@ -505,7 +505,7 @@ void Soldier::updateSprite(sf::Time dt) {
             }
 
         }
-        else if(mAction == Attacking){
+        else if(mAction == Attacking) {
             float x = getPosition().x - mTargeted->getPosition().x;
             if (x < 0 and (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 32) ) {
                 mSpriteRect.left = 0;
@@ -521,12 +521,15 @@ void Soldier::updateSprite(sf::Time dt) {
             mSpriteRect.left = 0;
             mSpriteRect.top = 0;
 
-        }else if (mDirection.x < 0 and  (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 32*3) ) {
+        }
+        else if (mDirection.x < 0 and  (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 32*3)) {
             mSpriteRect.left = 64 * 5;
             mSpriteRect.top = 32 * 3;
-        }else if(mSpriteRect.left > 64*5){
+        }
+        else if(mSpriteRect.left > 64*5) {
             mSpriteRect.left = 0;
-        }else if(mSpriteRect.left < 0){
+        }
+        else if(mSpriteRect.left < 0) {
             mSpriteRect.left = 64*5;
         }
 
