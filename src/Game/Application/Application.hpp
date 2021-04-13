@@ -5,6 +5,7 @@
 
 #include "../../Core/StateStack/StateStack.hpp"
 #include "../../Core/Audio/SoundPlayer.hpp"
+#include "../../Core/Audio/MusicPlayer.hpp"
 #include "../../Core/Util/Utility.hpp"
 #include "../Resources/ResourceIdentifiers.hpp"
 #include "../Resources/ResourceHolder.hpp"
@@ -40,6 +41,7 @@ private:
     TextureHolder mTextures;
     FontHolder mFonts;
     SoundPlayer mSounds;
+    MusicPlayer mMusic;
 
     StateStack mStateStack;
 

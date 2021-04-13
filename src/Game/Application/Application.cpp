@@ -12,7 +12,8 @@ Application::Application()
 : mTextures()
 , mFonts()
 , mSounds()
-, mStateStack(State::Context(mWindow, mTextures, mFonts, mSounds))
+, mMusic()
+, mStateStack(State::Context(mWindow, mTextures, mFonts, mSounds, mMusic))
 {
     loadSettings();
 

@@ -8,6 +8,7 @@
 #include "../../Game/GameStates/StateIdentifiers.hpp"
 #include "../../Game/Resources/ResourceIdentifiers.hpp"
 #include "../Audio/SoundPlayer.hpp"
+#include "../Audio/MusicPlayer.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/System/Time.hpp>
@@ -25,10 +26,10 @@ public:
         sf::RenderWindow& window;
         TextureHolder& textures;
         FontHolder& fonts;
-        //MusicPlayer& music;
         SoundPlayer& sounds;
+        MusicPlayer& music;
 
-        Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, SoundPlayer& sounds);
+        Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, SoundPlayer& sounds, MusicPlayer& music);
     };
 
 

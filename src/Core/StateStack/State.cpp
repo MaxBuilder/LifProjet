@@ -5,11 +5,13 @@
 #include "State.hpp"
 #include "StateStack.hpp"
 
-State::Context::Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, SoundPlayer& sounds)
+State::Context::Context(sf::RenderWindow& window, TextureHolder& textures, FontHolder& fonts, SoundPlayer& sounds, MusicPlayer& music)
 : window(window)
 , textures(textures)
 , fonts(fonts)
-, sounds(sounds) {}
+, sounds(sounds)
+, music(music)
+{}
 
 State::State(StateStack &stack, Context &context) : mStack(stack), mContext(context) {}
 

@@ -88,6 +88,13 @@ namespace Sounds {
     };
 }
 
+namespace Music {
+    enum ID {
+        MainTheme,
+        BattleTheme
+    };
+}
+
 
 template <typename Resource, typename Identifier>
 class ResourceHolder;
