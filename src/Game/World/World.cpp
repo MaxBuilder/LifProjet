@@ -149,10 +149,13 @@ void World::updateTargets() {
             float dist = distance(red->getPosition(), blue->getPosition());
             if(dist < 150 and !blue->isDestroyed()) { // In sight
                 red->mTargetInSight++;
-                if(dist < distMin and dist < 100) {
-                    red->setTarget(static_cast<Entity*>(blue));
-                    distMin = dist;
-                    gotAssigned = true;
+                red->closetInSightDirection = blue->getPosition();
+                if(dist < distMin) {
+                    if(dist < 100) {
+                        red->setTarget(static_cast<Entity *>(blue));
+                        distMin = dist;
+                        gotAssigned = true;
+                    }
                 }
             }
         }
@@ -189,6 +192,7 @@ void World::updateTargets() {
             float dist = distance(red->getPosition(), blue->getPosition());
             if(dist < 100 and !red->isDestroyed()) { // In sight
                 blue->mTargetInSight++;
+                blue->closetInSightDirection = red->getPosition();
                 if(dist < distMin and dist < 80 and !red->isDestroyed()) {
                     blue->setTarget(static_cast<Entity *>(red));
                     distMin = dist;
@@ -273,6 +277,7 @@ void World::updateDeath() {
             e->getTeam() == EntityInfo::Red ? mNbRed-- : mNbBlue--;
             if (mNbRed == 0)
                 mBlueVictory = true;
+                Debug::Log("Blue victory");
         }
     }
 
@@ -291,8 +296,10 @@ void World::updateDeath() {
                 }
             }
             build->down = true;
-            if (build->getBonusFlag() == EntityInfo::Castle)
+            if(build->getBonusFlag() == EntityInfo::Castle) {
                 mRedVictory = true;
+                Debug::Log("Red victory");
+            }
         }
     }
 }
@@ -410,10 +417,7 @@ bool World::isEnded() const {
 }
 
 bool World::returnVictoryState() const {
-    if(mRedVictory) {
-        Debug::Log("Red victory");
+    if(mRedVictory)
         return true;
-    }
-    Debug::Log("Blue Victory");
     return false;
 }

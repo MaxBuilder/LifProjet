@@ -248,6 +248,9 @@ void Soldier::updateAttack(sf::Time dt) {
         }
     }
     else if(mAction == WithSquad) {
+        if(mLeader->isDestroyed())
+            setAction(Assaulting);
+
         if(distance(getPosition(), mLeader->getPosition()) > 30) {
             setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
             seekTarget(mLeader->getPosition());
@@ -263,8 +266,14 @@ void Soldier::updateAttack(sf::Time dt) {
     else if(mAction == Assaulting) {
         prev = false;
         sendAck = false;
-        if(mTargeted == nullptr) {
-            setDirection(1, 0);
+
+        if(mTargeted == nullptr and mLeader == nullptr) {
+            setDirection(closetInSightDirection - getPosition());
+            setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
+        }
+        else if(mTargeted == nullptr) {
+            //std::cout << mId << " " << closetInSightDirection.x << closetInSightDirection.y << std::endl;
+            setDirection(mLeader->closetInSightDirection - getPosition());
             setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
         }
         else {
@@ -358,6 +367,9 @@ void Soldier::updateDefense(sf::Time dt) {
         }
     }
     else if(mAction == WithSquad) {
+        if(mLeader->isDestroyed())
+            setAction(Assaulting);
+
         if(distance(getPosition(), mLeader->getPosition()) > 30) {
             setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
             seekTarget(mLeader->getPosition());
@@ -374,12 +386,13 @@ void Soldier::updateDefense(sf::Time dt) {
         prev = false;
         sendAck = false;
 
-        if(mLeader == nullptr) {
-            setAction(Moving);
-            return;
+        if(mTargeted == nullptr and mLeader == nullptr) {
+            setDirection(closetInSightDirection - getPosition());
+            setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
         }
-        if(mTargeted == nullptr) {
-            setDirection(-1, 0);
+        else if(mTargeted == nullptr) {
+            //std::cout << mId << " " << closetInSightDirection.x << closetInSightDirection.y << std::endl;
+            setDirection(mLeader->closetInSightDirection - getPosition());
             setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
         }
         else {
