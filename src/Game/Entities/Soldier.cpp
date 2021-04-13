@@ -505,7 +505,6 @@ void Soldier::updateSprite(sf::Time dt) {
                 if(mSpriteRect.left <= 0)
                     mSpriteRect.left = 0;
             }
-
         }
         else if(mAction == Attacking) {
             float x = getPosition().x - mTargeted->getPosition().x;
