@@ -9,13 +9,17 @@
 
 namespace CommandType {
     enum ID {
+        // Entity communication commands
         MakeTeam,
         TeamAccept,
         TeamDeny,
         InPosition,
         Assault,
-        Dead,
         CastleAssaulted,
+        FallBack,
+
+        // System communication commands
+        Dead,
         MakeArrow,
     };
 }

@@ -20,7 +20,6 @@ Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::
 , mSpeedBase(15)
 , mSpeedBonus(0)
 , mBonus(EntityInfo::ID::None)
-, mDamages(20)
 , mDistance(0)
 , mTargeted(nullptr)
 , mAction(Moving)
@@ -43,6 +42,8 @@ Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::
             team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityKnightBlue)) :
             mSprite.setTexture(textures.get(Textures::EntityKnightRed));
             mRange = 0;
+            mDamages = 20;
+            // Hitpoint : 100
             break;
 
         case EntityInfo::Archer:
@@ -51,6 +52,7 @@ Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::
             mRange = 60;
             mHitPoints = 60;
             mMaxHintPoints = 60;
+            mDamages = 20;
             break;
 
         case EntityInfo::Tank:
@@ -59,7 +61,7 @@ Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::
             mRange = 0;
             mHitPoints = 200;
             mMaxHintPoints = 200;
-            mDamages = 15;
+            mDamages = 10;
             break;
 
         default:
