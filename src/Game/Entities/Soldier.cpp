@@ -4,8 +4,6 @@
 
 #include "Soldier.hpp"
 
-#include <iostream>
-
 Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::Vector2i objectif, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue)
 : Entity(100,team, commandQueue)
 , mId(id)
@@ -177,7 +175,7 @@ void Soldier::updateAttack(sf::Time dt) {
             if(mPath.empty()) {
                 mAstarDuration.restart();
                 mPathfinding.getPath(getPosition(), mObjectif, mPath, 2) ;
-                std::cout << "Pathfinding Duration :" << mAstarDuration.getElapsedTime().asMicroseconds() << std::endl;
+                ::Debug::Log("Pathfinding Duration : " + std::to_string(mAstarDuration.getElapsedTime().asMicroseconds()));
             }
             sf::Vector2f &target = mPath.back();
             if (distance(getPosition(), target) < 2)
@@ -460,7 +458,7 @@ void Soldier::seekTarget(sf::Vector2f pos) {
         if(mPath.empty()) {
             mAstarDuration.restart();
             mPathfinding.getPath(getPosition(), target/20.f, mPath, 2) ;
-            std::cout << "Pathfinding Duration :" << mAstarDuration.getElapsedTime().asMicroseconds() << std::endl;
+            ::Debug::Log("Pathfinding Duration : " + std::to_string(mAstarDuration.getElapsedTime().asMicroseconds()));
         }
         target = mPath.back();
         if (distance(getPosition(), target) < 2 )
@@ -558,11 +556,13 @@ void Soldier::switchDebugDisplay() {
 }
 
 void Soldier::setAction(Action act) {
+    if(act == mAction)
+        return;
+
     mPath.clear();
     usePathFinding = false;
-    std::string name[10] = {"None", "Moving", "Seeking", "Attacking", "Calling", "Leading", "WithSquad", "Assaulting", "DefendingCastle"};
-    std::string str = mTeam == EntityInfo::Team::Blue ? "Blue" : "Red";
-    std::cout << "Id : " << mId << str << " cAction :" << name[mAction] << " -> " << name[act] << std::endl;
+    std::string str = mTeam == EntityInfo::Team::Blue ? "(blue)" : "(red)";
+    ::Debug::Log("Entity " + std::to_string(mId) + " " + str + " changed action " + name[mAction] + " -> " + name[act]);
     mAction = act;
     mDisplayAction.setString(name[mAction]);
 }

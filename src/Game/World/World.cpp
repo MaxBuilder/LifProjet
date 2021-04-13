@@ -25,7 +25,7 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
 
 void World::init(const std::string &mapPath) {
     mMap.load(mapPath);
-    std::cout << "Map loaded" << std::endl;
+    Debug::Log("Map loaded");
 
     // Setting up mPathfinding
     mAstar.setMap(mMap);
@@ -44,61 +44,6 @@ void World::init(const std::string &mapPath) {
     // Initialisation of defender (to expand)
     for(auto &soldier : mSoldiers)
         soldier->init();
-}
-
-void World::createEntity() {
-    sf::Vector2i redObjectif, blueObjectif;
-
-    // Adding buildings to the scene
-    auto builds = mMap.getBuildingsIt();
-    for (; builds.first != builds.second ; builds.first++) {
-        std::unique_ptr<Building> build = std::make_unique<Building>(builds.first->getID(), builds.first->getTeam(), builds.first->getPosition(), mCommandQueue);
-
-        if(build->getBonusFlag() == EntityInfo::Castle) {
-            if(build->getTeam() == EntityInfo::Blue)
-                redObjectif = build->getOnMapPosition();
-            else
-                blueObjectif = build->getOnMapPosition();
-        }
-        mBuildings.push_back(build.get());
-        mSceneLayers[Back]->attachChild(std::move(build));
-    }
-
-    // Adding soldiers to the scene
-    auto e = mMap.getEntitiesIt();
-    int idr = 0;
-    int idb = 0;
-    int indice;
-    sf::Vector2i objectif;
-
-    for (; e.first != e.second ; e.first++) {
-        if(e.first->getTeam() == EntityInfo::Blue) {
-            indice = idb;
-            idb++;
-            objectif = redObjectif;
-        }
-        else {
-            indice = idr;
-            idr++;
-            objectif = redObjectif;
-        }
-
-        std::unique_ptr<Soldier> soldier = std::make_unique<Soldier>(indice,e.first->getID() ,e.first->getTeam(), objectif, mTextures, mFonts, mAstar, mCommandQueue);
-        soldier->setPosition(e.first->getPosition()*mMap.getBlockSize());
-
-        if(e.first->getTeam() ==  EntityInfo::Team::Red)
-            mRedTeam.push_back(soldier.get());
-        else
-            mBlueTeam.push_back(soldier.get());
-
-        mSoldiers.push_back(soldier.get());
-        mSceneLayers[Front]->attachChild(std::move(soldier));
-
-    }
-
-    mNbRed = idr;
-    mNbBlue = idb;
-
 }
 
 void World::draw() {
@@ -132,11 +77,11 @@ void World::onCommand() {
                         selectedTeam[command.mSender]->nbRequested++;
                     }
                 }
-                std::cout << selectedTeam[command.mSender]->getId() << " Demande de mise en groupe : " << selectedTeam[command.mSender]->nbRequested << std::endl;
+                Debug::Log(std::to_string(selectedTeam[command.mSender]->getId()) + " ask for a team up to " + std::to_string(selectedTeam[command.mSender]->nbRequested) + " units");
                 break;
 
             case CommandType::TeamAccept:
-                std::cout << "Accepted " << command.mSender << std::endl;
+                Debug::Log("Accepted by " + std::to_string(command.mSender));
                 selectedTeam[command.mReceiver]->nbResponse++;
                 selectedTeam[command.mReceiver]->mSquadSize++;
                 selectedTeam[command.mReceiver]->mSquadIds.push_back(command.mSender);
@@ -145,23 +90,23 @@ void World::onCommand() {
                 break;
 
             case CommandType::TeamDeny:
-                std::cout << "Declined " << command.mSender << std::endl;
+                Debug::Log("Declined by " + std::to_string(command.mSender));
                 selectedTeam[command.mReceiver]->nbResponse++;
                 break;
 
             case CommandType::InPosition:
-                std::cout << command.mSender << " " << command.mReceiver << " In position";
                 selectedTeam[command.mReceiver]->nbInPlace++;
-                std::cout << " nb in position : " << selectedTeam[command.mReceiver]->nbInPlace << std::endl;
+                Debug::Log(std::to_string(command.mSender) + " in position, leader : " + std::to_string(command.mReceiver));
+                Debug::Log("Nb in place : " + std::to_string(selectedTeam[command.mReceiver]->nbInPlace));
                 break;
 
             case CommandType::Assault:
-                std::cout << "Assault ordred " << command.mReceiver << std::endl;
+                Debug::Log("Assault started by " + std::to_string(command.mReceiver));
                 selectedTeam[command.mReceiver]->setAction(Soldier::Assaulting);
                 break;
 
             case CommandType::Dead:
-                std::cout<<"Entity died" << std::endl;
+                Debug::Log("Entity died");
                 updateDeath();
                 break;
 
@@ -171,17 +116,21 @@ void World::onCommand() {
                 std::unique_ptr<Projectile> arrow = std::make_unique<Projectile>(s->getPosition(),s->getTarget(), mTextures.get(Textures::EntityArrow), s->getDamage());
                 mArrows.push_back(arrow.get());
                 if(mArrows.size() > size_t(30)){
-                    mSceneLayers[Layer::flying]->detachChild(static_cast<SceneNode*>(mArrows.front()));
+                    mSceneLayers[Layer::Air]->detachChild(static_cast<SceneNode*>(mArrows.front()));
                     mArrows.pop_front();
                 }
-                mSceneLayers[Layer::flying]->attachChild(std::move(arrow));
+                mSceneLayers[Layer::Air]->attachChild(std::move(arrow));
             }
-                break;
+            break;
 
             case CommandType::CastleAssaulted:
-                std::cout << "All defenders called to defend castle" << std::endl;
+                Debug::Log("All defenders called to defend castle");
                 for(auto defender : mBlueTeam)
-                    defender->setAction(Soldier::DefendingCastle);
+                    if(!defender->isDestroyed())
+                        defender->setAction(Soldier::DefendingCastle);
+                break;
+
+            case CommandType::FallBack:
                 break;
         }
     }
@@ -348,6 +297,61 @@ void World::updateDeath() {
     }
 }
 
+void World::createEntity() {
+    sf::Vector2i redObjectif, blueObjectif;
+
+    // Adding buildings to the scene
+    auto builds = mMap.getBuildingsIt();
+    for (; builds.first != builds.second ; builds.first++) {
+        std::unique_ptr<Building> build = std::make_unique<Building>(builds.first->getID(), builds.first->getTeam(), builds.first->getPosition(), mCommandQueue);
+
+        if(build->getBonusFlag() == EntityInfo::Castle) {
+            if(build->getTeam() == EntityInfo::Blue)
+                redObjectif = build->getOnMapPosition();
+            else
+                blueObjectif = build->getOnMapPosition();
+        }
+        mBuildings.push_back(build.get());
+        mSceneLayers[Back]->attachChild(std::move(build));
+    }
+
+    // Adding soldiers to the scene
+    auto e = mMap.getEntitiesIt();
+    int idr = 0;
+    int idb = 0;
+    int indice;
+    sf::Vector2i objectif;
+
+    for (; e.first != e.second ; e.first++) {
+        if(e.first->getTeam() == EntityInfo::Blue) {
+            indice = idb;
+            idb++;
+            objectif = redObjectif;
+        }
+        else {
+            indice = idr;
+            idr++;
+            objectif = redObjectif;
+        }
+
+        std::unique_ptr<Soldier> soldier = std::make_unique<Soldier>(indice,e.first->getID() ,e.first->getTeam(), objectif, mTextures, mFonts, mAstar, mCommandQueue);
+        soldier->setPosition(e.first->getPosition()*mMap.getBlockSize());
+
+        if(e.first->getTeam() ==  EntityInfo::Team::Red)
+            mRedTeam.push_back(soldier.get());
+        else
+            mBlueTeam.push_back(soldier.get());
+
+        mSoldiers.push_back(soldier.get());
+        mSceneLayers[Front]->attachChild(std::move(soldier));
+
+    }
+
+    mNbRed = idr;
+    mNbBlue = idb;
+
+}
+
 void World::recBarrier(sf::Vector2i position) {
     sf::Vector2i dir[4]={position+sf::Vector2i(0,1),
                          position+sf::Vector2i(1,0),
@@ -406,7 +410,10 @@ bool World::isEnded() const {
 }
 
 bool World::returnVictoryState() const {
-    if(mRedVictory)
+    if(mRedVictory) {
+        Debug::Log("Red victory");
         return true;
+    }
+    Debug::Log("Blue Victory");
     return false;
 }
