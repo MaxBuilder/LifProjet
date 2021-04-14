@@ -512,7 +512,6 @@ void Soldier::updateSprite(sf::Time dt) {
                         a = 2;
                     else
                         a = 1;
-                    std::cout<<"rot :"<<rotation<<std::endl;
                 }
                 mSpriteRect.top = 96+a*65;
             }
