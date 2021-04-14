@@ -152,11 +152,11 @@ void Application::registerStates() {
 }
 
 void Application::loadSettings() {
-    std::ifstream settings("data/Settings/settings.txt");
+    std::ifstream settings("data/Settings/Settings.txt");
 
     if(!settings.is_open()) {
-        std::cout << "Cannot open Settings file!" << std::endl;
-        return ;
+        Debug::WarningLog("Cannot open Settings file!");
+        return;
     }
     int height, width;
     std::string tmp;

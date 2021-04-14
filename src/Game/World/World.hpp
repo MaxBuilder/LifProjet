@@ -9,6 +9,7 @@
 #include "../../Core/Scene/SceneNode.hpp"
 #include "../../Core/Audio/SoundPlayer.hpp"
 #include "../../Core/Commands/CommandQueue.hpp"
+#include "../../Core/Util/Debug.hpp"
 #include "../../Core/Util/Utility.hpp"
 #include "../Entities/Soldier.hpp"
 #include "../Entities/Building.hpp"
@@ -52,7 +53,7 @@ private:
     enum Layer {
         Back,
         Front,
-        flying,
+        Air,
         LayerCount
     };
 

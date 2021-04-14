@@ -16,6 +16,7 @@
 #include "../../Core/Util/Utility.hpp"
 #include "../../Core/Util/Rand.hpp"
 #include "../Resources/ResourceIdentifiers.hpp"
+#include "../../Core/Util/Debug.hpp"
 #include "../Resources/ResourceHolder.hpp"
 #include "../Map/TilesMap.hpp"
 #include "Projectile.hpp"
@@ -58,7 +59,7 @@ public:
     void updateDefense(sf::Time dt);
 
     void setDirection(sf::Vector2f velocity);
-    void setDirection(float vx, float vy);
+    //sf::Vector2f getDirection();
 
     sf::Vector2f getVelocity();
     void setVelocity(sf::Vector2f dpl);
@@ -122,11 +123,14 @@ private:
     bool prev;
     bool sendAck;
 
+    std::string name[10] = {"None", "Moving", "Seeking", "Attacking", "Calling", "Leading", "WithSquad", "Assaulting", "DefendingCastle"};
+
 public:
     // Special behavior variables :
     bool usePathFinding;
     int mTargetInSight;
     int mAllyInSight;
+    sf::Vector2f closetInSightDirection;
 
     int nbRequested;
     int nbResponse;

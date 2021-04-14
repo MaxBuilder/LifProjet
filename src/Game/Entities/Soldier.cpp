@@ -4,8 +4,6 @@
 
 #include "Soldier.hpp"
 
-#include <iostream>
-
 Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::Vector2i objectif, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue)
 : Entity(100,team, commandQueue)
 , mId(id)
@@ -179,7 +177,7 @@ void Soldier::updateAttack(sf::Time dt) {
             if(mPath.empty()) {
                 mAstarDuration.restart();
                 mPathfinding.getPath(getPosition(), mObjectif, mPath, 2) ;
-                std::cout << "Pathfinding Duration :" << mAstarDuration.getElapsedTime().asMicroseconds() << std::endl;
+                ::Debug::Log("Pathfinding Duration : " + std::to_string(mAstarDuration.getElapsedTime().asMicroseconds()));
             }
             sf::Vector2f &target = mPath.back();
             if (distance(getPosition(), target) < 2)
@@ -252,6 +250,9 @@ void Soldier::updateAttack(sf::Time dt) {
         }
     }
     else if(mAction == WithSquad) {
+        if(mLeader->isDestroyed())
+            setAction(Assaulting);
+
         if(distance(getPosition(), mLeader->getPosition()) > 30) {
             setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
             seekTarget(mLeader->getPosition());
@@ -267,8 +268,14 @@ void Soldier::updateAttack(sf::Time dt) {
     else if(mAction == Assaulting) {
         prev = false;
         sendAck = false;
-        if(mTargeted == nullptr) {
-            setDirection(1, 0);
+
+        if(mTargeted == nullptr and mLeader == nullptr) {
+            setDirection(closetInSightDirection - getPosition());
+            setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
+        }
+        else if(mTargeted == nullptr) {
+            //std::cout << mId << " " << closetInSightDirection.x << closetInSightDirection.y << std::endl;
+            setDirection(mLeader->closetInSightDirection - getPosition());
             setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
         }
         else {
@@ -362,6 +369,9 @@ void Soldier::updateDefense(sf::Time dt) {
         }
     }
     else if(mAction == WithSquad) {
+        if(mLeader->isDestroyed())
+            setAction(Assaulting);
+
         if(distance(getPosition(), mLeader->getPosition()) > 30) {
             setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
             seekTarget(mLeader->getPosition());
@@ -378,12 +388,13 @@ void Soldier::updateDefense(sf::Time dt) {
         prev = false;
         sendAck = false;
 
-        if(mLeader == nullptr) {
-            setAction(Moving);
-            return;
+        if(mTargeted == nullptr and mLeader == nullptr) {
+            setDirection(closetInSightDirection - getPosition());
+            setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
         }
-        if(mTargeted == nullptr) {
-            setDirection(-1, 0);
+        else if(mTargeted == nullptr) {
+            //std::cout << mId << " " << closetInSightDirection.x << closetInSightDirection.y << std::endl;
+            setDirection(mLeader->closetInSightDirection - getPosition());
             setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
         }
         else {
@@ -431,7 +442,9 @@ void Soldier::roam(sf::Time dt) {
     if(distance(getPosition(), mOrigin) > 50) { // If too far from origin, go back
         mDistance = 10;
         mTravelled = 0;
-        setDirection(mOrigin - getPosition());
+        //setDirection(mOrigin - getPosition());
+        usePathFinding = true;
+        seekTarget(mOrigin);
         setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
         return;
     }
@@ -462,7 +475,7 @@ void Soldier::seekTarget(sf::Vector2f pos) {
         if(mPath.empty()) {
             mAstarDuration.restart();
             mPathfinding.getPath(getPosition(), target/20.f, mPath, 2) ;
-            std::cout << "Pathfinding Duration :" << mAstarDuration.getElapsedTime().asMicroseconds() << std::endl;
+            ::Debug::Log("Pathfinding Duration : " + std::to_string(mAstarDuration.getElapsedTime().asMicroseconds()));
         }
         target = mPath.back();
         if (distance(getPosition(), target) < 2 )
@@ -584,11 +597,13 @@ void Soldier::switchDebugDisplay() {
 }
 
 void Soldier::setAction(Action act) {
+    if(act == mAction)
+        return;
+
     mPath.clear();
     usePathFinding = false;
-    std::string name[10] = {"None", "Moving", "Seeking", "Attacking", "Calling", "Leading", "WithSquad", "Assaulting", "DefendingCastle"};
-    std::string str = mTeam == EntityInfo::Team::Blue ? "Blue" : "Red";
-    std::cout << "Id : " << mId << str << " cAction :" << name[mAction] << " -> " << name[act] << std::endl;
+    std::string str = mTeam == EntityInfo::Team::Blue ? "(blue)" : "(red)";
+    ::Debug::Log("Entity " + std::to_string(mId) + " " + str + " changed action " + name[mAction] + " -> " + name[act]);
     mAction = act;
     mDisplayAction.setString(name[mAction]);
 }
@@ -601,11 +616,6 @@ void Soldier::remove() {
 void Soldier::setDirection(sf::Vector2f velocity) {
     float norme = norm(velocity);
     norme > 0 ? mDirection = velocity / norme : mDirection = sf::Vector2f(0, 0);
-}
-
-void Soldier::setDirection(float vx, float vy) {
-    float norme = norm(sf::Vector2f(vx, vy));
-    norme > 0 ? mDirection = sf::Vector2f(vx, vy) / norme : mDirection = sf::Vector2f(0, 0);
 }
 
 void Soldier::setTarget(Entity* target) {
