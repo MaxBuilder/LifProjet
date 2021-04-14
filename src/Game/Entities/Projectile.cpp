@@ -47,16 +47,7 @@ bool Projectile::detachRequiere() {
 void Projectile::updateMovement(sf::Time dt){
     sf::Vector2f dpl = mTargetPosition - getPosition() ;
     dpl = dpl / norm(dpl);
-    if(mTargetPosition.y-getPosition().y != 0){
-        float tan = (mTargetPosition.x-getPosition().x)/(mTargetPosition.y-getPosition().y);
-        mRotation = std::atan(tan)*180/float(M_PI);
-        mRotation = 90 - mRotation;
-    }
-    else{
-        mRotation = 90.f;
-    }
-    if(mTargetPosition.y < getPosition().y)
-        mRotation += 180.f;
+    mRotation = angle(mTargetPosition,getPosition());
     mSprite.setRotation(mRotation);
     move(dpl*mVelocity*dt.asSeconds());
 

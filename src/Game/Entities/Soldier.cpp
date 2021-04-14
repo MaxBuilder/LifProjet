@@ -504,8 +504,16 @@ void Soldier::updateSprite(sf::Time dt) {
                 int a;
                 if(mSoldierType != EntityInfo::Archer)
                     a = std::rand()%4;
-                else
-                    a = 1;
+                else{
+                    float rotation = angle(mTargeted->getPosition(), getPosition());
+                    if (rotation < 330 and rotation > 210 )
+                        a = 0;
+                    else if( rotation > 30 and rotation < 150)
+                        a = 2;
+                    else
+                        a = 1;
+                    std::cout<<"rot :"<<rotation<<std::endl;
+                }
                 mSpriteRect.top = 96+a*65;
             }
             else{

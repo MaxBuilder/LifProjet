@@ -25,6 +25,7 @@ void centerOrigin(sf::Text& text);
 float toDegree(float radian);
 float toRadian(float degree);
 
+float angle(const sf::Vector2f& vec1, const sf::Vector2f& vec2 );
 float norm(const sf::Vector2f& vec);
 float distance(const sf::Vector2f& vec1, const sf::Vector2f& vec2);
 void display(sf::Vector2f vec);
