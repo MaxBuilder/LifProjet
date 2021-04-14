@@ -117,8 +117,8 @@ void Application::loadTextures() {
     mTextures.load(Textures::ToolSmallBrush, "data/Editor/small.png");
     mTextures.load(Textures::ToolMediumBrush, "data/Editor/medium.png");
     mTextures.load(Textures::ToolBigBrush, "data/Editor/big.png");
-    mTextures.load(Textures::ToolEraser, "data/Editor/Eraser.png");
-    mTextures.load(Textures::ToolFill, "data/Editor/Fill.png");
+    mTextures.load(Textures::ToolEraser, "data/Editor/eraser.png");
+    mTextures.load(Textures::ToolFill, "data/Editor/fill.png");
     mTextures.load(Textures::EditorRotateUpButton, "data/Editor/up.png");
     mTextures.load(Textures::EditorRotateRightButton, "data/Editor/right.png");
 
@@ -136,7 +136,7 @@ void Application::loadTextures() {
     mTextures.load(Textures::Game1x, "data/Game/1xspeed.png");
     mTextures.load(Textures::Game3x, "data/Game/3xspeed.png");
     mTextures.load(Textures::Game5x, "data/Game/5xspeed.png");
-    mTextures.load(Textures::GameTimeUI, "data/Game/Time.png");
+    mTextures.load(Textures::GameTimeUI, "data/Game/time.png");
     mTextures.load(Textures::GameMapSelectionButton, "data/Game/mapSelectButton.png");
     mTextures.load(Textures::GameMapSelectionConfButton, "data/Game/mapConfButton.png");
     mTextures.load(Textures::GameMapSelectionBackground, "data/Game/mapSelectionBackground.png");

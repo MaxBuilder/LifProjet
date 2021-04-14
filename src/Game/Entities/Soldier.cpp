@@ -486,35 +486,9 @@ void Soldier::updateSprite(sf::Time dt) {
     if (mSpriteTime.asMilliseconds() > 130) {
         mSpriteTime = sf::milliseconds(0);
 
-        float scaleX = std::abs(mSprite.getScale().x);
-        bool right;
-        if(mAction == Action::Attacking and mTargeted != nullptr) {
-            right = getPosition().x < mTargeted->getPosition().x;
-        }
-        else{
-            right =  mDirection.x >= 0;
-        }
-        if (right and not isDestroyed()) {
-            mSprite.setScale( scaleX, mSprite.getScale().y);
-            if( mAction == Action::Attacking){
-                mSprite.setPosition(-15,-15);
-            }
-            else{
-                mSprite.setPosition(-5,-5);
-            }
-        }
-        else if(not isDestroyed()) {
-            mSprite.setScale( -scaleX, mSprite.getScale().y);
-            if( mAction == Action::Attacking){
-                mSprite.setPosition(35,-15);
-            }
-            else{
-                mSprite.setPosition(mSpriteRect.width/2,-5);
-            }
-        }
-
         if( mAction != mSpriteAction and not isDestroyed()) {
-            if( mDirection == sf::Vector2f(0,0) and mAction == WithSquad)
+            if( (mDirection == sf::Vector2f(0,0) or mVelocity == sf::Vector2f(0,0))
+                 and mAction != Attacking)
                 mSpriteAction = Action::Calling;
             else
                 mSpriteAction = mAction;
@@ -546,6 +520,7 @@ void Soldier::updateSprite(sf::Time dt) {
                     break;
                 }
             }
+            mSpriteAction = mAction;
         }
         else if(isDestroyed() and not (mSpriteRect.left >= 350 and mSpriteRect.top == 48)) {
             mSpriteRect = sf::IntRect(350,48,50,48);
@@ -562,13 +537,42 @@ void Soldier::updateSprite(sf::Time dt) {
         }
         else{
             mSpriteRect.left += 50;
-            if (mAction == Action::Calling and mSpriteRect.left >= 100){
+            if (mDirection == sf::Vector2f(0,0) or mVelocity == sf::Vector2f(0,0)
+             and mSpriteRect.left >= 100){
                 mSpriteRect.left = 0;
             }
             else if (mSpriteRect.left >= 300 and not isDestroyed()){
                 mSpriteRect.left = 0;
             }
         }
+
+        float scaleX = std::abs(mSprite.getScale().x);
+        bool right;
+        if(mAction == Action::Attacking and mTargeted != nullptr) {
+            right = getPosition().x < mTargeted->getPosition().x;
+        }
+        else{
+            right =  mDirection.x >= 0;
+        }
+        if (right and not isDestroyed()) {
+            mSprite.setScale( scaleX, mSprite.getScale().y);
+            if( mAction == Action::Attacking and not isDestroyed()){
+                mSprite.setPosition(-15,-15);
+            }
+            else{
+                mSprite.setPosition(-5,-5);
+            }
+        }
+        else if(not isDestroyed()) {
+            mSprite.setScale( -scaleX, mSprite.getScale().y);
+            if( mAction == Action::Attacking and not isDestroyed()){
+                mSprite.setPosition(35,-15);
+            }
+            else{
+                mSprite.setPosition(mSpriteRect.width/2,-5);
+            }
+        }
+
     }
 
     mSprite.setTextureRect(mSpriteRect);
