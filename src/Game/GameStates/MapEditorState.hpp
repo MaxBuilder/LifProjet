@@ -18,6 +18,10 @@
 #include <SFML/Window/Event.hpp>
 
 namespace Editor {
+    /**
+     * @enum Editor
+     * @brief Tool identifiers for the editor
+     */
     enum Tool {
         Standard, Square3, Fill, Eraser, PlaceSoldier, PlaceBuilding,
     };
