@@ -284,8 +284,7 @@ bool GameState::handleEvent(const sf::Event &event) {
             mVictoryUI.handleEvent(event, getContext().window);
         mBackButton.handleEvent(event, getContext().window);
     }
-    else if(isLoaded)
-        mUI.handleEvent(event, getContext().window);
+    else mUI.handleEvent(event, getContext().window);
 
     mDirection = sf::Vector2f(0.f, 0.f);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) mDirection += sf::Vector2f(0.f, -1.f);
