@@ -97,8 +97,10 @@ private:
     Entity * mTargeted;
     Soldier * mLeader;
 
+    // sprites
     sf::Sprite mSprite;
     sf::Sprite mGlow;
+    Action mSpriteAction;
     sf::Text mDisplayID,mDisplayAction;
     sf::RectangleShape backLife,frontLife;
     sf::IntRect mSpriteRect;

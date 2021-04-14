@@ -70,14 +70,15 @@ Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::
 
     mBorder = 10;
     float blockSize = 20.f; // à modifier pour rendre dynamique
+    setOrigin(blockSize/2.f,blockSize/2.f);
 
     // Fix origin and texture selection
     mGlow.setTextureRect(sf::IntRect(0,0,32,32));
-    mSpriteRect = sf::IntRect(0,0,64,32);
+    mSpriteRect = sf::IntRect(0,0,50,48);
     mSprite.setTextureRect(mSpriteRect);
-    mSprite.setScale(blockSize*2/mSprite.getLocalBounds().width,blockSize/mSprite.getLocalBounds().height);
-    mGlow.setScale(blockSize/mSprite.getLocalBounds().width,blockSize/mSprite.getLocalBounds().height);
-    setOrigin(blockSize/2.f,blockSize/2.f);
+    mSprite.setScale((blockSize+10)/mSprite.getLocalBounds().width,(blockSize+10)/mSprite.getLocalBounds().height);
+    mGlow.setScale((blockSize+10)/mSprite.getLocalBounds().width,(blockSize+10)/mSprite.getLocalBounds().height);
+    mSpriteAction = Action::Calling;
     mSpriteTime = sf::milliseconds(0);
 
     // Display init
@@ -111,6 +112,7 @@ Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::
 }
 
 void Soldier::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) const {
+
     target.draw(mSprite, states);
     target.draw(mGlow,states);
     sf::Vertex line[] = {
@@ -482,68 +484,94 @@ void Soldier::updateSprite(sf::Time dt) {
 
     mSpriteTime = sf::milliseconds(dt.asMilliseconds() + mSpriteTime.asMilliseconds());
     if (mSpriteTime.asMilliseconds() > 130) {
-
-        if(mSpriteRect.top < 96)
-            mSpriteRect.left += 64;
-        else
-            mSpriteRect.left -= 64;
-
-        if(isDestroyed()) {
-            if(mSpriteRect.top < 96) {
-                if(mSpriteRect.top != 64) {
-                    mSpriteRect.top = 64;
-                    mSpriteRect.left = 0;
-                }
-                if(mSpriteRect.left > 64*5)
-                    mSpriteRect.left = 64*5;
-            }
-            else {
-                if(mSpriteRect.top != 32*5) {
-                    mSpriteRect.top = 32*5;
-                    mSpriteRect.left = 64*5;
-                }
-                if(mSpriteRect.left <= 0)
-                    mSpriteRect.left = 0;
-            }
-        }
-        else if(mAction == Attacking) {
-            float x = getPosition().x - mTargeted->getPosition().x;
-            if (x < 0 and (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 32) ) {
-                mSpriteRect.left = 0;
-                mSpriteRect.top = 32;
-            }
-            else if(x > 0 and (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 32*4)) {
-                mSpriteRect.left = 64*5;
-                mSpriteRect.top = 32*4;
-            }
-
-        }
-        else if (mDirection.x > 0 and (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 0)) {
-            mSpriteRect.left = 0;
-            mSpriteRect.top = 0;
-
-        }
-        else if (mDirection.x < 0 and  (mSpriteRect.left > 64*5 or mSpriteRect.left < 0 or mSpriteRect.top != 32*3)) {
-            mSpriteRect.left = 64 * 5;
-            mSpriteRect.top = 32 * 3;
-        }
-        else if(mSpriteRect.left > 64*5) {
-            mSpriteRect.left = 0;
-        }
-        else if(mSpriteRect.left < 0) {
-            mSpriteRect.left = 64*5;
-        }
-
-        if(mSpriteRect.top < 96)
-            mSprite.setPosition(0,0);
-        else
-            mSprite.setPosition(-20,0);
-
         mSpriteTime = sf::milliseconds(0);
-        mSprite.setTextureRect(mSpriteRect);
+
+        float scaleX = std::abs(mSprite.getScale().x);
+        bool right;
+        if(mAction == Action::Attacking and mTargeted != nullptr) {
+            right = getPosition().x < mTargeted->getPosition().x;
+        }
+        else{
+            right =  mDirection.x >= 0;
+        }
+        if (right and not isDestroyed()) {
+            mSprite.setScale( scaleX, mSprite.getScale().y);
+            if( mAction == Action::Attacking){
+                mSprite.setPosition(-15,-15);
+            }
+            else{
+                mSprite.setPosition(-5,-5);
+            }
+        }
+        else if(not isDestroyed()) {
+            mSprite.setScale( -scaleX, mSprite.getScale().y);
+            if( mAction == Action::Attacking){
+                mSprite.setPosition(35,-15);
+            }
+            else{
+                mSprite.setPosition(mSpriteRect.width/2,-5);
+            }
+        }
+
+        if( mAction != mSpriteAction and not isDestroyed()) {
+            if( mDirection == sf::Vector2f(0,0) and mAction == WithSquad)
+                mSpriteAction = Action::Calling;
+            else
+                mSpriteAction = mAction;
+
+            switch (mSpriteAction) {
+                case Action::Calling :
+                {
+                    mSpriteRect = sf::IntRect(0,0,50,48);
+                    mSpriteAction = mAction;
+                    break;
+                }
+                case Action::Attacking :
+                {
+                    mSpriteRect = sf::IntRect(0,0,100,65);
+                    int a;
+                    if(mSoldierType != EntityInfo::Archer)
+                        a = std::rand()%4;
+                    else
+                        a = 1;
+                    mSpriteRect.top = 96+a*65;
+                    break;
+                }
+                default:
+                {
+                    if( mId == 2 and mTeam == EntityInfo::Red){
+                        std::cout<<"default case\n";
+                    }
+                    mSpriteRect = sf::IntRect(0,48,50,48);
+                    break;
+                }
+            }
+        }
+        else if(isDestroyed() and not (mSpriteRect.left >= 350 and mSpriteRect.top == 48)) {
+            mSpriteRect = sf::IntRect(350,48,50,48);
+        }
+        else if(isDestroyed() and mSpriteRect.left == 550){
+            return;
+        }
+        else if (mSpriteAction == Action::Attacking){
+            mSpriteRect.left += 100;
+            if(mSpriteRect.left >= 600){
+                mSpriteRect.left = 0;
+                mSpriteAction = Action::None;
+            }
+        }
+        else{
+            mSpriteRect.left += 50;
+            if (mAction == Action::Calling and mSpriteRect.left >= 100){
+                mSpriteRect.left = 0;
+            }
+            else if (mSpriteRect.left >= 300 and not isDestroyed()){
+                mSpriteRect.left = 0;
+            }
+        }
     }
 
-
+    mSprite.setTextureRect(mSpriteRect);
     mEntityTime += dt;
 
 }
