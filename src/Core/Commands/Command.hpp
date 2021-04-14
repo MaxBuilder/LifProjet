@@ -7,6 +7,10 @@
 
 #include "../../Game/Map/EntityInfo.hpp"
 
+/**
+ * @enum CommandType
+ * @brief Defines the type (and the effect) of the command
+ */
 namespace CommandType {
     enum ID {
         // Entity communication commands
@@ -24,12 +28,23 @@ namespace CommandType {
     };
 }
 
+/**
+ * @struct Command
+ * @brief Stores all the information needed for the command (team, sender, receiver and effect)
+ */
 struct Command {
-    EntityInfo::Team mTeam; // true -> red | false -> blue
+    EntityInfo::Team mTeam;
     int mSender;
     int mReceiver; // 9999 -> whole team
     CommandType::ID mType;
 
+    /**
+     * @brief Parameter constructor
+     * @param team Identifier of the targeted team
+     * @param sender Id of the sender
+     * @param receiver Id of the receiver (9999 for all the team)
+     * @param type Identifier of the command type (defines the effect)
+     */
     Command(EntityInfo::Team team, int sender, int receiver, CommandType::ID type);
 };
 

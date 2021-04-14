@@ -15,13 +15,33 @@
 
 #include <list>
 
+/**
+ * @class SoundPlayer
+ * @brief Object that allows to play sounds
+ * @author SFML Game Development
+ */
 class SoundPlayer : private sf::NonCopyable
 {
 public:
+    /**
+     * @brief Default constructor
+     */
     SoundPlayer();
 
+    /**
+     * @brief Plays a sound effect
+     * @param effect Identifier of the sound to play
+     */
     void play(Sounds::ID effect);
+    /**
+     * @brief Loads of sound into the sound player
+     * @param sound Identifiers of the sound
+     * @param path Path to the file
+     */
     void load(Sounds::ID sound, std::string path);
+    /**
+     * @brief Clears the internal vector of played sounds
+     */
     void removeStoppedSounds();
 
 private:

@@ -13,6 +13,10 @@ namespace sf
 }
 
 namespace Textures {
+    /**
+     * @enum Textures
+     * @brief Texture identifiers
+     */
     enum ID {
         None,
 
@@ -78,25 +82,37 @@ namespace Textures {
 }
 
 namespace Fonts {
+    /**
+     * @enum Fonts
+     * @brief Font identifiers
+     */
     enum ID {
         Main
     };
 }
 
 namespace Sounds {
+    /**
+     * @enum Sounds
+     * @brief Sound identifiers
+     */
     enum ID {
         Menu,
     };
 }
 
 namespace Music {
+    /**
+     * @enum Music
+     * @brief Music identifiers
+     */
     enum ID {
         MainTheme,
         BattleTheme
     };
 }
 
-
+// Ressource holder typedefs :
 template <typename Resource, typename Identifier>
 class ResourceHolder;
 

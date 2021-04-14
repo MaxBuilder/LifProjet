@@ -9,16 +9,33 @@
 #include<chrono>
 
 namespace {
+
+    /**
+     * @class Random
+     * @brief Set of function to generate random numbers
+     */
     class Random final {
     public:
+        /**
+         * @brief Deleted constructor (static functions only)
+         */
         Random() = delete;
 
-        // All inclusive
+        /***
+         * @brief Generate an integer between to limits (inclusive)
+         * @param p_min Minimum
+         * @param p_max Maximum
+         * @return Random integer number
+         */
         static int Generate(int p_min, int p_max);
 
+        /***
+         * @brief Generate a float between to limits (inclusive)
+         * @param p_min Minimum
+         * @param p_max Maximum
+         * @return Random float number
+         */
         static float Generate(float p_min, float p_max);
-
-        static bool TryPercentage(float p_percentage);
 
     private:
         static std::default_random_engine generator;
@@ -34,11 +51,6 @@ int Random::Generate(int p_min, int p_max) {
 
 float Random::Generate(float p_min, float p_max) {
     std::uniform_real_distribution<float> distribution(p_min, p_max);
-    return distribution(generator);
-}
-
-bool Random::TryPercentage(float p_percentage) {
-    std::uniform_real_distribution<float> distribution(0.0f, 100.0f);
     return distribution(generator);
 }
 

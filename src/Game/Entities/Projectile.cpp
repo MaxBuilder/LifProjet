@@ -5,8 +5,8 @@
 #include "Projectile.hpp"
 #include <iostream>
 
-Projectile::Projectile(sf::Vector2f position, Entity *target, const sf::Texture& texture, int degats){
-    mDegats = degats;
+Projectile::Projectile(sf::Vector2f position, Entity *target, const sf::Texture& texture, int damages){
+    mDamages = damages;
     mRotation = 0;
     mVelocity = 80.f;
     onGround = false;
@@ -28,7 +28,7 @@ void Projectile::updateCurrent(sf::Time dt){
     if (onTarget() and not onGround ){
 
         if (distance(getPosition(),mTarget->getPosition()) < 15)
-            mTarget->damage(mDegats);
+            mTarget->damage(mDamages);
 
         onGround = true;
     }

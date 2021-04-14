@@ -6,9 +6,12 @@
 #define LIFPROJET_STATEIDENTIFIERS_HPP
 
 namespace States {
+    /**
+     * @enum States
+     * @brief Identifiers of the states
+     */
     enum ID {
         None,
-        Intro, // + tard
         MainMenu,
         MapEditor,
         Settings,

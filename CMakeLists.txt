@@ -33,10 +33,8 @@ add_executable(LifProjet src/main.cpp
         src/Game/Map/Tile.cpp src/Game/Map/Tile.hpp
         src/Core/Audio/SoundPlayer.cpp src/Core/Audio/SoundPlayer.hpp
         src/Core/Audio/MusicPlayer.cpp src/Core/Audio/MusicPlayer.hpp
-        src/Core/Scene/SpriteNode.cpp src/Core/Scene/SpriteNode.hpp
         src/Core/Scene/SceneNode.cpp src/Core/Scene/SceneNode.hpp
         src/Game/GameStates/GameState.cpp src/Game/GameStates/GameState.hpp
-        src/Core/Scene/TextNode.cpp src/Core/Scene/TextNode.hpp
         src/Game/GameStates/PauseState.cpp src/Game/GameStates/PauseState.hpp
         src/Game/Map/EntityInfo.cpp src/Game/Map/EntityInfo.hpp
         src/Game/Entities/Entity.cpp src/Game/Entities/Entity.hpp

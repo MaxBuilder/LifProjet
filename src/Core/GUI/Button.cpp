@@ -82,8 +82,8 @@ namespace GUI {
         target.draw(mText, states);
     }
 
-    void Button::changeTexture(Type buttonType) {
-        sf::IntRect textureRect(0, mHeight * buttonType, mWidth, mHeight);
+    void Button::changeTexture(ButtonState buttonState) {
+        sf::IntRect textureRect(0, mHeight * buttonState, mWidth, mHeight);
         mSprite.setTextureRect(textureRect);
     }
 

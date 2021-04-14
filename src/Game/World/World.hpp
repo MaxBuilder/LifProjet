@@ -18,9 +18,16 @@
 #include <array>
 #include <list>
 
+/**
+ * @class World
+ * @brief Stores all the information on the simulation (entities, map, ...)
+ */
 class World {
-
 public:
+    /**
+     * @struct SimulationData
+     * @brief Stores all the data on the teams (number of entities, kills, buildings)
+     */
     struct SimulationData { // Possible d'ajouter plus de détails
         int nbRedSoldierBegin, nbBlueSoldierBegin;
         int nbRedSoldierEnd, nbBlueSoldierEnd;
@@ -28,39 +35,119 @@ public:
         int nbRedBuildingEnd, nbBlueBuildingEnd;
         bool mBlueVictory, mRedVictory;
 
+        /**
+         * @brief Initializes all values to 0
+         */
         SimulationData();
+        /**
+         * @brief Returns if any of the teams has won
+         * @return true if an army won
+         */
         bool isEnded() const;
     };
 
 public:
+    /**
+     * @brief Parameter constructor
+     * @param outputTarget Window
+     * @param textures Texture holder
+     * @param fonts Font holder
+     * @param sounds SoundPlayer
+     * @param music MusicPlayer
+     */
     World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder &fonts, SoundPlayer &sounds, MusicPlayer& music);
+    /**
+     * @brief Initializes the simulation from a file
+     * @param mapPath Path to the save file containing all the data
+     */
     void init(const std::string& mapPath);
 
+    /**
+     * @brief Updates the world
+     * @param dt Time interval since last update
+     */
     void update(sf::Time dt);
+    /**
+     * @brief Draws the world
+     */
     void draw();
 
+    /**
+     * @brief Switches the display types for all the entities
+     */
     void switchDisplayDebug();
+    /**
+     * Returns the simulation data
+     * @return SimulationData
+     */
     SimulationData& getSimData();
 
     // Tracking functions :
+
+    /**
+     * @brief Tracks the next soldier
+     */
     void trackNext();
+    /**
+     * Tracks the previous soldier
+     */
     void trackPrev();
+    /**
+     * @brief Stops tracking
+     */
     void untrack();
+    /**
+     * @brief Returns the position of the tracked entity
+     * @return Position of the tracked entity
+     */
     sf::Vector2f trackedPos();
 
     // Entity functions :
+
+    /**
+     * @brief Creates the entities from the save file
+     */
     void createEntity();
+
+    /**
+     * @brief Processes the commands from the command queue
+     */
     void onCommand();
-    void updateMovement(); // Updates entity relative to the environment
-    void updateTargets(); // Updates entity target from perspective
-    void updateBonus(); // Checks if entities are in range of buildings
+    /**
+     * @brief Moves the entities relative to the environment (speed, collision, ...)
+     */
+    void updateMovement();
+    /**
+     * @brief Updates the targets of entities from their perception
+     */
+    void updateTargets();
+    /**
+     * @brief Updates the bonuses givent by the buildings
+     */
+    void updateBonus();
+    /**
+     * @brief Checks for dead entities and updates their textures and stats
+     */
     void updateDeath(); // check if an entity is dead
 
     // Util :
+
+    /**
+     * @brief Return if an entity is within the map bounds
+     * @param dpl Future postiton of the entity
+     * @return true if entity is in bounds
+     */
     static bool inMap(sf::Vector2f dpl);
+    /**
+     * @brief Helper for the barries building type
+     */
     void recBarrier(sf::Vector2i);
 
 private:
+    /**
+     * @enum Layer
+     * @brief Specifies the different layers of the scene
+     */
     enum Layer {
         Back,
         Front,

@@ -19,19 +19,38 @@
 
 class GameState : public State {
 public:
+    /**
+     * @brief Parameter constructor
+     * @param stack State stack where to push the state
+     * @param context Context used to access useful structures
+     */
     GameState(StateStack& stack, Context& context);
 
+    /**
+     * @brief Draw the state
+     */
     void draw() override;
+    /**
+     * @brief Update the state
+     * @param dt Time interval since the last update
+     */
     bool update(sf::Time dt) override;
+    /**
+     * @brief Handle the events of the state
+     * @param event
+     */
     bool handleEvent(const sf::Event& event) override;
 
 private:
+    /**
+     * @brief Initialize the simulation after the scenario choice
+     */
     void initializeSimulation();
 
     World mWorld;
     World::SimulationData& simData;
 
-    // GUI :
+    // UI Containers :
 
     GUI::Container mUI;
     GUI::Container mMapSelectionUI;

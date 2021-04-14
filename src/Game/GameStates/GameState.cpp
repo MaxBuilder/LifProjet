@@ -87,7 +87,7 @@ GameState::GameState(StateStack &stack, Context& context)
         mTimeSpeed = 1;
         getContext().sounds.play(Sounds::Menu);
     });
-    //x1Button->activate();
+    x1Button->activate();
     mUI.pack(x1Button);
 
     auto x3Button = std::make_shared<GUI::Button>(context, 45, 45, Textures::Game3x);
@@ -106,7 +106,6 @@ GameState::GameState(StateStack &stack, Context& context)
         mTimeSpeed = 5;
         getContext().sounds.play(Sounds::Menu);
     });
-    x5Button->activate();
     mUI.pack(x5Button);
 
     // Construction de l'UI de selection de scénario :

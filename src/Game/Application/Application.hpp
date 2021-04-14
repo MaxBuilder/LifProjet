@@ -8,7 +8,6 @@
 #include "../../Core/Audio/MusicPlayer.hpp"
 #include "../../Core/Util/Utility.hpp"
 #include "../Resources/ResourceIdentifiers.hpp"
-#include "../Resources/ResourceHolder.hpp"
 
 #include <SFML/System/Time.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
@@ -17,19 +16,49 @@
 
 #include <fstream>
 
+/**
+ * @class Application
+ * @brief Holds all the critical structures, data and functions
+ */
 class Application {
 public:
+    /**
+     * @brief Default constructor
+     */
     Application();
+
+    /**
+     * @brief Launches the application
+     */
     void run();
 
 
 private:
+    /**
+     * @brief Processes user inputs
+     */
     void processInput();
+    /**
+     * @brief Updates the game real time
+     * @param dt Time interval between the last update
+     */
     void update(sf::Time dt);
+    /**
+     * @brief Draws the game to the render target
+     */
     void render();
 
+    /**
+     * @brief Registers the states to the state stack
+     */
     void registerStates();
+    /**
+     * @brief Loads the textures in the texture holder
+     */
     void loadTextures();
+    /**
+     * @brief Loads the settings
+     */
     void loadSettings();
 
 

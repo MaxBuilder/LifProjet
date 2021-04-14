@@ -17,16 +17,6 @@ void centerOrigin(sf::Text& text)
     text.setOrigin(std::floor(bounds.left + bounds.width / 2.f), std::floor(bounds.top + bounds.height / 2.f));
 }
 
-float toDegree(float radian)
-{
-    return 180.f / 3.141592653589793238462643383f * radian;
-}
-
-float toRadian(float degree)
-{
-    return 3.141592653589793238462643383f / 180.f * degree;
-}
-
 float angle(const sf::Vector2f& vec1, const sf::Vector2f& vec2 ){
     float rotation;
     if(vec1.y-vec2.y != 0){
@@ -49,8 +39,4 @@ float norm(const sf::Vector2f& vec) {
 
 float distance(const sf::Vector2f& vec1, const sf::Vector2f& vec2) {
     return std::sqrt((vec2.x - vec1.x) * (vec2.x - vec1.x) + (vec2.y - vec1.y) * (vec2.y - vec1.y));
-}
-
-void display(sf::Vector2f vec) {
-    std::cout << vec.x << "," << vec.y;
 }

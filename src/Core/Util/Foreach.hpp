@@ -2,6 +2,10 @@
 // Created by 33771 on 31/01/2021.
 //
 
+/**
+ * @author SFML Game Development
+ */
+
 #ifndef LIFPROJET_FOREACH_HPP
 #define LIFPROJET_FOREACH_HPP
 
