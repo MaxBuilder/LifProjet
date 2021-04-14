@@ -255,8 +255,10 @@ bool GameState::handleEvent(const sf::Event &event) {
     if(!mTracking) {
         mSpeed = sf::Keyboard::isKeyPressed(sf::Keyboard::LShift) ? 1500 : 800;
 
-        if( event.type == sf::Event::MouseWheelMoved)
+        if( event.type == sf::Event::MouseWheelScrolled)
             mScroll = (int) event.mouseWheelScroll.delta;
+        else
+            mScroll = 0;
     }
 
     if(event.type == sf::Event::KeyPressed and event.key.code == sf::Keyboard::E) {

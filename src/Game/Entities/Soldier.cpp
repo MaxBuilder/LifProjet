@@ -486,63 +486,50 @@ void Soldier::updateSprite(sf::Time dt) {
     if (mSpriteTime.asMilliseconds() > 130) {
         mSpriteTime = sf::milliseconds(0);
 
-        if( mAction != mSpriteAction and not isDestroyed()) {
-            if( (mDirection == sf::Vector2f(0,0) or mVelocity == sf::Vector2f(0,0))
-                 and mAction != Attacking)
-                mSpriteAction = Action::Calling;
-            else
+        if(isDestroyed()){
+            if ( not (mSpriteRect.left >= 350 and mSpriteRect.top == 48) ) {
+                mSpriteRect = sf::IntRect(350,48,50,48);
+            }
+            else if (mSpriteRect.left >= 550){
+                return;
+            }
+            else{
+                mSpriteRect.left += 50;
+            }
+        }
+        else if (mAction == Attacking){
+            if (mAction != mSpriteAction){
                 mSpriteAction = mAction;
-
-            switch (mSpriteAction) {
-                case Action::Calling :
-                {
-                    mSpriteRect = sf::IntRect(0,0,50,48);
-                    mSpriteAction = mAction;
-                    break;
+                mSpriteRect = sf::IntRect(0,0,100,65);
+                int a;
+                if(mSoldierType != EntityInfo::Archer)
+                    a = std::rand()%4;
+                else
+                    a = 1;
+                mSpriteRect.top = 96+a*65;
+            }
+            else{
+                if(mSpriteRect.left >= 500){
+                    mSpriteRect.left = 0;
+                    mSpriteAction = Action::None;
                 }
-                case Action::Attacking :
-                {
-                    mSpriteRect = sf::IntRect(0,0,100,65);
-                    int a;
-                    if(mSoldierType != EntityInfo::Archer)
-                        a = std::rand()%4;
-                    else
-                        a = 1;
-                    mSpriteRect.top = 96+a*65;
-                    break;
-                }
-                default:
-                {
-                    if( mId == 2 and mTeam == EntityInfo::Red){
-                        std::cout<<"default case\n";
-                    }
-                    mSpriteRect = sf::IntRect(0,48,50,48);
-                    break;
+                else{
+                    mSpriteRect.left += 100;
                 }
             }
-            mSpriteAction = mAction;
         }
-        else if(isDestroyed() and not (mSpriteRect.left >= 350 and mSpriteRect.top == 48)) {
-            mSpriteRect = sf::IntRect(350,48,50,48);
-        }
-        else if(isDestroyed() and mSpriteRect.left == 550){
-            return;
-        }
-        else if (mSpriteAction == Action::Attacking){
-            mSpriteRect.left += 100;
-            if(mSpriteRect.left >= 600){
-                mSpriteRect.left = 0;
-                mSpriteAction = Action::None;
-            }
+        else if(mDirection == sf::Vector2f(0,0) or mVelocity == sf::Vector2f(0,0)){
+            mSpriteRect.left += 50;
+            if(mSpriteRect.top != 0 or mSpriteRect.left >= 100)
+                mSpriteRect = sf::IntRect(0,0,50,48);
         }
         else{
-            mSpriteRect.left += 50;
-            if (mDirection == sf::Vector2f(0,0) or mVelocity == sf::Vector2f(0,0)
-             and mSpriteRect.left >= 100){
-                mSpriteRect.left = 0;
+            if (mSpriteRect.top != 48 or mSpriteRect.left >= 250){
+                mSpriteAction = mAction;
+                mSpriteRect = sf::IntRect(0,48,50,48);
             }
-            else if (mSpriteRect.left >= 300 and not isDestroyed()){
-                mSpriteRect.left = 0;
+            else{
+                mSpriteRect.left += 50;
             }
         }
 
