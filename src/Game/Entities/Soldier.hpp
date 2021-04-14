@@ -59,8 +59,7 @@ public:
     void updateDefense(sf::Time dt);
 
     void setDirection(sf::Vector2f velocity);
-    void setDirection(float vx, float vy);
-    sf::Vector2f getDirection();
+    //sf::Vector2f getDirection();
 
     sf::Vector2f getVelocity();
     void setVelocity(sf::Vector2f dpl);
@@ -129,7 +128,7 @@ public:
     bool usePathFinding;
     int mTargetInSight;
     int mAllyInSight;
-    sf::Vector2f closetInSightDirection; // Keep last direction to launch assault
+    sf::Vector2f closetInSightDirection;
 
     int nbRequested;
     int nbResponse;

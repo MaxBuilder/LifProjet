@@ -440,7 +440,9 @@ void Soldier::roam(sf::Time dt) {
     if(distance(getPosition(), mOrigin) > 50) { // If too far from origin, go back
         mDistance = 10;
         mTravelled = 0;
-        setDirection(mOrigin - getPosition());
+        //setDirection(mOrigin - getPosition());
+        usePathFinding = true;
+        seekTarget(mOrigin);
         setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
         return;
     }
@@ -588,11 +590,6 @@ void Soldier::remove() {
 void Soldier::setDirection(sf::Vector2f velocity) {
     float norme = norm(velocity);
     norme > 0 ? mDirection = velocity / norme : mDirection = sf::Vector2f(0, 0);
-}
-
-void Soldier::setDirection(float vx, float vy) {
-    float norme = norm(sf::Vector2f(vx, vy));
-    norme > 0 ? mDirection = sf::Vector2f(vx, vy) / norme : mDirection = sf::Vector2f(0, 0);
 }
 
 void Soldier::setTarget(Entity* target) {
