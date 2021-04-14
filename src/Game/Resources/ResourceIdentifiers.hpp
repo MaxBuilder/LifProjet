@@ -72,7 +72,8 @@ namespace Textures {
         GameMapSelectionButton,
         GameMapSelectionConfButton,
         GameMapSelectionBackground,
-        GameVictoryScreen
+        GameVictoryScreen,
+        GameVictoryCloseButton
     };
 }
 

@@ -12,14 +12,24 @@ class EntityInfo {
 
 public:
 
-    enum Team{
-        Blue,Red,
+    enum Team {
+        Blue,
+        Red
     };
+
     enum Type {
-        Building, Soldier,
+        Building,
+        Soldier
     };
+
     enum ID {
-        None, Knight, Archer, Tank, Castle, Village, Barrier,
+        None,
+        Knight,
+        Archer,
+        Tank,
+        Castle,
+        Village,
+        Barrier
     };
 
     EntityInfo(sf::Vector2f position, EntityInfo::ID id, EntityInfo::Team team, EntityInfo::Type type);

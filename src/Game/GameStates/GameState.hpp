@@ -29,24 +29,39 @@ private:
     void initializeSimulation();
 
     World mWorld;
+    World::SimulationData& simData;
+
+    // GUI :
 
     GUI::Container mUI;
     GUI::Container mMapSelectionUI;
-    GUI::Container mBack;
+    GUI::Container mVictoryUI;
+    GUI::Container mBackButton;
+
+    // Map selection UI :
 
     std::string mMapPath;
     bool isLoaded;
     sf::Sprite mMapSelectBackground;
     sf::Text mMapSelectText;
 
+    // Victory UI :
+
     sf::Sprite mVictoryScreen;
     sf::Text mVictoryText;
+    std::vector<std::string> mVictoryInfoTab;
+    sf::Text mVictoryInfo;
     bool ended;
+    bool closed;
+
+    // Simulation UI :
 
     sf::Sprite mTimeUI;
     sf::Text mTrackText;
     sf::Text mTimeText;
     sf::RectangleShape mBlueDisplay, mRedDisplay;
+
+    // Camera variables :
 
     sf::View mView;
     sf::Vector2f mDirection;

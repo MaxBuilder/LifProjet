@@ -4,20 +4,18 @@
 
 #include "World.hpp"
 
-World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder &fonts, SoundPlayer &sounds)
+World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder &fonts, SoundPlayer &sounds, MusicPlayer& music)
 : mTarget(outputTarget)
 , mTextures(textures)
 , mSounds(sounds)
+, mMusic(music)
 , mFonts(fonts)
 , mSceneLayers()
 , mSoldiers()
-, mBlueVictory(false)
-, mRedVictory(false)
 , mTracked(-1)
 , mMap(textures.get(Textures::MapGround), 20.f)
 , mCommandQueue()
-, mNbRed(0)
-, mNbBlue(0)
+, mSimData()
 {
     // Map initialization
     mMap.load("data/MapData/blank.map");
@@ -274,10 +272,11 @@ void World::updateDeath() {
         if (e->isDestroyed() and not e->down) {
             mSceneLayers[Back]->attachChild(mSceneLayers[Front]->detachChild(static_cast<SceneNode *>(e)));
             e->down = true;
-            e->getTeam() == EntityInfo::Red ? mNbRed-- : mNbBlue--;
-            if (mNbRed == 0)
-                mBlueVictory = true;
+            e->getTeam() == EntityInfo::Red ? mSimData.nbRedSoldierEnd-- : mSimData.nbBlueSoldierEnd--;
+            if (mSimData.nbRedSoldierEnd == 0) {
+                mSimData.mBlueVictory = true;
                 Debug::Log("Blue victory");
+            }
         }
     }
 
@@ -296,8 +295,9 @@ void World::updateDeath() {
                 }
             }
             build->down = true;
+            build->getTeam() == EntityInfo::Red ? mSimData.nbRedBuildingEnd-- : mSimData.nbBlueBuildingEnd--;
             if(build->getBonusFlag() == EntityInfo::Castle) {
-                mRedVictory = true;
+                mSimData.mRedVictory = true;
                 Debug::Log("Red victory");
             }
         }
@@ -319,8 +319,11 @@ void World::createEntity() {
                 blueObjectif = build->getOnMapPosition();
         }
         mBuildings.push_back(build.get());
+        build->getTeam() == EntityInfo::Red ? mSimData.nbRedBuildingBegin++ : mSimData.nbBlueBuildingBegin++;
         mSceneLayers[Back]->attachChild(std::move(build));
     }
+    mSimData.nbRedBuildingEnd = mSimData.nbRedBuildingBegin;
+    mSimData.nbBlueBuildingEnd = mSimData.nbBlueBuildingBegin;
 
     // Adding soldiers to the scene
     auto e = mMap.getEntitiesIt();
@@ -354,8 +357,8 @@ void World::createEntity() {
 
     }
 
-    mNbRed = idr;
-    mNbBlue = idb;
+    mSimData.nbRedSoldierBegin = mSimData.nbRedSoldierEnd = idr;
+    mSimData.nbBlueSoldierBegin = mSimData.nbBlueSoldierEnd = idb;
 
 }
 
@@ -376,11 +379,6 @@ void World::recBarrier(sf::Vector2i position) {
                 }
             }
     }
-}
-
-
-std::pair<int, int> World::getRemaining() {
-    return std::make_pair(mNbRed, mNbBlue);
 }
 
 bool World::inMap(sf::Vector2f dpl) {
@@ -412,12 +410,23 @@ sf::Vector2f World::trackedPos() {
     return mSoldiers[mTracked]->getPosition();
 }
 
-bool World::isEnded() const {
-    return mBlueVictory or mRedVictory;
+World::SimulationData &World::getSimData() {
+    return mSimData;
 }
 
-bool World::returnVictoryState() const {
-    if(mRedVictory)
-        return true;
-    return false;
+World::SimulationData::SimulationData()
+: mBlueVictory(false)
+, mRedVictory(false)
+, nbBlueBuildingBegin(0)
+, nbBlueBuildingEnd(0)
+, nbBlueSoldierBegin(0)
+, nbBlueSoldierEnd(0)
+, nbRedBuildingBegin(0)
+, nbRedBuildingEnd(0)
+, nbRedSoldierBegin(0)
+, nbRedSoldierEnd(0)
+{}
+
+bool World::SimulationData::isEnded() const {
+    return mBlueVictory or mRedVictory;
 }

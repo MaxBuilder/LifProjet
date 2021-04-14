@@ -7,7 +7,7 @@
 GameState::GameState(StateStack &stack, Context& context)
 : State(stack, context)
 , mView()
-, mWorld(context.window, context.textures, context.fonts, context.sounds)
+, mWorld(context.window, context.textures, context.fonts, context.sounds, context.music)
 , mDirection(0, 0)
 , mScroll(0)
 , mSpeed(0)
@@ -24,6 +24,9 @@ GameState::GameState(StateStack &stack, Context& context)
 , mVictoryText("Victory", context.fonts.get(Fonts::Main))
 , mVictoryScreen(context.textures.get(Textures::GameVictoryScreen))
 , ended(false)
+, mVictoryInfo("", context.fonts.get(Fonts::Main))
+, closed(false)
+, simData(mWorld.getSimData())
 {
     mView.setSize(1280, 720);
     mView.setCenter(640, 360);
@@ -33,11 +36,11 @@ GameState::GameState(StateStack &stack, Context& context)
     mTrackText.setPosition(2, 2);
     mTrackText.setCharacterSize(25u);
 
-    mTimeText.setCharacterSize(16u);
-    mTimeText.setPosition(571, 4);
+    mTimeText.setCharacterSize(26u);
+    mTimeText.setPosition(538, 4);
     mTimeText.setFillColor(sf::Color::Black);
 
-    mTimeUI.setPosition(560, 0);
+    mTimeUI.setPosition(520, 0);
 
     mMapSelectBackground.setPosition(374, 97);
     centerOrigin(mMapSelectText);
@@ -46,13 +49,15 @@ GameState::GameState(StateStack &stack, Context& context)
     mVictoryText.setCharacterSize(100u);
     mVictoryText.setStyle(sf::Text::Bold);
     centerOrigin(mVictoryText);
-    mVictoryText.setPosition(640, 300);
-    mVictoryScreen.setPosition(340, 220);
+    mVictoryText.setPosition(640, 220);
+    mVictoryScreen.setPosition(445, 150);
+    mVictoryInfo.setCharacterSize(22u);
+    mVictoryInfo.setFillColor(sf::Color::Black);
 
     // Barres d'état des équipes :
 
     mRedDisplay.setFillColor(sf::Color::Red);
-    mRedDisplay.setPosition(sf::Vector2f(627, 6));
+    mRedDisplay.setPosition(sf::Vector2f(622, 9));
     mBlueDisplay.setFillColor(sf::Color::Blue);
 
     // Construction de l'UI :
@@ -82,7 +87,7 @@ GameState::GameState(StateStack &stack, Context& context)
         mTimeSpeed = 1;
         getContext().sounds.play(Sounds::Menu);
     });
-    x1Button->activate();
+    //x1Button->activate();
     mUI.pack(x1Button);
 
     auto x3Button = std::make_shared<GUI::Button>(context, 45, 45, Textures::Game3x);
@@ -101,6 +106,7 @@ GameState::GameState(StateStack &stack, Context& context)
         mTimeSpeed = 5;
         getContext().sounds.play(Sounds::Menu);
     });
+    x5Button->activate();
     mUI.pack(x5Button);
 
     // Construction de l'UI de selection de scénario :
@@ -110,7 +116,7 @@ GameState::GameState(StateStack &stack, Context& context)
         auto temp = std::make_shared<GUI::Button>(getContext(), 500, 40, Textures::GameMapSelectionButton);
         temp->setText(mapPath.at(i));
         temp->setToggle(true);
-        temp->setPosition(390, 155 + i * 40);
+        temp->setPosition(390, (float)(155 + i * 40));
         temp->setCallback([=] () {
             getContext().sounds.play(Sounds::Menu);
             mMapPath = "data/MapData/" + mapPath.at(i) + ".map";
@@ -139,7 +145,7 @@ GameState::GameState(StateStack &stack, Context& context)
     });
     mMapSelectionUI.pack(cancelButton);
 
-    // Bouton retour lors de la fin de la simulation :
+    // Interface après victoire :
 
     auto returnButton = std::make_shared<GUI::Button>(getContext(), 60, 60, Textures::EditorBackButton);
     returnButton->setPosition(20, 640);
@@ -148,7 +154,16 @@ GameState::GameState(StateStack &stack, Context& context)
         requestStackPush(States::MainMenu);
         getContext().sounds.play(Sounds::Menu);
     });
-    mBack.pack(returnButton);
+    mBackButton.pack(returnButton);
+
+    auto closeButton = std::make_shared<GUI::Button>(getContext(), 120, 50, Textures::GameVictoryCloseButton);
+    closeButton->setPosition(445+135, 130+370);
+    closeButton->setText("Close");
+    closeButton->setCallback([this] () {
+        closed = true;
+        getContext().sounds.play(Sounds::Menu);
+    });
+    mVictoryUI.pack(closeButton);
 }
 
 void GameState::initializeSimulation() {
@@ -171,11 +186,24 @@ void GameState::draw() {
 
     window.setView(tempView);
     if(ended) {
-        window.draw(mVictoryScreen);
-        window.draw(mVictoryText);
-        window.draw(mBack);
+        if(!closed) {
+            window.draw(mVictoryScreen);
+            window.draw(mVictoryText);
+
+            mVictoryInfo.setPosition(475, 275);
+            for (const auto &info : mVictoryInfoTab) {
+                mVictoryInfo.setString(info);
+                window.draw(mVictoryInfo);
+                mVictoryInfo.move(0, (float) mVictoryInfo.getCharacterSize());
+            }
+
+            window.draw(mVictoryUI);
+        }
+
+        window.draw(mBackButton);
         return;
     }
+
     if(isLoaded) {
         window.draw(mTimeUI);
         window.draw(mTimeText);
@@ -191,21 +219,32 @@ void GameState::draw() {
 }
 
 bool GameState::update(sf::Time dt) {
-    if (mWorld.isEnded()){
+    if (simData.isEnded() and !ended) {
         mTimeText.setString("Ended");
-        mWorld.returnVictoryState() ? mVictoryText.setFillColor(sf::Color::Red) : mVictoryText.setFillColor(sf::Color::Blue);
+        simData.mRedVictory ? mVictoryText.setFillColor(sf::Color::Red) : mVictoryText.setFillColor(sf::Color::Blue);
         ended = true;
+
+        mVictoryInfoTab.emplace_back("Red team : ");
+        mVictoryInfoTab.emplace_back("\t- Soldier killed : " + std::to_string(simData.nbBlueSoldierBegin - simData.nbBlueSoldierEnd));
+        mVictoryInfoTab.emplace_back("\t- Casualties : " + std::to_string(simData.nbRedSoldierBegin - simData.nbRedSoldierEnd));
+        mVictoryInfoTab.emplace_back("\t- Buildings destroyed : " + std::to_string(simData.nbBlueBuildingBegin - simData.nbBlueBuildingEnd));
+        mVictoryInfoTab.emplace_back("");
+        mVictoryInfoTab.emplace_back("Blue team : ");
+        mVictoryInfoTab.emplace_back("\t- Soldier killed : " + std::to_string(simData.nbRedSoldierBegin - simData.nbRedSoldierEnd));
+        mVictoryInfoTab.emplace_back("\t- Casualties : " + std::to_string(simData.nbBlueSoldierBegin - simData.nbBlueSoldierEnd));
+        mVictoryInfoTab.emplace_back("\t- Buildings destroyed : " + std::to_string(simData.nbRedBuildingBegin - simData.nbRedBuildingEnd));
+
         return true;
     }
 
     if(!mTracking) {
-        mView.move(mDirection.x * mSpeed *dt.asSeconds() * mFactor, mDirection.y * mSpeed *dt.asSeconds() * mFactor );
+        mView.move(mDirection.x * mSpeed * dt.asSeconds() * mFactor, mDirection.y * mSpeed * dt.asSeconds() * mFactor );
 
-        if (mScroll < 0){
+        if (mScroll < 0) {
             mView.zoom(1.5f);
             mFactor *= 1.5f;
         }
-        if (mScroll > 0){
+        if (mScroll > 0) {
             mView.zoom(1.f/1.5f);
             mFactor *= (1.f/1.5f);
         }
@@ -216,6 +255,9 @@ bool GameState::update(sf::Time dt) {
         mView.setSize(640, 360);
     }
 
+    if(ended)
+        return true;
+
     dt = dt * mTimeSpeed;
 
     mWorld.update(dt);
@@ -223,12 +265,11 @@ bool GameState::update(sf::Time dt) {
     mTime += dt;
     int min = (int)mTime.asSeconds() / 60;
     int sec = (int)(mTime.asSeconds() - (float)min * 60);
-    mTimeText.setString("0" + std::to_string(min) + " : " + (sec < 10 ? "0" : "") + std::to_string(sec));
-    auto rem = mWorld.getRemaining();
-    float ratio = (float)rem.first / (float)(rem.first + rem.second);
-    mRedDisplay.setSize(sf::Vector2f(ratio * 80, 16));
-    mBlueDisplay.setPosition(mRedDisplay.getPosition().x + ratio * 80, 6);
-    mBlueDisplay.setSize(sf::Vector2f(80 - mRedDisplay.getSize().x, 16));
+    mTimeText.setString("0" + std::to_string(min) + ":" + (sec < 10 ? "0" : "") + std::to_string(sec));
+    float ratio = (float)simData.nbRedSoldierEnd / (float)(simData.nbRedSoldierEnd + simData.nbBlueSoldierEnd);
+    mRedDisplay.setSize(sf::Vector2f(ratio * 120, 24));
+    mBlueDisplay.setPosition(mRedDisplay.getPosition().x + ratio * 120, 9);
+    mBlueDisplay.setSize(sf::Vector2f(120 - mRedDisplay.getSize().x, 24));
 
     return true;
 }
@@ -239,9 +280,12 @@ bool GameState::handleEvent(const sf::Event &event) {
         return false;
     }
     else if(ended) {
-        mBack.handleEvent(event, getContext().window);
-        return false;
+        if(!closed)
+            mVictoryUI.handleEvent(event, getContext().window);
+        mBackButton.handleEvent(event, getContext().window);
     }
+    else if(isLoaded)
+        mUI.handleEvent(event, getContext().window);
 
     mDirection = sf::Vector2f(0.f, 0.f);
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z)) mDirection += sf::Vector2f(0.f, -1.f);
@@ -286,8 +330,6 @@ bool GameState::handleEvent(const sf::Event &event) {
         }
         mTracking = false;
     }
-
-    mUI.handleEvent(event, getContext().window);
 
     return false;
 }

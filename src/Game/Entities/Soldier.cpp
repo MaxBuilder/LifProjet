@@ -113,11 +113,14 @@ void Soldier::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) con
 
     target.draw(mSprite, states);
     target.draw(mGlow,states);
-    sf::Vertex line[] = {
-            sf::Vertex(sf::Vector2f(getPosition()), sf::Color::Red),
-            sf::Vertex(sf::Vector2f(getPosition() + mDirection * 10.f), sf::Color::Red)
-    };
-    target.draw(line, 2, sf::Lines);
+
+    if(mDisplayType != Life) {  // Affichage des vecteurs direction
+        sf::Vertex line[] = {
+                sf::Vertex(sf::Vector2f(getPosition()), sf::Color::Red),
+                sf::Vertex(sf::Vector2f(getPosition() + mDirection * 10.f), sf::Color::Red)
+        };
+        target.draw(line, 2, sf::Lines);
+    }
 
     switch (mDisplayType) {
         case Debug::Id :
@@ -132,20 +135,18 @@ void Soldier::drawCurrent(sf::RenderTarget &target, sf::RenderStates states) con
                 target.draw(frontLife, states);
             }
             break;
-        default :
-            break;
     }
 }
 
 void Soldier::updateCurrent(sf::Time dt) {
 
-    // Update mecanics
+    // Update behavior
     mTeam == EntityInfo::Team::Blue ? updateDefense(dt) : updateAttack(dt);
 
-    //update sprites
+    // Update sprites
     updateSprite(dt);
 
-    // update lifeDisplay
+    // Update life display
     float blockSize = 20.f;
     float xlife = float(mHitPoints) / float(mMaxHintPoints);
     float lifeLength = blockSize * xlife;
@@ -158,6 +159,7 @@ void Soldier::updateCurrent(sf::Time dt) {
         frontLife.setFillColor(sf::Color::Yellow);
     else frontLife.setFillColor(sf::Color::Red);
 
+    mEntityTime += dt;
 }
 
 void Soldier::updateAttack(sf::Time dt) {
@@ -583,8 +585,6 @@ void Soldier::updateSprite(sf::Time dt) {
     }
 
     mSprite.setTextureRect(mSpriteRect);
-    mEntityTime += dt;
-
 }
 
 void Soldier::switchDebugDisplay() {

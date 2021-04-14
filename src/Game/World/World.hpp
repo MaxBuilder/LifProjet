@@ -8,6 +8,7 @@
 #include "../Map/TilesMap.hpp"
 #include "../../Core/Scene/SceneNode.hpp"
 #include "../../Core/Audio/SoundPlayer.hpp"
+#include "../../Core/Audio/MusicPlayer.hpp"
 #include "../../Core/Commands/CommandQueue.hpp"
 #include "../../Core/Util/Debug.hpp"
 #include "../../Core/Util/Utility.hpp"
@@ -20,22 +21,32 @@
 class World {
 
 public:
-    World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder &fonts, SoundPlayer &sounds);
+    struct SimulationData { // Possible d'ajouter plus de détails
+        int nbRedSoldierBegin, nbBlueSoldierBegin;
+        int nbRedSoldierEnd, nbBlueSoldierEnd;
+        int nbRedBuildingBegin, nbBlueBuildingBegin;
+        int nbRedBuildingEnd, nbBlueBuildingEnd;
+        bool mBlueVictory, mRedVictory;
+
+        SimulationData();
+        bool isEnded() const;
+    };
+
+public:
+    World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder &fonts, SoundPlayer &sounds, MusicPlayer& music);
     void init(const std::string& mapPath);
 
     void update(sf::Time dt);
-    void switchDisplayDebug();
-    bool isEnded() const;
-    bool returnVictoryState() const;
-
     void draw();
+
+    void switchDisplayDebug();
+    SimulationData& getSimData();
 
     // Tracking functions :
     void trackNext();
     void trackPrev();
     void untrack();
     sf::Vector2f trackedPos();
-    std::pair<int, int> getRemaining();
 
     // Entity functions :
     void createEntity();
@@ -45,7 +56,7 @@ public:
     void updateBonus(); // Checks if entities are in range of buildings
     void updateDeath(); // check if an entity is dead
 
-    //aide
+    // Util :
     static bool inMap(sf::Vector2f dpl);
     void recBarrier(sf::Vector2i);
 
@@ -58,12 +69,15 @@ private:
     };
 
 private:
-    bool mBlueVictory, mRedVictory;
     sf::RenderTarget& mTarget;
     TextureHolder& mTextures;
     FontHolder& mFonts;
     SoundPlayer& mSounds;
+    MusicPlayer& mMusic;
     CommandQueue mCommandQueue;
+
+    // Current scene data
+    SimulationData mSimData;
 
     // Scene
     TilesMap mMap;
@@ -76,7 +90,6 @@ private:
     std::vector<Soldier*> mSoldiers;
     std::vector<Building*> mBuildings;
     std::list<Projectile*> mArrows;
-    int mNbRed, mNbBlue;
 
     // Pathfinding
     Pathfinding mAstar;
