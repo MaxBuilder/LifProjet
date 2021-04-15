@@ -5,11 +5,11 @@
 #include "MapEditorState.hpp"
 
 MapEditorState::MapEditorState(StateStack &stack, Context context)
-        : State(stack, context)
-        , map(context.textures.get(Textures::MapGround), context.textures.get(Textures::EditorAllSoldiers), 16.f)
-        , mPaletteBar(sf::IntRect(1130,100,150,550),4)
-        , mBuildingbar(sf::IntRect(1130,100,150,550),4)
-        , subBackground(getContext().textures.get(Textures::SubBackground))
+: State(stack, context)
+, map(context.textures.get(Textures::MapGround), context.textures.get(Textures::EditorAllSoldiers), 16.f)
+, mPaletteBar(sf::IntRect(1130,100,150,550),4)
+, mBuildingbar(sf::IntRect(1130,100,150,550),4)
+, subBackground(getContext().textures.get(Textures::SubBackground))
 {
     mEntity = EntityInfo::None;
     mTeam = EntityInfo::Team::Red;
@@ -19,6 +19,9 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     mapPath.setFont(context.fonts.get(Fonts::Main));
     mapPath.setPosition(8, 684);
     mapPath.setCharacterSize(20u);
+
+    editorCoord.setFont(context.fonts.get(Fonts::Main));
+    editorCoord.setCharacterSize(20u);
 
     rotate = 0.f;
     MapEditorState::mMapPath = "Unsaved";
@@ -206,15 +209,15 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     mRotationBar.pack(rotateRightButton);
 
     // Texture selection buttons :
-    for(int y(0); y < 36; y++){
-        for (int x(0); x < 3;x++){
+    for(int y(0); y < 36; y++) {
+        for (int x(0); x < 3;x++) {
             addButtonTexture(sf::Vector2i(x,y), sf::Vector2i(1134+44*x,100+44*y));
         }
     }
 
     // Buildings selection :
-    for(int y(36); y < 46; y++){
-        for (int x(0); x < 3;x++){
+    for(int y(36); y < 46; y++) {
+        for (int x(0); x < 3;x++) {
             addButtonBuilding(sf::Vector2i(x,y), sf::Vector2i(1134+44*x,100+44*(y-36)));
         }
     }
@@ -302,10 +305,17 @@ void MapEditorState::draw() {
         window.draw(mSubMenu);
     }
 
-    // Ajouter position
+    window.draw(editorCoord);
 }
 
 bool MapEditorState::update(sf::Time dt) {
+    if(coords != sf::Vector2i(-1, -1)) {
+        editorCoord.setString("(" + std::to_string(coords.x) + "," + std::to_string(coords.y) + ")");
+        reverseOrigin(editorCoord);
+        editorCoord.setPosition(1272, 690);
+    }
+    else editorCoord.setString("");
+
     return true;
 }
 
@@ -330,18 +340,19 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
             break;
     }
 
-
     if (event.type == sf::Event::MouseMoved or event.type == sf::Event::MouseButtonPressed){
 
         sf::Vector2i WindowPosition = sf::Mouse::getPosition(getContext().window);
         sf::Vector2i pos = static_cast<sf::Vector2i>( getContext().window.mapPixelToCoords(WindowPosition));
-        if (pos.x < 1116 and pos.x >= 92 and pos.y >= 90 and pos.y < 666 ){ // rectangle contenant la Editor
-
+        if (pos.x < 1116 and pos.x >= 92 and pos.y >= 90 and pos.y < 666 ) {
             auto caseSize = map.getBlockSize();
             sf::Vector2f origin = map.getPosition();
 
             pos.y = pos.y - origin.y;
             pos.x = pos.x - origin.x;
+
+            coords = sf::Vector2i(pos.x / caseSize + 1, pos.y / caseSize + 1);
+
             pos.y = pos.y/caseSize;
             pos.x = pos.x/caseSize;
 
@@ -385,6 +396,7 @@ bool MapEditorState::handleEvent(const sf::Event& event) {
                 }
             }
         }
+        else coords = sf::Vector2i(-1, -1);
     }
     return false;
 }

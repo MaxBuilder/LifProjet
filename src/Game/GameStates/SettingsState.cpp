@@ -10,8 +10,8 @@ SettingsState::SettingsState(StateStack& stack, Context context) :
 , mHeight(720)
 , mBackground(context.textures.get(Textures::SettingsBackground))
 , mWindowStyle(sf::Style::Close)
-, mWidth(1280){
-
+, mWidth(1280)
+{
     mTextWindowSize.setFont(context.fonts.get(Fonts::Main));
     mTextFullscreen.setFont(context.fonts.get(Fonts::Main));
 
@@ -28,7 +28,7 @@ SettingsState::SettingsState(StateStack& stack, Context context) :
     auto backButton = std::make_shared<GUI::Button>(context, 50, 50, Textures::SettingsBack);
     backButton->setPosition(10, 10);
     backButton->setText("");
-    backButton->setCallback([this](){
+    backButton->setCallback([this] () {
         requestStackPop();
         requestStackPush(States::MainMenu);
         getContext().sounds.play(Sounds::Menu);
@@ -38,7 +38,7 @@ SettingsState::SettingsState(StateStack& stack, Context context) :
     auto applyButton = std::make_shared<GUI::Button>(context, 130, 40, Textures::SettingsApply);
     applyButton->setPosition(1280-130-20,720-40-20 );
     applyButton->setText("");
-    applyButton->setCallback([this](){
+    applyButton->setCallback([this] () {
         apply();
         getContext().sounds.play(Sounds::Menu);
     });
@@ -47,7 +47,7 @@ SettingsState::SettingsState(StateStack& stack, Context context) :
     auto saveButton = std::make_shared<GUI::Button>(context, 130, 40, Textures::SettingsSave);
     saveButton->setPosition(1280-2*130-2*20,720-40-20 );
     saveButton->setText("");
-    saveButton->setCallback([this](){
+    saveButton->setCallback([this] () {
         saveSettings();
         getContext().sounds.play(Sounds::Menu);
     });
@@ -55,11 +55,12 @@ SettingsState::SettingsState(StateStack& stack, Context context) :
 
     auto vidMode = std::make_shared<GUI::ButtonList>(context, 200, 60,20u, Textures::SettingsSave);
     vidMode->setPosition(900-100,180-30 );
-    vidMode->setCallback([this](int count){
+    vidMode->setCallback([this] (int count) {
         switch (count) {
             case 0 : mWidth = 1280; mHeight = 720; break;
             case 1 : mWidth = 1600; mHeight = 900; break;
             case 2 : mWidth = 1920; mHeight = 1080; break;
+            default: break;
         }
         getContext().sounds.play(Sounds::Menu);
     });
@@ -71,7 +72,7 @@ SettingsState::SettingsState(StateStack& stack, Context context) :
 
     auto fullscreen = std::make_shared<GUI::CheckBox>(context,40,40,Textures::Checkbox);
     fullscreen->setPosition(900-20,240);
-    fullscreen->setCallback([this](bool check){
+    fullscreen->setCallback([this] (bool check) {
         if(check)
             mWindowStyle = sf::Style::Fullscreen;
         else
@@ -79,11 +80,9 @@ SettingsState::SettingsState(StateStack& stack, Context context) :
         getContext().sounds.play(Sounds::Menu);
     });
     mCheckBox.pack(fullscreen);
-
-
 }
 
-void SettingsState::saveSettings(){
+void SettingsState::saveSettings() const {
 
     std::ofstream settings("data/Settings/Settings.txt");
 
@@ -102,7 +101,7 @@ void SettingsState::saveSettings(){
     settings.close();
 }
 
-void SettingsState::apply(){
+void SettingsState::apply() {
 
 
     saveSettings();
@@ -123,17 +122,15 @@ void SettingsState::draw() {
     window.draw(mCheckBox);
 }
 
-bool SettingsState::update(sf::Time dt){
+bool SettingsState::update(sf::Time dt) {
     return true;
 }
 
-bool SettingsState::handleEvent(const sf::Event& event){
+bool SettingsState::handleEvent(const sf::Event& event) {
     mGUIContainer.handleEvent(event,getContext().window);
     mButtonList.handleListEvent(event,getContext().window);
     mCheckBox.handleCheckBoxEvent(event,getContext().window);
     return false;
 }
 
-SettingsState::~SettingsState() {
-
-}
+SettingsState::~SettingsState() = default;

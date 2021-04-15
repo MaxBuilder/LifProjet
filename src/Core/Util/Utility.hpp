@@ -37,6 +37,11 @@ void centerOrigin(sf::Sprite& sprite);
  * @author SFML Game Development
  */
 void centerOrigin(sf::Text& text);
+/**
+ * @brief Reverse to origin of the text on the x axis
+ * @param text Text
+ */
+void reverseOrigin(sf::Text& text);
 
 /**
  * @brief Computes the angle value between two vectors

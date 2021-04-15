@@ -223,14 +223,18 @@ bool GameState::update(sf::Time dt) {
         simData.mRedVictory ? mVictoryText.setFillColor(sf::Color::Red) : mVictoryText.setFillColor(sf::Color::Blue);
         ended = true;
 
+        float soldierRedPerc = float(simData.nbRedSoldierBegin - simData.nbRedSoldierEnd) / simData.nbRedSoldierBegin * 100.f;
+        float soldierBluePerc = float(simData.nbBlueSoldierBegin - simData.nbBlueSoldierEnd) / simData.nbBlueSoldierBegin * 100.f;
+        //int buildRedPerc = simData.nbRedBuildingBegin > 0 ?  (simData.nbRedBuildingBegin - simData.nbRedBuildingEnd) / simData.nbRedBuildingBegin * 100 : 0;
+        //int buildBluePerc = simData.nbBlueBuildingBegin > 0 ? (simData.nbBlueBuildingBegin - simData.nbBlueBuildingEnd) / simData.nbBlueBuildingBegin * 100 : 0;
         mVictoryInfoTab.emplace_back("Red team : ");
-        mVictoryInfoTab.emplace_back("\t- Soldier killed : " + std::to_string(simData.nbBlueSoldierBegin - simData.nbBlueSoldierEnd));
-        mVictoryInfoTab.emplace_back("\t- Casualties : " + std::to_string(simData.nbRedSoldierBegin - simData.nbRedSoldierEnd));
+        mVictoryInfoTab.emplace_back("\t- Soldier killed : " + std::to_string(simData.nbBlueSoldierBegin - simData.nbBlueSoldierEnd) + " (" + std::to_string((int)soldierBluePerc) + "%)");
+        mVictoryInfoTab.emplace_back("\t- Casualties : " + std::to_string(simData.nbRedSoldierBegin - simData.nbRedSoldierEnd) + " (" + std::to_string((int)soldierRedPerc) + "%)");
         mVictoryInfoTab.emplace_back("\t- Buildings destroyed : " + std::to_string(simData.nbBlueBuildingBegin - simData.nbBlueBuildingEnd));
         mVictoryInfoTab.emplace_back("");
         mVictoryInfoTab.emplace_back("Blue team : ");
-        mVictoryInfoTab.emplace_back("\t- Soldier killed : " + std::to_string(simData.nbRedSoldierBegin - simData.nbRedSoldierEnd));
-        mVictoryInfoTab.emplace_back("\t- Casualties : " + std::to_string(simData.nbBlueSoldierBegin - simData.nbBlueSoldierEnd));
+        mVictoryInfoTab.emplace_back("\t- Soldier killed : " + std::to_string(simData.nbRedSoldierBegin - simData.nbRedSoldierEnd) + " (" + std::to_string((int)soldierRedPerc) + "%)");
+        mVictoryInfoTab.emplace_back("\t- Casualties : " + std::to_string(simData.nbBlueSoldierBegin - simData.nbBlueSoldierEnd) + " (" + std::to_string((int)soldierBluePerc) + "%)");
         mVictoryInfoTab.emplace_back("\t- Buildings destroyed : " + std::to_string(simData.nbRedBuildingBegin - simData.nbRedBuildingEnd));
 
         return true;

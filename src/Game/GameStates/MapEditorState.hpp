@@ -106,12 +106,14 @@ public:
 private :
     sf::Sprite background;
     sf::Sprite subBackground;
+    sf::Text mPosText;
     TilesMap map;
     sf::Text mapPath;
     sf::Text editorCoord;
     std::string mMapPath;
     bool subMenu;
     bool saveload; // true : save | false : load
+    sf::Vector2i coords;
 
     GUI::Container mEditBar;
     GUI::Container mToolBar;

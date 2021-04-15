@@ -50,7 +50,7 @@ public:
     /**
      * @brief Saves the settings to a file
      */
-    void saveSettings();
+    void saveSettings() const;
     /**
      * @brief Applies the modification of the settings
      */

@@ -67,7 +67,7 @@ Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::
     }
 
     mBorder = 10;
-    float blockSize = 20.f; // à modifier pour rendre dynamique
+    float blockSize = 20.f;
     setOrigin(blockSize/2.f,blockSize/2.f);
 
     // Fix origin and texture selection
@@ -273,6 +273,7 @@ void Soldier::updateAttack(sf::Time dt) {
 
         if(mTargeted == nullptr and mLeader == nullptr) {
             setDirection(closetInSightDirection - getPosition());
+            mSpeedBase = 30;
             setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
         }
         else if(mTargeted == nullptr) {
@@ -392,10 +393,10 @@ void Soldier::updateDefense(sf::Time dt) {
 
         if(mTargeted == nullptr and mLeader == nullptr) {
             setDirection(closetInSightDirection - getPosition());
+            mSpeedBase = 30;
             setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
         }
         else if(mTargeted == nullptr) {
-            //std::cout << mId << " " << closetInSightDirection.x << closetInSightDirection.y << std::endl;
             setDirection(mLeader->closetInSightDirection - getPosition());
             setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
         }

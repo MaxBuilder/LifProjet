@@ -15,7 +15,7 @@ Building::Building(EntityInfo::ID ID,EntityInfo::Team team, sf::Vector2f positio
     switch(ID) {
         case EntityInfo::ID::Castle :
             mBorder = 40;
-            mHitPoints = 5000;
+            mHitPoints = 1000;
             mTeam = team;
             mRange = 150;
             mBonusFlag = ID;
