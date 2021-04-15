@@ -66,7 +66,7 @@ public:
     void update(sf::Time dt);
     /**
      * @brief Handle the events of the states on the stack
-     * @param event
+     * @param event Event to handle
      */
     void handleEvent(const sf::Event& event);
 

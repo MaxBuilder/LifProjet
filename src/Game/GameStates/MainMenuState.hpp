@@ -35,7 +35,7 @@ public:
     bool update(sf::Time dt) override;
     /**
      * @brief Handle the events of the state
-     * @param event
+     * @param event Event to handle
      */
     bool handleEvent(const sf::Event& event) override;
 

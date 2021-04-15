@@ -15,19 +15,45 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/System/Sleep.hpp>
-#include <fstream>
+
 #include <iostream>
+#include <fstream>
 
 class SettingsState : public State {
 public:
+    /**
+     * @brief Parameter constructor
+     * @param stack State stack where to push the state
+     * @param context Context used to access useful structures
+     */
     SettingsState(StateStack& stack, Context context);
+    /**
+     * @brief Destructor
+     */
     ~SettingsState() override;
 
+    /**
+     * @brief Draw the state
+     */
     void draw() override;
+    /**
+     * @brief Update the state
+     * @param dt Time interval since the last update
+     */
     bool update(sf::Time dt) override;
+    /**
+     * @brief Handle the events of the state
+     * @param event Event to handle
+     */
     bool handleEvent(const sf::Event& event) override;
 
+    /**
+     * @brief Saves the settings to a file
+     */
     void saveSettings();
+    /**
+     * @brief Applies the modification of the settings
+     */
     void apply();
 
 private :
@@ -38,8 +64,6 @@ private :
 
     sf::Text mTextWindowSize;
     sf::Text mTextFullscreen;
-
-
 
     int mWidth, mHeight;
     int mWindowStyle;
