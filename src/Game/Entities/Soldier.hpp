@@ -71,7 +71,7 @@ public:
      * @return Id
      */
     int getId() const;
-
+    EntityInfo::ID getSoldierType() const;
     /**
      * @brief Changes the actual display
      */

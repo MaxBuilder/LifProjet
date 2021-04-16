@@ -141,13 +141,36 @@ void World::updateTargets() {
         red->mTargetInSight = 0;
         red->mAllyInSight = 0;
         bool gotAssigned = false;
-        float distMin = 99999999.0;
+        float distMin = 99999999.0f;
+        float distMinTank = 99999999.0;
+        float distMinKnight = 99999999.0;
+        float distMinArcher = 99999999.0;
+        Entity* tank = nullptr;
+        Entity* knight = nullptr;
+        Entity* archer = nullptr;
 
         for(auto &blue : mBlueTeam) {
             float dist = distance(red->getPosition(), blue->getPosition());
             if(dist < 150 and !blue->isDestroyed()) { // In sight
                 red->mTargetInSight++;
                 red->closetInSightDirection = blue->getPosition();
+                if(dist < distMinTank and blue->getSoldierType() == EntityInfo::Tank) {
+                    if(dist < 100) {
+                        tank = static_cast<Entity *>(blue);
+                        distMinTank = dist;
+                    }
+                }
+                else if (dist < distMinKnight and blue->getSoldierType() == EntityInfo::Knight){
+                    if(dist < 100) {
+                        knight = static_cast<Entity *>(blue);
+                        distMinKnight = dist;
+                    }
+                }else if(dist < distMinArcher and blue->getSoldierType() == EntityInfo::Archer){
+                    if(dist < 100) {
+                        archer = static_cast<Entity *>(blue);
+                        distMinArcher = dist;
+                    }
+                }
                 if(dist < distMin) {
                     if(dist < 100) {
                         red->setTarget(static_cast<Entity *>(blue));
@@ -157,8 +180,11 @@ void World::updateTargets() {
                 }
             }
         }
+        if(red->getSoldierType() == EntityInfo::Archer and tank != nullptr){
+            red->setTarget(tank);
+        }
 
-        if(!gotAssigned) {
+        if(!gotAssigned or red->getSoldierType() == EntityInfo::Tank) {
             distMin = 99999999.0;
             for (auto &build : mBuildings){
                 float dist = distance(red->getPosition(), build->getPosition());
@@ -184,21 +210,48 @@ void World::updateTargets() {
     for(auto &blue : mBlueTeam) {
         blue->mTargetInSight = 0;
         bool gotAssigned = false;
-        float distMin = 99999999.0;
+        float distMin = 99999999.0f;
+        float distMinTank = 99999999.0;
+        float distMinKnight = 99999999.0;
+        float distMinArcher = 99999999.0;
+        Entity* tank = nullptr;
+        Entity* knight = nullptr;
+        Entity* archer = nullptr;
 
         for(auto &red : mRedTeam) {
             float dist = distance(red->getPosition(), blue->getPosition());
             if(dist < 100 and !red->isDestroyed()) { // In sight
                 blue->mTargetInSight++;
                 blue->closetInSightDirection = red->getPosition();
-                if(dist < distMin and dist < 80 and !red->isDestroyed()) {
-                    blue->setTarget(static_cast<Entity *>(red));
-                    distMin = dist;
-                    gotAssigned = true;
+                if(dist < distMinTank and red->getSoldierType() == EntityInfo::Tank) {
+                    if(dist < 100) {
+                        tank = static_cast<Entity *>(red);
+                        distMinTank = dist;
+                    }
+                }
+                else if (dist < distMinKnight and red->getSoldierType() == EntityInfo::Knight){
+                    if(dist < 100) {
+                        knight = static_cast<Entity *>(red);
+                        distMinKnight = dist;
+                    }
+                }else if(dist < distMinArcher and red->getSoldierType() == EntityInfo::Archer){
+                    if(dist < 100) {
+                        archer = static_cast<Entity *>(red);
+                        distMinArcher = dist;
+                    }
+                }
+                if(dist < distMin) {
+                    if(dist < 100) {
+                        blue->setTarget(static_cast<Entity *>(red));
+                        distMin = dist;
+                        gotAssigned = true;
+                    }
                 }
             }
         }
-
+        if(blue->getSoldierType() == EntityInfo::Archer and tank != nullptr){
+            blue->setTarget(tank);
+        }
         if(!gotAssigned)
             blue->setTarget(nullptr);
 

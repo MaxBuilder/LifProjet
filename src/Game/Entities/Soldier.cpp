@@ -678,3 +678,7 @@ Entity* Soldier::getTarget(){
 int Soldier::getDamage(){
     return mDamages;
 }
+
+EntityInfo::ID Soldier::getSoldierType() const{
+    return mSoldierType;
+}
