@@ -153,9 +153,9 @@ int Pathfinding::minimum(std::vector<PathfindingTile*> knots)const{
 
 double Pathfinding::distance(sf::Vector2i ind)const {
     //heuristique Euclidean distance
-    //double num = std::sqrt(std::pow(ind.y-objectif.y,double(2))+ std::pow(ind.x-objectif.x,double(2)));
+    double num = std::sqrt(std::pow(ind.y-objectif.y,double(2))+ std::pow(ind.x-objectif.x,double(2)));
     //heuristique chebyshev distance
-    double num = std::max(std::pow(ind.y-objectif.y,double(2)),std::pow(ind.x-objectif.x,double(2)));
+    //double num = std::max(std::pow(ind.y-objectif.y,double(2)),std::pow(ind.x-objectif.x,double(2)));
     return num;
 }
 
@@ -172,7 +172,7 @@ void Pathfinding::setNeighbour(PathfindingTile* knot) {
             || crossCorner(neiIndex,card)) continue;
         //pour le calcule du cout d'une case
         float moveSpeed = mMap->getTile(knot->coordNoeud).getMoveSpeed();
-        dist = (distance(neiIndex)*poids+static_cast<float>(knot->cout))/(moveSpeed*1000);
+        dist = (distance(neiIndex)*poids+static_cast<float>(knot->cout))/(moveSpeed*10);
         if (Astar_grid[neiIndex.x][neiIndex.y].color == 'g'){
             if (dist < Astar_grid[neiIndex.x][neiIndex.y].dist ){
                 Astar_grid[neiIndex.x][neiIndex.y].dist = dist;
