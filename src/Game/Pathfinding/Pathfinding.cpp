@@ -195,12 +195,12 @@ sf::Vector2i Pathfinding::getNeighbourIndex(int l, int w, cardinal c)const {
     sf::Vector2i coordNei;
 
     switch (c) {
-        case cardinal::South : l++; if(l > length){ l = -1; w = -1;} break;
+        case cardinal::South : l++; if(l >= length){ l = -1; w = -1;} break;
         case cardinal::North : l--; if(l < 0 ) {l = -1; w = -1;} break;
-        case cardinal::Est   : w++; if ( w > width){ l = -1; w = -1;} break;
+        case cardinal::Est   : w++; if ( w >= width){ l = -1; w = -1;} break;
         case cardinal::West  : w--; if (w < 0 ) {l = -1; w = -1;} break;
         case cardinal::NorthEst :
-            if (l-1 < 0 || w+1 > width){l = -1; w = -1;}
+            if (l-1 < 0 || w+1 >= width){l = -1; w = -1;}
             else {l--; w++;}
             break;
         case cardinal::NorthWest :
@@ -208,11 +208,11 @@ sf::Vector2i Pathfinding::getNeighbourIndex(int l, int w, cardinal c)const {
             else {l--; w--;}
             break;
         case cardinal::SouthEst   :
-            if (l+1 > length || w+1 > width) {l = -1; w = -1;}
+            if (l+1 >= length || w+1 >= width) {l = -1; w = -1;}
             else {l++; w++;}
             break;
         case cardinal::SouthWest  :
-            if ( l+1 > length || w-1 < 0 ) {l = -1; w = -1;}
+            if ( l+1 >= length || w-1 < 0 ) {l = -1; w = -1;}
             else {l++; w--;}
             break;
         default :break;

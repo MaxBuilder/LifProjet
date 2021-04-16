@@ -179,7 +179,7 @@ void Soldier::updateAttack(sf::Time dt) {
             if(mPath.empty()) {
                 mAstarDuration.restart();
                 mPathfinding.getPath(getPosition(), mObjectif, mPath, 2) ;
-                ::Debug::Log("Pathfinding Duration : " + std::to_string(mAstarDuration.getElapsedTime().asMicroseconds()));
+                ::Debug::Log("Pathfinding Duration : " + std::to_string(mAstarDuration.getElapsedTime().asMicroseconds())+" micro-seconds");
             }
             sf::Vector2f &target = mPath.back();
             if (distance(getPosition(), target) < 2)
