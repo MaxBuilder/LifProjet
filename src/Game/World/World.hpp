@@ -61,6 +61,10 @@ public:
      * @param mapPath Path to the save file containing all the data
      */
     void init(const std::string& mapPath);
+    /**
+     * @brief Ends the simulation by putting all entities in standby
+     */
+    void end();
 
     /**
      * @brief Updates the world

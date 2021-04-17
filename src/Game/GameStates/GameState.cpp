@@ -221,6 +221,8 @@ bool GameState::update(sf::Time dt) {
     if (simData.isEnded() and !ended) {
         mTimeText.setString("Ended");
         simData.mRedVictory ? mVictoryText.setFillColor(sf::Color::Red) : mVictoryText.setFillColor(sf::Color::Blue);
+        mWorld.end();
+        mTimeSpeed = 1;
         ended = true;
 
         float soldierRedPerc = float(simData.nbRedSoldierBegin - simData.nbRedSoldierEnd) / simData.nbRedSoldierBegin * 100.f;
@@ -258,12 +260,11 @@ bool GameState::update(sf::Time dt) {
         mView.setSize(640, 360);
     }
 
+    dt = dt * mTimeSpeed;
+    mWorld.update(dt);
+
     if(ended)
         return true;
-
-    dt = dt * mTimeSpeed;
-
-    mWorld.update(dt);
 
     mTime += dt;
     int min = (int)mTime.asSeconds() / 60;

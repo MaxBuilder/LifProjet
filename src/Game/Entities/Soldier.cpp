@@ -164,7 +164,7 @@ void Soldier::updateCurrent(sf::Time dt) {
 
 void Soldier::updateAttack(sf::Time dt) {
 
-    if(mAction == None or isDestroyed())
+    if(mAction == Standby or isDestroyed())
         return;
     if(mAction == Moving) {
         if(mTargetInSight > 1 and mTargeted == nullptr) {
@@ -289,7 +289,7 @@ void Soldier::updateAttack(sf::Time dt) {
 }
 
 void Soldier::updateDefense(sf::Time dt) {
-    if(mAction == None or isDestroyed())
+    if(mAction == Standby or isDestroyed())
         return;
     if(mAction == Moving) {
         if(mTravelled == 0)
@@ -534,7 +534,7 @@ void Soldier::updateSprite(sf::Time dt) {
             else{
                 if(mSpriteRect.left >= 500){
                     mSpriteRect.left = 0;
-                    mSpriteAction = Action::None;
+                    mSpriteAction = Action::Standby;
                 }
                 else{
                     mSpriteRect.left += 100;

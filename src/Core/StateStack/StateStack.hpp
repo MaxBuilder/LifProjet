@@ -113,7 +113,7 @@ private:
         /**
          * @brief Parameter constructor
          * @param action Action to apply
-         * @param stateID Identifier if needed (None by default)
+         * @param stateID Identifier if needed (Standby by default)
          */
         explicit PendingChange(Action action, States::ID stateID = States::None);
 

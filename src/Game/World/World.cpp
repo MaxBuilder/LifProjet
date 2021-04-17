@@ -44,6 +44,13 @@ void World::init(const std::string &mapPath) {
         soldier->init();
 }
 
+void World::end() {
+    for(auto &soldier : mSoldiers) {
+        if(!soldier->isDestroyed())
+            soldier->setAction(Soldier::Standby);
+    }
+}
+
 void World::draw() {
     mTarget.draw(mMap);
     mTarget.draw(mSceneGraph);

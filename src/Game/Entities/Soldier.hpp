@@ -33,7 +33,7 @@ public:
      * @brief Defines the behavior of the entity
      */
     enum Action {
-        None,
+        Standby,
         Moving,
         Seeking,
         Attacking,
@@ -240,7 +240,7 @@ private:
     bool prev;
     bool sendAck;
 
-    std::string name[10] = {"None", "Moving", "Seeking", "Attacking", "Calling", "Leading", "WithSquad", "Assaulting", "DefendingCastle"};
+    std::string name[10] = {"Standby", "Moving", "Seeking", "Attacking", "Calling", "Leading", "WithSquad", "Assaulting", "DefendingCastle"};
 
 public:
     // Special behavior variables :
