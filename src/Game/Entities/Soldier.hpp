@@ -71,7 +71,6 @@ public:
      * @return Id
      */
     int getId() const;
-    EntityInfo::ID getSoldierType() const;
     /**
      * @brief Changes the actual display
      */
@@ -181,7 +180,7 @@ public:
      * @brief Returns the damages of the entity
      * @return Damages
      */
-    int getDamage();
+    int getDamage() const;
 
 private:
     /**
@@ -206,7 +205,6 @@ private:
     Pathfinding& mPathfinding;
 
     int mId;
-    EntityInfo::ID mSoldierType;
     EntityInfo::ID mBonus;
     sf::Time mEntityTime;
     Action mAction;

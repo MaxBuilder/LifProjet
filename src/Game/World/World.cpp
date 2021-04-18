@@ -30,16 +30,16 @@ void World::init(const std::string &mapPath) {
 
     // Scene building based on 2 plans (back and front)
     for(std::size_t i = 0 ; i < LayerCount ; i++) {
-        SceneNode::Ptr layer(new SceneNode());
+        SceneNode::Ptr layer = std::make_unique<SceneNode>();
         mSceneLayers.push_back(layer.get());
 
         mSceneGraph.attachChild(std::move(layer));
     }
 
-    // create entities from map
+    // Create entities from map data
     createEntity();
 
-    // Initialisation of defender (to expand)
+    // Initialisation of defender (origin and building of reference)
     for(auto &soldier : mSoldiers)
         soldier->init();
 }
@@ -161,18 +161,18 @@ void World::updateTargets() {
             if(dist < 150 and !blue->isDestroyed()) { // In sight
                 red->mTargetInSight++;
                 red->closetInSightDirection = blue->getPosition();
-                if(dist < distMinTank and blue->getSoldierType() == EntityInfo::Tank) {
+                if(dist < distMinTank and blue->getType() == EntityInfo::Tank) {
                     if(dist < 100) {
                         tank = static_cast<Entity *>(blue);
                         distMinTank = dist;
                     }
                 }
-                else if (dist < distMinKnight and blue->getSoldierType() == EntityInfo::Knight){
+                else if (dist < distMinKnight and blue->getType() == EntityInfo::Knight){
                     if(dist < 100) {
                         knight = static_cast<Entity *>(blue);
                         distMinKnight = dist;
                     }
-                }else if(dist < distMinArcher and blue->getSoldierType() == EntityInfo::Archer){
+                }else if(dist < distMinArcher and blue->getType() == EntityInfo::Archer){
                     if(dist < 100) {
                         archer = static_cast<Entity *>(blue);
                         distMinArcher = dist;
@@ -187,11 +187,11 @@ void World::updateTargets() {
                 }
             }
         }
-        if(red->getSoldierType() == EntityInfo::Archer and tank != nullptr){
+        if(red->getType() == EntityInfo::Archer and tank != nullptr){
             red->setTarget(tank);
         }
 
-        if(!gotAssigned or red->getSoldierType() == EntityInfo::Tank) {
+        if(!gotAssigned or red->getType() == EntityInfo::Tank) {
             distMin = 99999999.0;
             for (auto &build : mBuildings){
                 float dist = distance(red->getPosition(), build->getPosition());
@@ -230,18 +230,18 @@ void World::updateTargets() {
             if(dist < 100 and !red->isDestroyed()) { // In sight
                 blue->mTargetInSight++;
                 blue->closetInSightDirection = red->getPosition();
-                if(dist < distMinTank and red->getSoldierType() == EntityInfo::Tank) {
+                if(dist < distMinTank and red->getType() == EntityInfo::Tank) {
                     if(dist < 80) {
                         tank = static_cast<Entity *>(red);
                         distMinTank = dist;
                     }
                 }
-                else if (dist < distMinKnight and red->getSoldierType() == EntityInfo::Knight){
+                else if (dist < distMinKnight and red->getType() == EntityInfo::Knight){
                     if(dist < 80) {
                         knight = static_cast<Entity *>(red);
                         distMinKnight = dist;
                     }
-                }else if(dist < distMinArcher and red->getSoldierType() == EntityInfo::Archer){
+                }else if(dist < distMinArcher and red->getType() == EntityInfo::Archer){
                     if(dist < 80) {
                         archer = static_cast<Entity *>(red);
                         distMinArcher = dist;
@@ -256,7 +256,7 @@ void World::updateTargets() {
                 }
             }
         }
-        if(blue->getSoldierType() == EntityInfo::Archer and tank != nullptr){
+        if(blue->getType() == EntityInfo::Archer and tank != nullptr){
             blue->setTarget(tank);
         }
         if(!gotAssigned)
@@ -282,7 +282,7 @@ void World::updateBonus() {
         for (const auto &build : mBuildings ){
             if(entity->getTeam() != build->getTeam() or build->isDestroyed()) continue;
             if (distance(build->getPosition(),entity->getPosition()) <= build->getRange()) {
-                entity->changeBonus(build->getBonusFlag());
+                entity->changeBonus(build->getType());
                 entityHaveBonus = true;
             }
         }
@@ -341,7 +341,7 @@ void World::updateDeath() {
     }
 
     for(auto &build : mBuildings)
-        if(build->isDestroyed() and not build->down and build->getBonusFlag() == EntityInfo::Barrier)
+        if(build->isDestroyed() and not build->down and build->getType() == EntityInfo::Barrier)
             recBarrier(build->getOnMapPosition());
 
     for (auto &build : mBuildings) {
@@ -356,7 +356,7 @@ void World::updateDeath() {
             }
             build->down = true;
             build->getTeam() == EntityInfo::Red ? mSimData.nbRedBuildingEnd-- : mSimData.nbBlueBuildingEnd--;
-            if(build->getBonusFlag() == EntityInfo::Castle) {
+            if(build->getType() == EntityInfo::Castle) {
                 mSimData.mRedVictory = true;
                 Debug::Log("Red victory");
             }
@@ -372,7 +372,7 @@ void World::createEntity() {
     for (; builds.first != builds.second ; builds.first++) {
         std::unique_ptr<Building> build = std::make_unique<Building>(builds.first->getID(), builds.first->getTeam(), builds.first->getPosition(), mCommandQueue);
 
-        if(build->getBonusFlag() == EntityInfo::Castle) {
+        if(build->getType() == EntityInfo::Castle) {
             if(build->getTeam() == EntityInfo::Blue)
                 redObjectif = build->getOnMapPosition();
             else
@@ -432,7 +432,7 @@ void World::recBarrier(sf::Vector2i position) {
             continue;
         if(mMap.getTile(i).getTop().x == 2 and mMap.getTile(i).getTop().y >= 36 and mMap.getTile(i).getTop().y <= 39)
             for(auto &b :mBuildings) {
-                if (b->getOnMapPosition() == i and not b->isDestroyed() and b->getBonusFlag() == EntityInfo::Barrier) {
+                if (b->getOnMapPosition() == i and not b->isDestroyed() and b->getType() == EntityInfo::Barrier) {
                     b->destroy();
                     recBarrier(i);
                     break;

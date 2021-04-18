@@ -19,12 +19,12 @@ class Building : public Entity {
 public:
     /**
      * @brief Parameter constructor
-     * @param ID Type of the building
+     * @param type Type of the building
      * @param team Team
      * @param position Position of the building
      * @param commandQueue Reference to the command queue
      */
-    Building(EntityInfo::ID ID,EntityInfo::Team team, sf::Vector2f position,  CommandQueue& commandQueue);
+    Building(EntityInfo::ID type, EntityInfo::Team team, sf::Vector2f position, CommandQueue& commandQueue);
 
     /**
      * @brief Returns range of the building
@@ -32,11 +32,6 @@ public:
      */
     float getRange() const;
 
-    /**
-     * @brief Returns the type of bonus
-     * @return Type of the bonus
-     */
-    EntityInfo::ID getBonusFlag() const;
     /**
      * @brief Returns the Id
      * @return Id
@@ -56,10 +51,10 @@ public:
 private:
 
     /**
-         * @brief Draws the object to the target
-         * @param target Target to render the object to
-         * @param states Informations on how to render the object
-         */
+     * @brief Draws the object to the target
+     * @param target Target to render the object to
+     * @param states Informations on how to render the object
+     */
     void drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const override;
     /**
      * @brief Updates the building
@@ -68,8 +63,7 @@ private:
     void updateCurrent(sf::Time dt) override;
 
     float mRange;
-    sf::RectangleShape backLife,frontLife;
-    EntityInfo::ID mBonusFlag;
+    sf::RectangleShape backLife, frontLife;
     sf::CircleShape mZone;
     sf::IntRect mPosition;
     sf::Vector2i mTextureId;

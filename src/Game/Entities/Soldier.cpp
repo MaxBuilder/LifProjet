@@ -4,10 +4,9 @@
 
 #include "Soldier.hpp"
 
-Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::Vector2i objectif, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue)
-: Entity(100,team, commandQueue)
+Soldier::Soldier(int id, EntityInfo::ID type, EntityInfo::Team team, sf::Vector2i objectif, const TextureHolder& textures, const FontHolder& fonts, Pathfinding& Astar, CommandQueue& commandQueue)
+: Entity(type, team, 100, commandQueue)
 , mId(id)
-, mSoldierType(soldierType)
 , mDisplayType(Debug::Life)
 , mObjectif(objectif)
 , mVelocity(0,0)
@@ -35,7 +34,7 @@ Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::
 , sendAck(false)
 , mEntityTime()
 {
-    switch (mSoldierType) {
+    switch (mType) {
         case EntityInfo::Knight:
             team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityKnightBlue)) :
             mSprite.setTexture(textures.get(Textures::EntityKnightRed));
@@ -47,8 +46,7 @@ Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::
         case EntityInfo::Archer:
             team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityArcherBlue)) :
             mSprite.setTexture(textures.get(Textures::EntityArcherRed));
-            mRange = 60;
-            mHitPoints = 60;
+            setHealth(60);
             mMaxHintPoints = 60;
             mDamages = 20;
             break;
@@ -57,8 +55,7 @@ Soldier::Soldier(int id, EntityInfo::ID soldierType, EntityInfo::Team team, sf::
             team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityTankBlue)) :
             mSprite.setTexture(textures.get(Textures::EntityTankRed));
             mRange = 0;
-            mHitPoints = 200;
-            mMaxHintPoints = 200;
+            setHealth(200);
             mDamages = 10;
             break;
 
@@ -430,7 +427,7 @@ void Soldier::createTeam(int senderId) {
 
 void Soldier::attackTarget() {
     if(mEntityTime.asMilliseconds() > 780) {
-        if (mSoldierType == EntityInfo::Archer){
+        if (mType == EntityInfo::Archer) {
             mCommandQueue.push(Command(mTeam, mId, 0, CommandType::MakeArrow));
         }else{
             mTargeted->damage(mDamages);
@@ -518,8 +515,8 @@ void Soldier::updateSprite(sf::Time dt) {
                 mSpriteAction = mAction;
                 mSpriteRect = sf::IntRect(0,0,100,65);
                 int a;
-                if(mSoldierType != EntityInfo::Archer)
-                    a = std::rand()%4;
+                if(mType != EntityInfo::Archer)
+                    a = std::rand() % 4;
                 else{
                     float rotation = angle(mTargeted->getPosition(), getPosition());
                     if (rotation < 330 and rotation > 210 )
@@ -636,26 +633,26 @@ void Soldier::changeBonus(EntityInfo::ID bonus) {
         mGlow.setTextureRect(sf::IntRect(64,0,32,32));
         mBonus = bonus;
         mSpeedBonus = 15;
-        if(mSoldierType == EntityInfo::Tank) mDamages = 20;
+        if(mType == EntityInfo::Tank) mDamages = 20;
         else mDamages = 25;
     }
     else if(bonus == EntityInfo::Village and mBonus == EntityInfo::None) {
         mGlow.setTextureRect(sf::IntRect(32,0,32,32));
         mBonus = bonus;
         mSpeedBonus = 15;
-        if(mSoldierType == EntityInfo::Tank) mDamages = 20;
+        if(mType == EntityInfo::Tank) mDamages = 20;
         else mDamages = 25;
     }
     else if(bonus == EntityInfo::None) {
         mGlow.setTextureRect(sf::IntRect(0,0,32,32));
         mBonus = bonus;
         mSpeedBonus = 0;
-        if(mSoldierType == EntityInfo::Tank) mDamages = 15;
+        if(mType == EntityInfo::Tank) mDamages = 15;
         else mDamages = 20;
     }
 }
 
-void Soldier::setVelocity(sf::Vector2f dpl){
+void Soldier::setVelocity(sf::Vector2f dpl) {
     mVelocity = dpl;
 }
 
@@ -671,14 +668,10 @@ void Soldier::setLeader(Soldier* leader) {
     mLeader = leader;
 }
 
-Entity* Soldier::getTarget(){
+Entity* Soldier::getTarget() {
     return mTargeted;
 }
 
-int Soldier::getDamage(){
+int Soldier::getDamage() const {
     return mDamages;
-}
-
-EntityInfo::ID Soldier::getSoldierType() const{
-    return mSoldierType;
 }

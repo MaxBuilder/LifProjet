@@ -23,7 +23,7 @@ public:
      * @param team Team
      * @param commandQueue Reference to the command queue
      */
-    explicit Entity(int hitPoints, EntityInfo::Team team, CommandQueue &commandQueue);
+    explicit Entity(EntityInfo::ID ID, EntityInfo::Team team, int hitPoints, CommandQueue &commandQueue);
 
     /**
      * @brief Returns the team of the entity
@@ -31,10 +31,15 @@ public:
      */
     EntityInfo::Team getTeam();
     /**
-     * @brief Returns the remaining life
-     * @return Hitpoints left
+     * @brief Returns the type of bonus
+     * @return Type of the bonus
      */
-    int getHitPoints() const;
+    EntityInfo::ID getType() const;
+    /**
+     * @brief Sets the health and the max health
+     * @param health New health
+     */
+    void setHealth(int health);
     /**
      * @brief Returns the border of the entity
      * @return Border
@@ -42,7 +47,7 @@ public:
     float getBorder() const;
 
     /**
-     * @brief Heals the entity bu a certain amount
+     * @brief Heals the entity by a certain amount
      * @param points Life to give to the entity
      */
     void heal(int points);
@@ -75,9 +80,10 @@ protected:
     void updateCurrent(sf::Time dt) override;
 
     float mBorder;
-    int mHitPoints;
-    int mMaxHintPoints;
+    int mHitPoints{};
+    int mMaxHintPoints{};
     EntityInfo::Team mTeam;
+    EntityInfo::ID mType;
     CommandQueue& mCommandQueue;
 
 };

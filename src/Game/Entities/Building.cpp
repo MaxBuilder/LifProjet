@@ -5,41 +5,37 @@
 #include "Building.hpp"
 #include <iostream>
 
-Building::Building(EntityInfo::ID ID,EntityInfo::Team team, sf::Vector2f position, CommandQueue& commandQueue)
-: Entity(0, team, commandQueue)
+Building::Building(EntityInfo::ID type, EntityInfo::Team team, sf::Vector2f position, CommandQueue& commandQueue)
+: Entity(type, team, 0, commandQueue)
 , previouslyHit(false)
 {
     mPosition.left = position.x;
     mPosition.top = position.y;
 
-    switch(ID) {
+    switch(type) {
         case EntityInfo::ID::Castle :
             mBorder = 40;
-            mHitPoints = 1000;
+            setHealth(1000);
             mTeam = team;
             mRange = 150;
-            mBonusFlag = ID;
             mTextureId.y = 53; mTextureId.x = 0;
             mPosition.width = 3; mPosition.height = 3;
             break;
 
         case EntityInfo::ID::Village :
             mBorder = 27;
-            mHitPoints = 300;
+            setHealth(300);
             mTeam = team;
             mRange = 100;
-            mBonusFlag = ID;
             mTextureId.y = 48; mTextureId.x = 0;
             mPosition.width = 2; mPosition.height = 2;
             break;
 
-
         case EntityInfo::ID::Barrier :
             mBorder = 15;
-            mHitPoints = 200;
+            setHealth(200);
             mTeam = team;
             mRange = 0;
-            mBonusFlag = ID;
             mTextureId.y = 49; mTextureId.x = 2;
             mPosition.width = 1; mPosition.height = 1;
             break;
@@ -48,7 +44,6 @@ Building::Building(EntityInfo::ID ID,EntityInfo::Team team, sf::Vector2f positio
             break;
     }
      setPosition(float(mPosition.left)*20+float(mPosition.width)*20/2,float(mPosition.top)*20+float(mPosition.width)*20/2);
-     mMaxHintPoints = mHitPoints;
      prevHealth = mHitPoints;
 
     mZone.setRadius(mRange);
@@ -72,10 +67,6 @@ Building::Building(EntityInfo::ID ID,EntityInfo::Team team, sf::Vector2f positio
 
 float Building::getRange() const {
     return mRange;
-}
-
-EntityInfo::ID Building::getBonusFlag() const {
-    return mBonusFlag;
 }
 
 void Building::drawCurrent(sf::RenderTarget& target, sf::RenderStates states) const {
@@ -113,7 +104,7 @@ void Building::updateCurrent(sf::Time dt) {
         frontLife.setFillColor(sf::Color::Yellow);
     else frontLife.setFillColor(sf::Color::Red);
 
-    if(mBonusFlag == EntityInfo::Castle) {
+    if(mType == EntityInfo::Castle) {
         if(mHitPoints < prevHealth and !previouslyHit) {
             mCommandQueue.push(Command(EntityInfo::Blue, 0, 0, CommandType::CastleAssaulted));
             previouslyHit = true;

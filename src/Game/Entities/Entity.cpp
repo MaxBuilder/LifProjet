@@ -3,16 +3,15 @@
 //
 
 #include "Entity.hpp"
-#include <iostream>
 
-Entity::Entity(int hitPoints, EntityInfo::Team team,CommandQueue &commandQueue)
-: mHitPoints(hitPoints),
-  mMaxHintPoints(hitPoints),
-  mTeam(team),
-  mBorder(0),
-  down(false),
-  mCommandQueue(commandQueue)
-{}
+Entity::Entity(EntityInfo::ID type, EntityInfo::Team team, int hitPoints, CommandQueue &commandQueue)
+: mTeam(team)
+, mType(type)
+, mBorder(0)
+, down(false)
+, mCommandQueue(commandQueue) {
+    setHealth(hitPoints);
+}
 
 void Entity::heal(int points) {
     mHitPoints += points;
@@ -38,10 +37,6 @@ bool Entity::isDestroyed() const {
     return mHitPoints <= 0;
 }
 
-int Entity::getHitPoints() const {
-    return mHitPoints;
-}
-
 float Entity::getBorder() const{
     return mBorder;
 }
@@ -52,4 +47,13 @@ EntityInfo::Team Entity::getTeam() {
 
 void Entity::updateCurrent(sf::Time dt) {
 
+}
+
+EntityInfo::ID Entity::getType() const {
+    return mType;
+}
+
+void Entity::setHealth(int health) {
+    mHitPoints = health;
+    mMaxHintPoints = health;
 }
