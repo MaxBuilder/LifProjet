@@ -34,7 +34,7 @@ Soldier::Soldier(int id, EntityInfo::ID type, EntityInfo::Team team, sf::Vector2
 , sendAck(false)
 , mEntityTime()
 {
-    switch (mType) {
+    switch(mType) {
         case EntityInfo::Knight:
             team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityKnightBlue)) :
             mSprite.setTexture(textures.get(Textures::EntityKnightRed));
@@ -46,6 +46,7 @@ Soldier::Soldier(int id, EntityInfo::ID type, EntityInfo::Team team, sf::Vector2
         case EntityInfo::Archer:
             team == EntityInfo::Blue ? mSprite.setTexture(textures.get(Textures::EntityArcherBlue)) :
             mSprite.setTexture(textures.get(Textures::EntityArcherRed));
+            mRange = 60;
             setHealth(60);
             mMaxHintPoints = 60;
             mDamages = 20;
@@ -414,6 +415,13 @@ void Soldier::updateDefense(sf::Time dt) {
             mEntityTime = sf::seconds(0);
             return;
         }
+    }
+    else if(mAction == FallingBack) {
+        mOrigin = mObjectif * 20.f;
+        roam(dt);
+
+        if(distance(getPosition(), mOrigin) < 40)
+            setAction(Moving);
     }
 }
 

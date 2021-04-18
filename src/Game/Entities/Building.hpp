@@ -5,7 +5,7 @@
 #ifndef LIFPROJET_BUILDING_HPP
 #define LIFPROJET_BUILDING_HPP
 
-#include "Entity.hpp"
+#include "Soldier.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include "SFML/Graphics/CircleShape.hpp"
@@ -67,9 +67,16 @@ private:
     sf::CircleShape mZone;
     sf::IntRect mPosition;
     sf::Vector2i mTextureId;
+
+    // Castle variables
     bool previouslyHit;
     sf::Time mBuildingTime;
     int prevHealth;
+
+public:
+    // Village variables
+    std::vector<Soldier*> mDefenders;
+    int initialNbDefenders;
 };
 
 

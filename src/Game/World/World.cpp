@@ -25,10 +25,10 @@ void World::init(const std::string &mapPath) {
     mMap.load(mapPath);
     Debug::Log("Map loaded");
 
-    // Setting up mPathfinding
+    // Setting up Pathfinding
     mAstar.setMap(mMap);
 
-    // Scene building based on 2 plans (back and front)
+    // Scene building based on 3 plans (back, front and air)
     for(std::size_t i = 0 ; i < LayerCount ; i++) {
         SceneNode::Ptr layer = std::make_unique<SceneNode>();
         mSceneLayers.push_back(layer.get());
@@ -39,9 +39,25 @@ void World::init(const std::string &mapPath) {
     // Create entities from map data
     createEntity();
 
-    // Initialisation of defender (origin and building of reference)
-    for(auto &soldier : mSoldiers)
+    // Initialisation of position for defenders
+    for(auto &soldier : mBlueTeam)
         soldier->init();
+
+    // Initialisation of village defenders
+    for(auto &building : mBuildings) {
+        if(building->getType() != EntityInfo::Village)
+            continue;
+
+        std::vector<Soldier*> defenders;
+        for(auto &defender : mBlueTeam) {
+            if(distance(building->getPosition(), defender->getPosition()) <= 150) {
+                defenders.push_back(defender);
+            }
+        }
+        building->mDefenders = defenders;
+        building->initialNbDefenders = (int)defenders.size();
+    }
+
 }
 
 void World::end() {
@@ -49,6 +65,8 @@ void World::end() {
         if(!soldier->isDestroyed())
             soldier->setAction(Soldier::Standby);
     }
+
+    ended = true;
 }
 
 void World::draw() {
@@ -58,6 +76,8 @@ void World::draw() {
 
 void World::update(sf::Time dt) {
     mSceneGraph.update(dt);
+    if(ended)
+        return;
     onCommand();
     updateMovement();
     updateTargets();
@@ -136,6 +156,8 @@ void World::onCommand() {
                 break;
 
             case CommandType::FallBack:
+                Debug::Log("Village lost, falling back");
+                selectedTeam[command.mReceiver]->setAction(Soldier::FallingBack);
                 break;
         }
     }
@@ -153,10 +175,11 @@ void World::updateTargets() {
         float distMinKnight = 99999999.0;
         float distMinArcher = 99999999.0;
         Entity* tank = nullptr;
-        Entity* knight = nullptr;
-        Entity* archer = nullptr;
 
         for(auto &blue : mBlueTeam) {
+            if(blue->getAction() == Soldier::FallingBack)
+                continue;
+
             float dist = distance(red->getPosition(), blue->getPosition());
             if(dist < 150 and !blue->isDestroyed()) { // In sight
                 red->mTargetInSight++;
@@ -169,12 +192,10 @@ void World::updateTargets() {
                 }
                 else if (dist < distMinKnight and blue->getType() == EntityInfo::Knight){
                     if(dist < 100) {
-                        knight = static_cast<Entity *>(blue);
                         distMinKnight = dist;
                     }
                 }else if(dist < distMinArcher and blue->getType() == EntityInfo::Archer){
                     if(dist < 100) {
-                        archer = static_cast<Entity *>(blue);
                         distMinArcher = dist;
                     }
                 }
@@ -222,8 +243,6 @@ void World::updateTargets() {
         float distMinKnight = 99999999.0;
         float distMinArcher = 99999999.0;
         Entity* tank = nullptr;
-        Entity* knight = nullptr;
-        Entity* archer = nullptr;
 
         for(auto &red : mRedTeam) {
             float dist = distance(red->getPosition(), blue->getPosition());
@@ -238,12 +257,10 @@ void World::updateTargets() {
                 }
                 else if (dist < distMinKnight and red->getType() == EntityInfo::Knight){
                     if(dist < 80) {
-                        knight = static_cast<Entity *>(red);
                         distMinKnight = dist;
                     }
                 }else if(dist < distMinArcher and red->getType() == EntityInfo::Archer){
                     if(dist < 80) {
-                        archer = static_cast<Entity *>(red);
                         distMinArcher = dist;
                     }
                 }
@@ -316,7 +333,7 @@ void World::updateMovement() {
         if(entity->getVelocity().y > 0)
             point.y += 10.f;
 
-        sf::Vector2i pos = sf::Vector2i(point.x/20, point.y/20);
+        sf::Vector2i pos = sf::Vector2i((int)point.x / 20, (int)point.y / 20);
         if (mMap.getTile(pos).isCrossable(entity->getTeam()) and inMap(point))
             entity->travel();
         else {
@@ -365,18 +382,15 @@ void World::updateDeath() {
 }
 
 void World::createEntity() {
-    sf::Vector2i redObjectif, blueObjectif;
+    sf::Vector2i blueCastle;
 
     // Adding buildings to the scene
     auto builds = mMap.getBuildingsIt();
     for (; builds.first != builds.second ; builds.first++) {
         std::unique_ptr<Building> build = std::make_unique<Building>(builds.first->getID(), builds.first->getTeam(), builds.first->getPosition(), mCommandQueue);
 
-        if(build->getType() == EntityInfo::Castle) {
-            if(build->getTeam() == EntityInfo::Blue)
-                redObjectif = build->getOnMapPosition();
-            else
-                blueObjectif = build->getOnMapPosition();
+        if(build->getType() == EntityInfo::Castle and (build->getTeam() == EntityInfo::Blue)) {
+            blueCastle = build->getOnMapPosition();
         }
         mBuildings.push_back(build.get());
         build->getTeam() == EntityInfo::Red ? mSimData.nbRedBuildingBegin++ : mSimData.nbBlueBuildingBegin++;
@@ -396,12 +410,12 @@ void World::createEntity() {
         if(e.first->getTeam() == EntityInfo::Blue) {
             indice = idb;
             idb++;
-            objectif = redObjectif;
+            objectif = blueCastle;
         }
         else {
             indice = idr;
             idr++;
-            objectif = redObjectif;
+            objectif = blueCastle;
         }
 
         std::unique_ptr<Soldier> soldier = std::make_unique<Soldier>(indice,e.first->getID() ,e.first->getTeam(), objectif, mTextures, mFonts, mAstar, mCommandQueue);

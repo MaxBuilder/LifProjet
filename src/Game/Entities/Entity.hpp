@@ -80,8 +80,8 @@ protected:
     void updateCurrent(sf::Time dt) override;
 
     float mBorder;
-    int mHitPoints{};
-    int mMaxHintPoints{};
+    int mHitPoints;
+    int mMaxHintPoints;
     EntityInfo::Team mTeam;
     EntityInfo::ID mType;
     CommandQueue& mCommandQueue;

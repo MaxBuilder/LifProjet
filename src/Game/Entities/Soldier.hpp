@@ -41,7 +41,8 @@ public:
         Leading,
         WithSquad,
         Assaulting,
-        DefendingCastle
+        DefendingCastle,
+        FallingBack
     };
 
     /**
@@ -238,7 +239,7 @@ private:
     bool prev;
     bool sendAck;
 
-    std::string name[10] = {"Standby", "Moving", "Seeking", "Attacking", "Calling", "Leading", "WithSquad", "Assaulting", "DefendingCastle"};
+    std::string name[10] = {"Standby", "Moving", "Seeking", "Attacking", "Calling", "Leading", "WithSquad", "Assaulting", "DefendingCastle", "FallingBack"};
 
 public:
     // Special behavior variables :
@@ -247,6 +248,7 @@ public:
     int mAllyInSight;
     sf::Vector2f closetInSightDirection;
 
+    // Grouping mechanic :
     int nbRequested;
     int nbResponse;
     int mSquadSize;

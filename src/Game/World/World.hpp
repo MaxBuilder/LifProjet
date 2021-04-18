@@ -169,6 +169,7 @@ private:
 
     // Current scene data
     SimulationData mSimData;
+    bool ended;
 
     // Scene
     TilesMap mMap;

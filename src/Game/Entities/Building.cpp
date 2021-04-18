@@ -112,6 +112,19 @@ void Building::updateCurrent(sf::Time dt) {
             prevHealth = mHitPoints;
         }
     }
+    else if(mType == EntityInfo::Village and !mDefenders.empty()) {
+        int nbAlive = (int)std::count_if(mDefenders.begin(), mDefenders.end(), [] (Soldier* rhs) {
+            return !rhs->isDestroyed();
+        });
+
+        if(nbAlive <= initialNbDefenders / 2) {
+            for(auto &defender : mDefenders) {
+                if(!defender->isDestroyed())
+                    mCommandQueue.push(Command(EntityInfo::Blue, 0, defender->getId(), CommandType::FallBack));
+            }
+            mDefenders.clear();
+        }
+    }
 
     mBuildingTime += dt;
 
