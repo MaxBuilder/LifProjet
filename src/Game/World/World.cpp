@@ -231,24 +231,24 @@ void World::updateTargets() {
                 blue->mTargetInSight++;
                 blue->closetInSightDirection = red->getPosition();
                 if(dist < distMinTank and red->getSoldierType() == EntityInfo::Tank) {
-                    if(dist < 100) {
+                    if(dist < 80) {
                         tank = static_cast<Entity *>(red);
                         distMinTank = dist;
                     }
                 }
                 else if (dist < distMinKnight and red->getSoldierType() == EntityInfo::Knight){
-                    if(dist < 100) {
+                    if(dist < 80) {
                         knight = static_cast<Entity *>(red);
                         distMinKnight = dist;
                     }
                 }else if(dist < distMinArcher and red->getSoldierType() == EntityInfo::Archer){
-                    if(dist < 100) {
+                    if(dist < 80) {
                         archer = static_cast<Entity *>(red);
                         distMinArcher = dist;
                     }
                 }
                 if(dist < distMin) {
-                    if(dist < 100) {
+                    if(dist < 80) {
                         blue->setTarget(static_cast<Entity *>(red));
                         distMin = dist;
                         gotAssigned = true;
