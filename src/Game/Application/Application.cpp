@@ -21,6 +21,9 @@ Application::Application()
     mView.setSize(1280,720);
     mView.setCenter(1280 / 2.f, 720 / 2.f);
     mView.setViewport(sf::FloatRect(0, 0, 1, 1));
+    sf::Image icon;
+    icon.loadFromFile("data/Menu/icon.png");
+    mWindow.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
     // Chargement des textures
     loadTextures();
