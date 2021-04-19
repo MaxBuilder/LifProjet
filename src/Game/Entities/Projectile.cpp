@@ -17,6 +17,8 @@ Projectile::Projectile(sf::Vector2f position, Entity *target, const sf::Texture&
     mSprite.setTexture(texture);
     setOrigin(mSprite.getLocalBounds().left/2.f,mSprite.getLocalBounds().top/2.f);
     mSprite.scale(0.5f,0.5f);
+    mRotation = angle(mTargetPosition,getPosition());
+    mSprite.setRotation(mRotation);
     timeOnGround = sf::milliseconds(3000);
 }
 
@@ -47,8 +49,6 @@ bool Projectile::detachRequiere() {
 void Projectile::updateMovement(sf::Time dt){
     sf::Vector2f dpl = mTargetPosition - getPosition() ;
     dpl = dpl / norm(dpl);
-    mRotation = angle(mTargetPosition,getPosition());
-    mSprite.setRotation(mRotation);
     move(dpl*mVelocity*dt.asSeconds());
 
 }
