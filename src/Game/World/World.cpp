@@ -16,6 +16,7 @@ World::World(sf::RenderTarget &outputTarget, TextureHolder &textures, FontHolder
 , mMap(textures.get(Textures::MapGround), 20.f)
 , mCommandQueue()
 , mSimData()
+, ended(false)
 {
     // Map initialization
     mMap.load("data/MapData/blank.map");

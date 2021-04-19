@@ -17,7 +17,7 @@ namespace GUI {
     /**
      * @class Component
      * @brief Base class of the GUI hierarchy
-     * @authors SFML Game Development, modified to integrate different sizes
+     * @authors SFML Game Development
      */
     class Component : public sf::Drawable, public sf::Transformable, private sf::NonCopyable {
     public:

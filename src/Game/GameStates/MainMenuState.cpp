@@ -29,7 +29,6 @@ MainMenuState::MainMenuState(StateStack &stack, Context context)
     playButton->setPosition(390, 360);
     playButton->setText("Simulation");
     playButton->setCallback([this] () {
-        requestStackPop();
         requestStackPush(States::Game);
         getContext().sounds.play(Sounds::Menu);
     });
@@ -38,7 +37,6 @@ MainMenuState::MainMenuState(StateStack &stack, Context context)
     editorButton->setPosition(390, 460);
     editorButton->setText("Edit Map");
     editorButton->setCallback([this] () {
-        requestStackPop();
         requestStackPush(States::MapEditor);
         getContext().sounds.play(Sounds::Menu);
     });
@@ -55,7 +53,6 @@ MainMenuState::MainMenuState(StateStack &stack, Context context)
     auto settingsButton = std::make_shared<GUI::Button>(context, 70, 70, Textures::SettingsButton);
     settingsButton->setPosition(1280-80, 720-80);
     settingsButton->setCallback([this] () {
-        requestStackPop();
         requestStackPush(States::Settings);
         getContext().sounds.play(Sounds::Menu);
     });
@@ -64,6 +61,8 @@ MainMenuState::MainMenuState(StateStack &stack, Context context)
     mGUIContainer.pack(editorButton);
     mGUIContainer.pack(settingsButton);
     mGUIContainer.pack(quitButton);
+
+    getContext().music.play(Music::MainTheme);
 }
 
 void MainMenuState::draw() {

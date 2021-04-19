@@ -30,7 +30,6 @@ SettingsState::SettingsState(StateStack& stack, Context context) :
     backButton->setText("");
     backButton->setCallback([this] () {
         requestStackPop();
-        requestStackPush(States::MainMenu);
         getContext().sounds.play(Sounds::Menu);
     });
     mGUIContainer.pack(backButton);
@@ -102,14 +101,11 @@ void SettingsState::saveSettings() const {
 }
 
 void SettingsState::apply() {
-
-
     saveSettings();
 
     sf::RenderWindow &window = getContext().window;
 
-    window.create(sf::VideoMode(mWidth, mHeight),"LifProjet",mWindowStyle);
-
+    window.create(sf::VideoMode(mWidth, mHeight), "LifProjet", mWindowStyle);
 }
 
 void SettingsState::draw() {
@@ -123,7 +119,7 @@ void SettingsState::draw() {
 }
 
 bool SettingsState::update(sf::Time dt) {
-    return true;
+    return false;
 }
 
 bool SettingsState::handleEvent(const sf::Event& event) {
