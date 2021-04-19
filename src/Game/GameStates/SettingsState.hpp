@@ -59,14 +59,17 @@ public:
 private :
     sf::Sprite mBackground;
     GUI::Container mGUIContainer;
-    GUI::Container mButtonList;
+    GUI::Container mResolutionList;
+    GUI::Container mVolumeList;
     GUI::Container mCheckBox;
 
     sf::Text mTextWindowSize;
     sf::Text mTextFullscreen;
+    sf::Text mTextVolume;
 
     int mWidth, mHeight;
     int mWindowStyle;
+    int mVolume;
 
 
 };
