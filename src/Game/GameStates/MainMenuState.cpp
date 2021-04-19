@@ -29,6 +29,7 @@ MainMenuState::MainMenuState(StateStack &stack, Context context)
     playButton->setPosition(390, 360);
     playButton->setText("Simulation");
     playButton->setCallback([this] () {
+        requestStackPop();
         requestStackPush(States::Game);
         getContext().sounds.play(Sounds::Menu);
     });

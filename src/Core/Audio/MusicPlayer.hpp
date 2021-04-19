@@ -49,6 +49,7 @@ public:
 
 private:
     sf::Music mMusic;
+    Music::ID mPlaying;
     std::map <Music::ID, std::string> mFileNames;
     float mVolume;
 };

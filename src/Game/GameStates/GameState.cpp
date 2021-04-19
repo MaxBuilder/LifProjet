@@ -140,6 +140,7 @@ GameState::GameState(StateStack &stack, Context& context)
     cancelButton->setText("Back");
     cancelButton->setCallback([this] () {
         requestStackPop();
+        requestStackPush(States::MainMenu);
         getContext().sounds.play(Sounds::Menu);
     });
     mMapSelectionUI.pack(cancelButton);

@@ -14,6 +14,9 @@ MusicPlayer::MusicPlayer()
 }
 
 void MusicPlayer::play(Music::ID theme) {
+    if(mPlaying == theme)
+        return;
+
     std::string filename = mFileNames[theme];
 
     if(!mMusic.openFromFile(filename))
@@ -22,6 +25,7 @@ void MusicPlayer::play(Music::ID theme) {
     mMusic.setVolume(mVolume);
     mMusic.setLoop(true);
     mMusic.play();
+    mPlaying = theme;
 }
 
 void MusicPlayer::stop() {
