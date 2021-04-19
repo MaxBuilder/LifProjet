@@ -81,7 +81,7 @@ public:
      */
     void switchDisplayDebug();
     /**
-     * Returns the simulation data
+     * @brief return the simulation data
      * @return SimulationData
      */
     SimulationData& getSimData();

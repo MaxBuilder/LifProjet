@@ -44,7 +44,7 @@ void Tile::paint(const sf::Vector2i &id,const float &rotation ){
     else if ( id == sf::Vector2i(0,1) or id == sf::Vector2i(0,2) or
             id == sf::Vector2i(1,4) or id == sf::Vector2i(1,10) or
             id == sf::Vector2i(0,13)) { // chemin de terre
-        moveSpeed = 1.1f;
+        moveSpeed = 1.20f;
         crossable = true;
     }else if ( id.x == 2 and (id.y < 3 or id.y == 20 or id.y == 19) ) { // eau
         moveSpeed = 0.35f;
