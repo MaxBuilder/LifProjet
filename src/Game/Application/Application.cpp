@@ -21,6 +21,7 @@ Application::Application()
     mView.setSize(1280,720);
     mView.setCenter(1280 / 2.f, 720 / 2.f);
     mView.setViewport(sf::FloatRect(0, 0, 1, 1));
+
     sf::Image icon;
     icon.loadFromFile("data/Menu/icon.png");
     mWindow.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
@@ -162,7 +163,7 @@ void Application::loadSettings() {
         Debug::WarningLog("Cannot open Settings file!");
         return;
     }
-    int height, width;
+    int height, width, volume;
     std::string tmp;
 
     settings >> tmp;
@@ -171,7 +172,11 @@ void Application::loadSettings() {
     settings >> width;
     settings >> tmp;
     settings >> height;
+    settings >> tmp;
+    settings >> volume;
 
     mVideoMode = sf::VideoMode(width, height);
+    mMusic.setVolume((float)volume);
+
     settings.close();
 }

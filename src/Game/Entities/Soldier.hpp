@@ -214,17 +214,17 @@ private:
     Entity * mTargeted;
     Soldier * mLeader;
 
-    // sprites
+    // Display
     sf::Sprite mSprite;
     sf::Sprite mGlow;
     Action mSpriteAction;
-    sf::Text mDisplayID,mDisplayAction;
-    sf::RectangleShape backLife,frontLife;
+    sf::Text mDisplayID, mDisplayAction;
+    sf::RectangleShape backLife, frontLife;
     sf::IntRect mSpriteRect;
     sf::Time mSpriteTime;
-
     Debug mDisplayType;
 
+    // Behavior
     std::vector<sf::Vector2f> mPath;
     float mSpeedBonus, mSpeedBase;
     int mDamages;

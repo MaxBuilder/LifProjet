@@ -9,11 +9,14 @@ MusicPlayer::MusicPlayer()
 , mFileNames()
 , mVolume(100.f)
 {
-    //mFileNames[Music::MainTheme] = "data/Audio/.ogg";
-    //mFileNames[Music::BattleTheme] = "data/Audio/.ogg";
+    mFileNames[Music::MainTheme] = "data/Audio/menuTheme.ogg";
+    mFileNames[Music::BattleTheme] = "data/Audio/battleTheme.ogg";
 }
 
 void MusicPlayer::play(Music::ID theme) {
+    if(mPlaying == theme)
+        return;
+
     std::string filename = mFileNames[theme];
 
     if(!mMusic.openFromFile(filename))
@@ -22,6 +25,7 @@ void MusicPlayer::play(Music::ID theme) {
     mMusic.setVolume(mVolume);
     mMusic.setLoop(true);
     mMusic.play();
+    mPlaying = theme;
 }
 
 void MusicPlayer::stop() {
@@ -34,4 +38,5 @@ void MusicPlayer::setPaused(bool pause) {
 
 void MusicPlayer::setVolume(float volume) {
     mMusic.setVolume(volume);
+    mVolume = volume;
 }

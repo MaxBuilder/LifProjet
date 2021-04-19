@@ -129,8 +129,9 @@ GameState::GameState(StateStack &stack, Context& context)
     confirmButton->setPosition(470, 567);
     confirmButton->setText("Confirm");
     confirmButton->setCallback([this] () {
-        getContext().sounds.play(Sounds::Menu);
         initializeSimulation();
+        getContext().sounds.play(Sounds::Menu);
+        getContext().music.play(Music::BattleTheme);
     });
     mMapSelectionUI.pack(confirmButton);
 
@@ -138,7 +139,7 @@ GameState::GameState(StateStack &stack, Context& context)
     cancelButton->setPosition(640, 567);
     cancelButton->setText("Back");
     cancelButton->setCallback([this] () {
-        requestStackClear();
+        requestStackPop();
         requestStackPush(States::MainMenu);
         getContext().sounds.play(Sounds::Menu);
     });
@@ -239,7 +240,7 @@ bool GameState::update(sf::Time dt) {
         mVictoryInfoTab.emplace_back("\t- Casualties : " + std::to_string(simData.nbBlueSoldierBegin - simData.nbBlueSoldierEnd) + " (" + std::to_string((int)soldierBluePerc) + "%)");
         mVictoryInfoTab.emplace_back("\t- Buildings destroyed : " + std::to_string(simData.nbRedBuildingBegin - simData.nbRedBuildingEnd));
 
-        return true;
+        return false;
     }
 
     if(!mTracking) {
@@ -264,7 +265,7 @@ bool GameState::update(sf::Time dt) {
     mWorld.update(dt);
 
     if(ended)
-        return true;
+        return false;
 
     mTime += dt;
     int min = (int)mTime.asSeconds() / 60;
@@ -275,7 +276,7 @@ bool GameState::update(sf::Time dt) {
     mBlueDisplay.setPosition(mRedDisplay.getPosition().x + ratio * 120, 9);
     mBlueDisplay.setSize(sf::Vector2f(120 - mRedDisplay.getSize().x, 24));
 
-    return true;
+    return false;
 }
 
 bool GameState::handleEvent(const sf::Event &event) {

@@ -24,7 +24,7 @@ public:
      * @param message Message to log
      */
     static void Log(const std::string& message) {
-        std::cout << "[INFO] " << message << std::endl;
+        std::cout << "[INFO] " << message << '\n';
     }
 
     /**
@@ -32,7 +32,7 @@ public:
      * @param message Message to log
      */
     static void WarningLog(const std::string& message) {
-        std::cout << "[WARNING] " << message << std::endl;
+        std::cout << "[WARNING] " << message << '\n';
     }
 };
 

@@ -37,7 +37,6 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     backButton->setPosition(16, 10);
     backButton->setCallback([this](){
         requestStackPop();
-        requestStackPush(States::MainMenu);
         getContext().sounds.play(Sounds::Menu);
     });
     mEditBar.pack(backButton);
@@ -316,7 +315,7 @@ bool MapEditorState::update(sf::Time dt) {
     }
     else editorCoord.setString("");
 
-    return true;
+    return false;
 }
 
 bool MapEditorState::handleEvent(const sf::Event& event) {
