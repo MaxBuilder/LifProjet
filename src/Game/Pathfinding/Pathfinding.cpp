@@ -104,7 +104,7 @@ void Pathfinding::getPath(sf::Vector2f self, sf::Vector2f target, std::vector<sf
     setPoids(poid);
     self = self/mMap->getBlockSize();
     //potencielement utile si on fait un algo pour chercher sur la map où est l'objectif
-    //target = target/map->getBlockSize();
+    //target = target/mMap->getBlockSize();
     initVoronoi(self, target);
     //partie qui run l'algo Pathfinding
     while(Voronoi());
@@ -116,25 +116,7 @@ void Pathfinding::getPath(sf::Vector2f self, sf::Vector2f target, std::vector<sf
     resetGraph();
 }
 
-/*
-std::vector<sf::Vector2f> Pathfinding::getPath(std::shared_ptr<TilesMap> &map,sf::Vector2f self, sf::Vector2f target, int poid) {
-    setPoids(poid);
-    self = self/map->getBlockSize();
-    //potencielement utile si on fait un algo pour chercher
-    //target = target/map->getBlockSize();
-    initVoronoi(self, target);
-    //partie qui run l'algo Pathfinding
-    while(Voronoi());
-    std::vector<sf::Vector2f> path;
-    PathfindingTile* tmp = &Astar_grid[objectif.x][objectif.y];
-    while (tmp != nullptr){
-        path.push_back(sf::Vector2f(tmp->coordNoeud.x,tmp->coordNoeud.y)*map->getBlockSize()+sf::Vector2f(1,1)*map->getBlockSize()/2.f);
-        tmp = tmp->parent;
-    }
-    resetGraph();
-    return path;
-}
-*/
+
 
 
 int Pathfinding::minimum(std::vector<PathfindingTile*> knots)const{
