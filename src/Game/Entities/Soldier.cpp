@@ -22,7 +22,6 @@ Soldier::Soldier(int id, EntityInfo::ID type, EntityInfo::Team team, sf::Vector2
 , mAction(Moving)
 , mTravelled(0.f)
 , mTargetInSight(0)
-, mAllyInSight(0)
 , mLeader(nullptr)
 , nbRequested(0)
 , nbResponse(0)

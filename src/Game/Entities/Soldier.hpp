@@ -245,7 +245,6 @@ public:
     // Special behavior variables :
     bool usePathFinding;
     int mTargetInSight;
-    int mAllyInSight;
     sf::Vector2f closetInSightDirection;
 
     // Grouping mechanic :

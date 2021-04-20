@@ -169,7 +169,6 @@ void World::updateTargets() {
     // Cibles des attaquants
     for(auto &red : mRedTeam) {
         red->mTargetInSight = 0;
-        red->mAllyInSight = 0;
         bool gotAssigned = false;
         float distMin = 99999999.0f;
         float distMinTank = 99999999.0;
@@ -229,10 +228,6 @@ void World::updateTargets() {
                 red->setTarget(nullptr);
         }
 
-        for(auto &ally : mRedTeam) { // Pertinent (on sait jamais)
-            if (ally != red and distance(ally->getPosition(), red->getPosition()) < 150)
-                red->mAllyInSight++;
-        }
     }
 
     // Cibles des défenseurs
@@ -279,11 +274,6 @@ void World::updateTargets() {
         }
         if(!gotAssigned)
             blue->setTarget(nullptr);
-
-        for(auto &ally : mBlueTeam) { // Pertinent (on sait jamais)
-            if (ally != blue and distance(ally->getPosition(), blue->getPosition()) < 150)
-                blue->mAllyInSight++;
-        }
     }
 }
 
