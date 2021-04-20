@@ -107,6 +107,7 @@ namespace Music {
      * @brief Music identifiers
      */
     enum ID {
+        None,
         MainTheme,
         BattleTheme
     };
