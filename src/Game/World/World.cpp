@@ -247,26 +247,26 @@ void World::updateTargets() {
 
         for(auto &red : mRedTeam) {
             float dist = distance(red->getPosition(), blue->getPosition());
-            if(dist < 100 and !red->isDestroyed()) { // In sight
+            if(dist < 120 and !red->isDestroyed()) { // In sight
                 blue->mTargetInSight++;
                 blue->closetInSightDirection = red->getPosition();
                 if(dist < distMinTank and red->getType() == EntityInfo::Tank) {
-                    if(dist < 80) {
+                    if(dist < 10) {
                         tank = static_cast<Entity *>(red);
                         distMinTank = dist;
                     }
                 }
                 else if (dist < distMinKnight and red->getType() == EntityInfo::Knight){
-                    if(dist < 80) {
+                    if(dist < 100) {
                         distMinKnight = dist;
                     }
                 }else if(dist < distMinArcher and red->getType() == EntityInfo::Archer){
-                    if(dist < 80) {
+                    if(dist < 100) {
                         distMinArcher = dist;
                     }
                 }
                 if(dist < distMin) {
-                    if(dist < 80) {
+                    if(dist < 100) {
                         blue->setTarget(static_cast<Entity *>(red));
                         distMin = dist;
                         gotAssigned = true;
