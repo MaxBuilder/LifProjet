@@ -80,7 +80,8 @@ Soldier::Soldier(int id, EntityInfo::ID type, EntityInfo::Team team, sf::Vector2
     // Display init
     mDisplayID.setFont(fonts.get(Fonts::Main));
     mDisplayID.setFillColor(sf::Color::Black);
-    mDisplayID.setCharacterSize(10u);
+    mDisplayID.setCharacterSize(30u);
+    mDisplayID.setScale(0.30,0.30);
     std::string str = toString(mId);
     if (mTeam == EntityInfo::Team::Blue)
         str+=std::string(" Blue");
@@ -89,13 +90,16 @@ Soldier::Soldier(int id, EntityInfo::ID type, EntityInfo::Team team, sf::Vector2
     mDisplayID.setString(str);
     mDisplayID.setPosition(getPosition()+sf::Vector2f(0,-20));
     centerOrigin(mDisplayID);
+    mDisplayID.move(10,15);
 
     mDisplayAction.setFont(fonts.get(Fonts::Main));
     mDisplayAction.setFillColor(sf::Color::Black);
-    mDisplayAction.setCharacterSize(10u);
+    mDisplayAction.setCharacterSize(30u);
+    mDisplayAction.setScale(0.30,0.30);
     mDisplayAction.setString("Moving");
     mDisplayAction.setPosition(getPosition()+sf::Vector2f(0,-20));
-    centerOrigin(mDisplayID);
+    centerOrigin(mDisplayAction);
+    mDisplayAction.move(10,15);
 
     backLife.setPosition(0,-11);
     backLife.setSize(sf::Vector2f(blockSize+1,5));
@@ -563,13 +567,13 @@ void Soldier::updateSprite(sf::Time dt) {
 
         float scaleX = std::abs(mSprite.getScale().x);
         bool right;
-        if(mAction == Action::Attacking and mTargeted != nullptr) {
+        if(mAction == Action::Attacking and mTargeted != nullptr and not isDestroyed()) {
             right = getPosition().x < mTargeted->getPosition().x;
         }
         else{
             right =  mDirection.x >= 0;
         }
-        if (right and not isDestroyed()) {
+        if (right) {
             mSprite.setScale( scaleX, mSprite.getScale().y);
             if( mAction == Action::Attacking and not isDestroyed()){
                 mSprite.setPosition(-15,-15);
@@ -578,7 +582,7 @@ void Soldier::updateSprite(sf::Time dt) {
                 mSprite.setPosition(-5,-5);
             }
         }
-        else if(not isDestroyed()) {
+        else {
             mSprite.setScale( -scaleX, mSprite.getScale().y);
             if( mAction == Action::Attacking and not isDestroyed()){
                 mSprite.setPosition(35,-15);
