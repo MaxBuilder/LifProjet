@@ -152,7 +152,7 @@ void World::onCommand() {
             case CommandType::CastleAssaulted:
                 Debug::Log("All defenders called to defend castle");
                 for(auto defender : mBlueTeam)
-                    if(!defender->isDestroyed())
+                    if(!defender->isDestroyed() and defender->getAction() == Soldier::Moving)
                         defender->setAction(Soldier::DefendingCastle);
                 break;
 
@@ -247,7 +247,7 @@ void World::updateTargets() {
 
         for(auto &red : mRedTeam) {
             float dist = distance(red->getPosition(), blue->getPosition());
-            if(dist < 120 and !red->isDestroyed()) { // In sight
+            if(dist < 130 and !red->isDestroyed()) { // In sight
                 blue->mTargetInSight++;
                 blue->closetInSightDirection = red->getPosition();
                 if(dist < distMinTank and red->getType() == EntityInfo::Tank) {
