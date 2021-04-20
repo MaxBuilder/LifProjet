@@ -65,12 +65,12 @@ private :
 
     sf::Text mTextWindowSize;
     sf::Text mTextFullscreen;
-    sf::Text mTextVolume;
+    sf::Text mTextMusicVolume;
+    sf::Text mTextEffectVolume;
 
     int mWidth, mHeight;
     int mWindowStyle;
-    int mVolume;
-
+    float mMusicVolume, mEffectVolume;
 
 };
 

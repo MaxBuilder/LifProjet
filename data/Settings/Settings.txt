@@ -1,4 +1,5 @@
 WindowStyle 4
 Width 1280
 Height 720
-Volume 20
+MusicVolume 20
+EffectVolume 20

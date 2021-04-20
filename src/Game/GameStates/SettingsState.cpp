@@ -12,25 +12,31 @@ SettingsState::SettingsState(StateStack& stack, Context context) :
 , mCheckBox()
 , mWidth(1280)
 , mHeight(720)
+, mMusicVolume(30)
+, mEffectVolume(30)
 , mBackground(context.textures.get(Textures::SettingsBackground))
 , mWindowStyle(sf::Style::Close)
 {
     mTextWindowSize.setFont(context.fonts.get(Fonts::Main));
     mTextFullscreen.setFont(context.fonts.get(Fonts::Main));
-    mTextVolume.setFont(context.fonts.get(Fonts::Main));
+    mTextMusicVolume.setFont(context.fonts.get(Fonts::Main));
+    mTextEffectVolume.setFont(context.fonts.get(Fonts::Main));
 
 
     mTextWindowSize.setPosition(250,180);
     mTextFullscreen.setPosition(250,240);
-    mTextVolume.setPosition(250, 430);
+    mTextMusicVolume.setPosition(250, 430);
+    mTextEffectVolume.setPosition(250, 490);
 
     mTextWindowSize.setCharacterSize(20u);
     mTextFullscreen.setCharacterSize(20u);
-    mTextVolume.setCharacterSize(20u);
+    mTextMusicVolume.setCharacterSize(20u);
+    mTextEffectVolume.setCharacterSize(20u);
 
     mTextWindowSize.setString("Size of Window");
     mTextFullscreen.setString("Fullscreen");
-    mTextVolume.setString("Volume");
+    mTextMusicVolume.setString("Musics Volume");
+    mTextEffectVolume.setString("Effects Volume");
 
     auto backButton = std::make_shared<GUI::Button>(context, 50, 50, Textures::SettingsBack);
     backButton->setPosition(10, 10);
@@ -79,13 +85,24 @@ SettingsState::SettingsState(StateStack& stack, Context context) :
     auto volumeList = std::make_shared<GUI::ButtonList>(context, 200, 60, 20u, Textures::SettingsSave);
     volumeList->setPosition(800, 400);
     volumeList->setCallback([this] (int count) {
-        mVolume = count * 10;
+        mMusicVolume = (float)count * 10;
         getContext().sounds.play(Sounds::Menu);
     });
     for(int i = 0 ; i <= 10 ; i++)
-        volumeList->addOption(std::to_string(i * 10));
-    volumeList->setOption(5);
+        volumeList->addOption(std::to_string(i * 10)+"%");
+    volumeList->setOption(3);
     mVolumeList.pack(volumeList);
+
+    auto volumeEffect = std::make_shared<GUI::ButtonList>(context, 200, 60, 20u, Textures::SettingsSave);
+    volumeEffect->setPosition(800, 460);
+    volumeEffect->setCallback([this] (int count) {
+        mEffectVolume = (float)count * 10;
+        getContext().sounds.play(Sounds::Menu);
+    });
+    for(int i = 0 ; i <= 10 ; i++)
+        volumeEffect->addOption(std::to_string(i * 10)+"%");
+    volumeEffect->setOption(3);
+    mVolumeList.pack(volumeEffect);
 
     auto fullscreen = std::make_shared<GUI::CheckBox>(context,40,40,Textures::Checkbox);
     fullscreen->setPosition(880,240);
@@ -113,8 +130,10 @@ void SettingsState::saveSettings() const {
     settings << mWidth;
     settings << "\nHeight ";
     settings << mHeight;
-    settings << "\nVolume ";
-    settings << mVolume;
+    settings << "\nMusicVolume ";
+    settings << mMusicVolume;
+    settings << "\nEffectVolume ";
+    settings << mEffectVolume;
 
     settings.close();
 }
@@ -130,7 +149,8 @@ void SettingsState::apply() {
     icon.loadFromFile("data/Menu/icon.png");
     window.setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
 
-    getContext().music.setVolume((float)mVolume);
+    getContext().music.setVolume(mMusicVolume);
+    getContext().sounds.setVolume(mEffectVolume);
 }
 
 void SettingsState::draw() {
@@ -141,6 +161,8 @@ void SettingsState::draw() {
     window.draw(mTextFullscreen);
     window.draw(mResolutionList);
     window.draw(mVolumeList);
+    window.draw(mTextMusicVolume);
+    window.draw(mTextEffectVolume);
     window.draw(mCheckBox);
 }
 

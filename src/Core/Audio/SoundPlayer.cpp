@@ -2,20 +2,26 @@
 
 SoundPlayer::SoundPlayer()
 : mSoundBuffers()
-, mSounds() {}
+, mSounds()
+, mVolume(100) {}
 
-void SoundPlayer::load(Sounds::ID sound, std::string path) {
+void SoundPlayer::load(Sounds::ID sound, const std::string& path) {
     mSoundBuffers.load(sound, path);
 }
 
 void SoundPlayer::play(Sounds::ID effect)
 {
-    mSounds.push_back(sf::Sound());
+    mSounds.emplace_back();
     sf::Sound& sound = mSounds.back();
 
+    sound.setVolume(mVolume);
     sound.setBuffer(mSoundBuffers.get(effect));
 
     sound.play();
+}
+
+void SoundPlayer::setVolume(float volume){
+    mVolume = volume;
 }
 
 void SoundPlayer::removeStoppedSounds()

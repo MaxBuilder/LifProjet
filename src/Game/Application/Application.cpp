@@ -163,7 +163,7 @@ void Application::loadSettings() {
         Debug::WarningLog("Cannot open Settings file!");
         return;
     }
-    int height, width, volume;
+    int height, width, musicVolume, effectVolume;
     std::string tmp;
 
     settings >> tmp;
@@ -173,10 +173,13 @@ void Application::loadSettings() {
     settings >> tmp;
     settings >> height;
     settings >> tmp;
-    settings >> volume;
+    settings >> musicVolume;
+    settings >> tmp;
+    settings >> effectVolume;
 
     mVideoMode = sf::VideoMode(width, height);
-    mMusic.setVolume((float)volume);
+    mMusic.setVolume((float)musicVolume);
+    mSounds.setVolume((float)effectVolume);
 
     settings.close();
 }

@@ -23,7 +23,7 @@ void reverseOrigin(sf::Text& text) {
 
 float angle(const sf::Vector2f& vec1, const sf::Vector2f& vec2 ){
     float rotation;
-    if(vec1.y-vec2.y != 0){
+    if(vec1.x != vec2.x){
         float tan = (vec1.x-vec2.x)/(vec1.y-vec2.y);
         rotation = std::atan(tan)*180/float(M_PI);
         rotation = 90 - rotation;

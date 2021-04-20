@@ -38,13 +38,19 @@ public:
      * @param sound Identifiers of the sound
      * @param path Path to the file
      */
-    void load(Sounds::ID sound, std::string path);
+    void load(Sounds::ID sound, const std::string& path);
+    /**
+     * @brief set the volume of effects
+     * @param volume
+     */
+    void setVolume(float volume);
     /**
      * @brief Clears the internal vector of played sounds
      */
     void removeStoppedSounds();
 
 private:
+    float mVolume;
     SoundBufferHolder			mSoundBuffers;
     std::list<sf::Sound>		mSounds;
 };
