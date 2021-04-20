@@ -1,5 +1,10 @@
 # LifProjet
 
+## Auteurs
+
+Projet réalisé par Marc BRUSTOLIN, Thibaut PEYRIC, Raphaël RICHARD, dans le cadre de
+l'UE LifProjet, sous la tutelle de Samir AKNINE. 
+
 ## Objectifs 
 
 L’objectif de ce projet est de proposer une modélisation distribuée
@@ -17,17 +22,16 @@ Dans une deuxième étape, nous définirons des stratégies de résolution
 plus fines permettant aux personnages de construire des stratégies de 
 jeu collectives en interagissant avec leur voisinage.
 
-## Auteurs
-
-Projet réalisé par Marc BRUSTOLIN, Thibaut PEYRIC, Raphaël RICHARD, dans le cadre de
-l'UE LifProjet, sous la tutelle de Samir AKNINE
-
 ## Implémentation 
 
 L'implémentation proposée de ce projet s'articule autours de plusieurs axes :
 - Deux équipe se battent sur un terrain : l'équipe rouge attaque et pour gagner, 
   doit détruire le chateau de l'équipe bleue qui elle, doit vaincre tous les assaillants.
   
+
+![image] (examples/menu.png)
+  
+
 
 - Un éditeur de niveau est fourni avec 3 emplacements de sauvegarde, permettant de 
   placer des soldats, des bâtiments, ainsi que modeler le terrain pour mieux mettre en
@@ -54,12 +58,19 @@ https://www.sfml-dev.org/download/sfml/2.5.1/index-fr.php
 
 ## Compilation
 
-- Windows : Télécharger la version de SFML correspondant à votre compilateur (MinGW ou MSVC) puis la déposer dans le dossier "lib"
+La compilation requiert un compilateur C++ supportant le standard C++17. Elle s'effectue selon la plateforme :
+
+- Windows : Télécharger la version de SFML correspondant à votre compilateur (MinGW ou MSVC) puis la déposer dans le dossier `lib`
  à la racine du projet. Le fichier CMakeList.txt reconnaîtra le chemin et fera le lien (statique) avec la lib.
   
 
 - Linux et MacOS : Installer CMake si ce n'est pas déja fait ainsi que SFML 2.5.1 (via `brew` ou `apt`), s'assurer que le chemin se trouve
 dans le `$PATH`. Saisir la commande `cmake -DCMAKE_BUILD_TYPE=Release CMakeLists.txt ` puis `make` et `./LifProjet`.
+  
+
+## Documentation 
+
+Avec Doxygen installé, saisir la commande `doxygen Doxyfile` à la racine du projet. La documentation est générale dans le dossier `doc`
 
 ## Sources 
 
