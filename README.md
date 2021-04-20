@@ -22,21 +22,23 @@ Dans une deuxième étape, nous définirons des stratégies de résolution
 plus fines permettant aux personnages de construire des stratégies de 
 jeu collectives en interagissant avec leur voisinage.
 
+![menu](examples/menu.png) 
+
 ## Implémentation 
 
 L'implémentation proposée de ce projet s'articule autours de plusieurs axes :
 - Deux équipe se battent sur un terrain : l'équipe rouge attaque et pour gagner, 
   doit détruire le chateau de l'équipe bleue qui elle, doit vaincre tous les assaillants.
-  
 
-![image] (examples/menu.png)
-  
 
+  ![simulation](examples/simulation.png)
 
 - Un éditeur de niveau est fourni avec 3 emplacements de sauvegarde, permettant de 
   placer des soldats, des bâtiments, ainsi que modeler le terrain pour mieux mettre en
   lumière les interactions entre tous les éléments.
   
+
+![editor](examples/editor.png)
 
 - Lors du lancement de la simulation, un choix entre les différents scénarios (de base et 
   emplacements de sauvegarde) est demandé. Après selection, la simulation est lancée. 
@@ -51,6 +53,15 @@ L'implémentation proposée de ce projet s'articule autours de plusieurs axes :
   attaque à distance) et le paladin (plus de vie et moins d'attaque). Ces unités ont aussi des cible de prédilection : les archers
   visent en priorité les paladins et ceux-ci les bâtiments).
   
+![knight_b](examples/knight_blue.png) ![knight_r](examples/knight_red.png) ![archer_b](examples/archer_blue.png) ![archer_r](examples/archer_red.png) ![tank_b](examples/tank_blue.png) ![tank_r](examples/tank_red.png)
+
+- Les entités possèdent des comportement particuliers comme la mise en groupe lorsqu'un trop grand nombre d'ennemis sont présent 
+  (comme sur l'image suivante). Les défenseurs ont aussi la faculté de défendre un village et, losque trop de défenseurs ont été 
+  vaincus, de battre en retraite jusqu'au chateau. Par ailleurs, lorsque celui-ci est attaqué, les défenseurs restants sur la 
+  carte sont appellés pour le défendre.
+
+![grouping](examples/grouping.png)
+
 ## Dépendances 
 
 Le projet est construit avec la librairie SFML 2.5.1. Il est nécessaire de l'installer afin de lancer l'application :
