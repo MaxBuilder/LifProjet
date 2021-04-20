@@ -29,7 +29,7 @@ jeu collectives en interagissant avec leur voisinage.
 L'implémentation proposée de ce projet s'articule autours de plusieurs axes :
 - Deux équipe se battent sur un terrain : l'équipe rouge attaque et pour gagner, 
   doit détruire le chateau de l'équipe bleue qui elle, doit vaincre tous les assaillants.
-
+  
 
   ![simulation](examples/simulation.png)
 

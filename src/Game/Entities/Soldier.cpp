@@ -22,7 +22,6 @@ Soldier::Soldier(int id, EntityInfo::ID type, EntityInfo::Team team, sf::Vector2
 , mAction(Moving)
 , mTravelled(0.f)
 , mTargetInSight(0)
-, mAllyInSight(0)
 , mLeader(nullptr)
 , nbRequested(0)
 , nbResponse(0)
@@ -230,6 +229,9 @@ void Soldier::updateAttack(sf::Time dt) {
         }
     }
     else if(mAction == Calling) {
+        if(nbRequested == 0)
+            setAction(Assaulting);
+
         if(nbRequested != 0 and nbResponse == nbRequested) {
             if(mSquadSize == 0)
                 setAction(Assaulting);
@@ -350,6 +352,9 @@ void Soldier::updateDefense(sf::Time dt) {
         }
     }
     else if(mAction == Calling) {
+        if(nbRequested == 0)
+            setAction(Assaulting);
+
         if(nbRequested != 0 and nbResponse == nbRequested) {
             if(mSquadSize == 0)
                 setAction(Assaulting);
@@ -411,6 +416,11 @@ void Soldier::updateDefense(sf::Time dt) {
         usePathFinding = true;
         seekTarget(mObjectif * 20.f);
         setVelocity(mDirection * dt.asSeconds() * (mSpeedBonus + mSpeedBase));
+
+        if(mTargetInSight > 1) {
+            setAction(Moving);
+            return;
+        }
 
         if(mTargeted != nullptr) {
             setAction(Attacking);

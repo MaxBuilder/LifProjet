@@ -152,7 +152,7 @@ void World::onCommand() {
             case CommandType::CastleAssaulted:
                 Debug::Log("All defenders called to defend castle");
                 for(auto defender : mBlueTeam)
-                    if(!defender->isDestroyed())
+                    if(!defender->isDestroyed() and defender->getAction() == Soldier::Moving)
                         defender->setAction(Soldier::DefendingCastle);
                 break;
 
@@ -169,7 +169,6 @@ void World::updateTargets() {
     // Cibles des attaquants
     for(auto &red : mRedTeam) {
         red->mTargetInSight = 0;
-        red->mAllyInSight = 0;
         bool gotAssigned = false;
         float distMin = 99999999.0f;
         float distMinTank = 99999999.0;
@@ -229,10 +228,6 @@ void World::updateTargets() {
                 red->setTarget(nullptr);
         }
 
-        for(auto &ally : mRedTeam) { // Pertinent (on sait jamais)
-            if (ally != red and distance(ally->getPosition(), red->getPosition()) < 150)
-                red->mAllyInSight++;
-        }
     }
 
     // Cibles des défenseurs
@@ -247,7 +242,7 @@ void World::updateTargets() {
 
         for(auto &red : mRedTeam) {
             float dist = distance(red->getPosition(), blue->getPosition());
-            if(dist < 120 and !red->isDestroyed()) { // In sight
+            if(dist < 130 and !red->isDestroyed()) { // In sight
                 blue->mTargetInSight++;
                 blue->closetInSightDirection = red->getPosition();
                 if(dist < distMinTank and red->getType() == EntityInfo::Tank) {
@@ -279,11 +274,6 @@ void World::updateTargets() {
         }
         if(!gotAssigned)
             blue->setTarget(nullptr);
-
-        for(auto &ally : mBlueTeam) { // Pertinent (on sait jamais)
-            if (ally != blue and distance(ally->getPosition(), blue->getPosition()) < 150)
-                blue->mAllyInSight++;
-        }
     }
 }
 
