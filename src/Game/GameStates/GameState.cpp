@@ -110,7 +110,9 @@ GameState::GameState(StateStack &stack, Context& context)
 
     // Construction de l'UI de selection de scénario :
 
-    std::vector<std::string> mapPath = {"demo1", "demo2", "demo3", "demo1", "demo1", "demo1", "demo1", "demo1", "demo1", "demo1"};
+    std::vector<std::string> mapPath = {"demo-editeur-1", "demo-editeur-2", "demo-editeur-3", "demo-pathfinding", "demo-combat-1vs1",
+                                        "demo-combat-groupe", "demo-destruction-batiments", "demo-soldat-priorite",
+                                        "demo1", "demo-complete"};
     for(int i = 0 ; i < mapPath.size() ; i++) {
         auto temp = std::make_shared<GUI::Button>(getContext(), 500, 40, Textures::GameMapSelectionButton);
         temp->setText(mapPath.at(i));
@@ -231,13 +233,26 @@ bool GameState::update(sf::Time dt) {
         //int buildRedPerc = simData.nbRedBuildingBegin > 0 ?  (simData.nbRedBuildingBegin - simData.nbRedBuildingEnd) / simData.nbRedBuildingBegin * 100 : 0;
         //int buildBluePerc = simData.nbBlueBuildingBegin > 0 ? (simData.nbBlueBuildingBegin - simData.nbBlueBuildingEnd) / simData.nbBlueBuildingBegin * 100 : 0;
         mVictoryInfoTab.emplace_back("Red team : ");
-        mVictoryInfoTab.emplace_back("\t- Soldier killed : " + std::to_string(simData.nbBlueSoldierBegin - simData.nbBlueSoldierEnd) + " (" + std::to_string((int)soldierBluePerc) + "%)");
-        mVictoryInfoTab.emplace_back("\t- Casualties : " + std::to_string(simData.nbRedSoldierBegin - simData.nbRedSoldierEnd) + " (" + std::to_string((int)soldierRedPerc) + "%)");
+        if (simData.nbBlueSoldierBegin > 0)
+            mVictoryInfoTab.emplace_back("\t- Soldier killed : " + std::to_string(simData.nbBlueSoldierBegin - simData.nbBlueSoldierEnd) + " (" + std::to_string((int)soldierBluePerc) + "%)");
+        else
+            mVictoryInfoTab.emplace_back("\t- Soldier killed : " + std::to_string(simData.nbBlueSoldierBegin - simData.nbBlueSoldierEnd));
+
+        if(simData.nbRedSoldierBegin > 0)
+            mVictoryInfoTab.emplace_back("\t- Casualties : " + std::to_string(simData.nbRedSoldierBegin - simData.nbRedSoldierEnd) + " (" + std::to_string((int)soldierRedPerc) + "%)");
+        else
+            mVictoryInfoTab.emplace_back("\t- Casualties : " + std::to_string(simData.nbRedSoldierBegin - simData.nbRedSoldierEnd));
         mVictoryInfoTab.emplace_back("\t- Buildings destroyed : " + std::to_string(simData.nbBlueBuildingBegin - simData.nbBlueBuildingEnd));
         mVictoryInfoTab.emplace_back("");
         mVictoryInfoTab.emplace_back("Blue team : ");
-        mVictoryInfoTab.emplace_back("\t- Soldier killed : " + std::to_string(simData.nbRedSoldierBegin - simData.nbRedSoldierEnd) + " (" + std::to_string((int)soldierRedPerc) + "%)");
-        mVictoryInfoTab.emplace_back("\t- Casualties : " + std::to_string(simData.nbBlueSoldierBegin - simData.nbBlueSoldierEnd) + " (" + std::to_string((int)soldierBluePerc) + "%)");
+        if(simData.nbRedSoldierBegin > 0)
+            mVictoryInfoTab.emplace_back("\t- Soldier killed : " + std::to_string(simData.nbRedSoldierBegin - simData.nbRedSoldierEnd) + " (" + std::to_string((int)soldierRedPerc) + "%)");
+        else
+            mVictoryInfoTab.emplace_back("\t- Soldier killed : " + std::to_string(simData.nbRedSoldierBegin - simData.nbRedSoldierEnd));
+        if (simData.nbBlueSoldierBegin > 0)
+            mVictoryInfoTab.emplace_back("\t- Casualties : " + std::to_string(simData.nbBlueSoldierBegin - simData.nbBlueSoldierEnd) + " (" + std::to_string((int)soldierBluePerc) + "%)");
+        else
+            mVictoryInfoTab.emplace_back("\t- Casualties : " + std::to_string(simData.nbBlueSoldierBegin - simData.nbBlueSoldierEnd));
         mVictoryInfoTab.emplace_back("\t- Buildings destroyed : " + std::to_string(simData.nbRedBuildingBegin - simData.nbRedBuildingEnd));
 
         return false;
