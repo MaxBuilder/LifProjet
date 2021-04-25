@@ -110,19 +110,22 @@ GameState::GameState(StateStack &stack, Context& context)
 
     // Construction de l'UI de selection de scénario :
 
-    std::vector<std::string> mapPath = {"demo-editeur-1", "demo-editeur-2", "demo-editeur-3", "demo-pathfinding", "demo-combat-1vs1",
-                                        "demo-combat-groupe", "demo-destruction-batiments", "demo-soldat-priorite",
-                                        "demo1", "demo-complete"};
-    for(int i = 0 ; i < mapPath.size() ; i++) {
+    std::unordered_map<std::string, std::string> mapPath = {{"Demo complete (temp)", "scenario7"}, {"Demo (temp)", "scenario6"}, {"Target priority", "scenario5"},
+                                                            {"Buildings destruction", "scenario4"}, {"Group combat", "scenario3"}, {"1v1", "scenario2"}, {"Pathfinding", "scenario1"},
+                                                            {"Custom map 3", "editor3"}, {"Custom map 2", "editor2"}, {"Custom map 1", "editor1"}};
+
+    int i = 0;
+    for(const auto& [name, path] : mapPath) {
         auto temp = std::make_shared<GUI::Button>(getContext(), 500, 40, Textures::GameMapSelectionButton);
-        temp->setText(mapPath.at(i));
+        temp->setText(name);
         temp->setToggle(true);
         temp->setPosition(390, (float)(155 + i * 40));
-        temp->setCallback([=] () {
+        temp->setCallback([=, path = path] () {
             getContext().sounds.play(Sounds::Menu);
-            mMapPath = "data/MapData/" + mapPath.at(i) + ".map";
+            mMapPath = "data/MapData/" + path + ".map";
         });
         if(i == 0) temp->activate();
+        i++;
 
         mMapSelectionUI.pack(temp);
     }
@@ -159,7 +162,7 @@ GameState::GameState(StateStack &stack, Context& context)
     mBackButton.pack(returnButton);
 
     auto closeButton = std::make_shared<GUI::Button>(getContext(), 120, 50, Textures::GameVictoryCloseButton);
-    closeButton->setPosition(445+135, 130+370);
+    closeButton->setPosition(580, 500);
     closeButton->setText("Close");
     closeButton->setCallback([this] () {
         closed = true;

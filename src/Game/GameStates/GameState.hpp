@@ -17,6 +17,9 @@
 #include "../../Core/GUI/Container.hpp"
 #include "../World/World.hpp"
 
+#include <unordered_map>
+#include <string>
+
 class GameState : public State {
 public:
     /**

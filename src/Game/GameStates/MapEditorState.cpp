@@ -227,7 +227,7 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     map1->setPosition(380, 200);
     map1->setText("Save 1");
     map1->setCallback([this] () {
-        mMapPath = "data/MapData/demo-editeur-1.map";
+        mMapPath = "data/MapData/editor1.map";
         subMenu = false;
         if(saveload) map.save(MapEditorState::mMapPath);
         else {
@@ -241,7 +241,7 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     map2->setPosition(380, 280);
     map2->setText("Save 2");
     map2->setCallback([this] () {
-        mMapPath = "data/MapData/demo-editeur-2.map";
+        mMapPath = "data/MapData/editor2.map";
         subMenu = false;
         if(saveload) map.save(MapEditorState::mMapPath);
         else {
@@ -255,7 +255,7 @@ MapEditorState::MapEditorState(StateStack &stack, Context context)
     map3->setPosition(380, 360);
     map3->setText("Save 3");
     map3->setCallback([this] () {
-        mMapPath = "data/MapData/demo-editeur-3.map";
+        mMapPath = "data/MapData/editor3.map";
         subMenu = false;
         if(saveload) map.save(MapEditorState::mMapPath);
         else {
