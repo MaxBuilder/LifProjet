@@ -246,7 +246,7 @@ void World::updateTargets() {
                 blue->mTargetInSight++;
                 blue->closetInSightDirection = red->getPosition();
                 if(dist < distMinTank and red->getType() == EntityInfo::Tank) {
-                    if(dist < 10) {
+                    if(dist < 100) {
                         tank = static_cast<Entity *>(red);
                         distMinTank = dist;
                     }
