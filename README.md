@@ -1,9 +1,11 @@
 # LifProjet
 
+https://user-images.githubusercontent.com/61556559/116783709-a11d5a00-aa90-11eb-8bc8-b2794986703d.mp4
+
 ## Auteurs
 
 Projet réalisé par Marc BRUSTOLIN, Thibaut PEYRIC, Raphaël RICHARD, dans le cadre de
-l'UE LifProjet, sous la tutelle de Samir AKNINE. 
+l'UE LifProjet, sous la tutelle de Samir AKNINE. Merci à Ferrer PAYEN pour le trailer !
 
 ## Objectifs 
 
@@ -26,7 +28,7 @@ jeu collectives en interagissant avec leur voisinage.
 
 ## Implémentation 
 
-L'implémentation proposée de ce projet s'articule autours de plusieurs axes :
+Le projet dans sa version finale propose divers fonctionnalités  :
 - Deux équipes se battent sur un terrain : l'équipe rouge attaque et pour gagner, 
   doit détruire le chateau de l'équipe bleue qui elle, doit vaincre tous les assaillants.
   
@@ -46,7 +48,8 @@ L'implémentation proposée de ce projet s'articule autours de plusieurs axes :
   
 
 - Les bâtiments ont une influence sur les stats des entités de la même équipe, les villages 
-  boostent la vitesse tandis que le chateau augmente les dégâts.
+  boostent la vitesse tandis que le chateau augmente les dégâts. Les barrères permettent de bloquer les ennemis tout en 
+  laissant passer les alliés.
   
 
 - Trois types d'unités différentes sont implémentées : le chevalier (vie et dégâts standards), l'archer (moins de vie mais
@@ -64,7 +67,7 @@ L'implémentation proposée de ce projet s'articule autours de plusieurs axes :
 
 ## Dépendances 
 
-Le projet est construit avec la librairie SFML 2.5.1. Il est nécessaire de l'installer afin de lancer l'application :
+Le projet est construit avec la librairie SFML 2.5.1. Il est nécessaire de l'installer pour compiler l'application :
 https://www.sfml-dev.org/download/sfml/2.5.1/index-fr.php
 
 ## Compilation
@@ -73,11 +76,13 @@ La compilation requiert un compilateur C++ supportant le standard C++17. Elle s'
 
 - Windows : Télécharger la version de SFML correspondant à votre compilateur (MinGW ou MSVC) puis la déposer dans le dossier `lib`
  à la racine du projet. Le fichier CMakeList.txt reconnaîtra le chemin et fera le lien (statique) avec la lib.
-  
 
 - Linux et MacOS : Installer CMake si ce n'est pas déja fait ainsi que SFML 2.5.1 (via `brew` ou `apt`), s'assurer que le chemin se trouve
-dans le `$PATH`. Saisir la commande `cmake -DCMAKE_BUILD_TYPE=Release CMakeLists.txt ` puis `make` et `./LifProjet`.
-  
+dans le `$PATH`. Saisir la commande `cmake -DCMAKE_BUILD_TYPE=Release CMakeLists.txt ` puis `make`. L'application est compilée à la racine du projet.
+
+## Distribution
+
+Sur windows, télécharger le dossier `release` et y ajouter le dossier `data`. L'exécutable est fourni avec les dll nécessaires à son exécution.
 
 ## Documentation 
 
@@ -106,8 +111,9 @@ https://lpc.opengameart.org/content/overworld-tiles-0 by Buck and Jeffrey Kern a
 
 
 - Musiques :
-    * Age of Empire 2 Main Menu Music : https://www.youtube.com/watch?v=RRtlWfi6jiM
-    * Age of Empire 3 Battle Track : https://www.youtube.com/watch?v=71T5aNwCxQ0
+    * Age of Empire 2 Main Menu Music : https://www.youtube.com/watch?v=RRtlWfi6jiM 
+    * Age of Empire 3 Battle Track : https://www.youtube.com/watch?v=71T5aNwCxQ0 
+    * Mighty Pixel - Summon of the Fallens : https://www.youtube.com/watch?v=qJ0WHrBtRGc
   
 
 Tous les contenus précédents appartiennent à leurs auteurs respectifs.
