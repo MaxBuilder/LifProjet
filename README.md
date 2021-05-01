@@ -7,7 +7,7 @@ https://user-images.githubusercontent.com/61556559/116783709-a11d5a00-aa90-11eb-
 Projet réalisé par Marc BRUSTOLIN, Thibaut PEYRIC, Raphaël RICHARD, dans le cadre de
 l'UE LifProjet, sous la tutelle de Samir AKNINE. Merci à Ferrer PAYEN pour le trailer !
 
-## Objectifs 
+## Objectifs
 
 L’objectif de ce projet est de proposer une modélisation distribuée
 d’un jeu stratégique. Nous prendrons comme exemple le tactical RPG.
@@ -17,7 +17,7 @@ dynamique. Les personnages appartiennent à plusieurs groupes. Les
 personnages peuvent se déplacer en même temps selon des règles préétablies. 
 
 Nous implémenterons une méthode de résolution distribuée avec des entités 
-autonomes dotée de comportements intelligents. Nous commencerons par définir
+autonomes dotées de comportements intelligents. Nous commencerons par définir
 des stratégies de résolution simples dans lesquelles les personnages 
 effectuent des déplacements uniquement sur la base de leur perception.
 Dans une deuxième étape, nous définirons des stratégies de résolution 
@@ -28,7 +28,7 @@ jeu collectives en interagissant avec leur voisinage.
 
 ## Implémentation 
 
-Le projet dans sa version finale propose divers fonctionnalités  :
+Le projet dans sa version finale propose divers fonctionnalitées  :
 - Deux équipes se battent sur un terrain : l'équipe rouge attaque et pour gagner, 
   doit détruire le chateau de l'équipe bleue qui elle, doit vaincre tous les assaillants.
   
@@ -36,29 +36,29 @@ Le projet dans sa version finale propose divers fonctionnalités  :
   ![simulation](examples/simulation.png)
 
 - Un éditeur de niveau est fourni avec 3 emplacements de sauvegarde, permettant de 
-  placer des soldats, des bâtiments, ainsi que modeler le terrain pour mieux mettre en
+  placer des soldats, des bâtiments, ainsi que de modeler le terrain pour mieux mettre en
   lumière les interactions entre tous les éléments.
   
 
 ![editor](examples/editor.png)
 
 - Lors du lancement de la simulation, un choix entre les différents scénarios (de base et 
-  emplacements de sauvegarde) est demandé. Après selection, la simulation est lancée. 
+  customisables) est demandé. Après selection, la simulation est lancée. 
   Il est possible d'accélerer, ralentir et stopper le temps via l'interface.
   
 
-- Les bâtiments ont une influence sur les stats des entités de la même équipe, les villages 
-  boostent la vitesse tandis que le chateau augmente les dégâts. Les barrères permettent de bloquer les ennemis tout en 
+- Les bâtiments ont une influence sur les statistiques des entités de la même équipe, les villages 
+  boostent la vitesse tandis que le chateau augmente les dégâts. Les barrières permettent de bloquer les ennemis tout en 
   laissant passer les alliés.
   
 
-- Trois types d'unités différentes sont implémentées : le chevalier (vie et dégâts standards), l'archer (moins de vie mais
-  attaque à distance) et le paladin (plus de vie et moins d'attaque). Ces unités ont aussi des cible de prédilection : les archers
+- Trois classes d'unités sont disponibles : le chevalier (vie et dégâts standards), l'archer (moins de vie mais
+  attaque à distance) et le paladin (plus de vie et moins d'attaque). Ces unités ont aussi des cibles de prédilection : les archers
   visent en priorité les paladins et ceux-ci les bâtiments).
   
 ![knight_b](examples/knight_blue.png) ![knight_r](examples/knight_red.png) ![archer_b](examples/archer_blue.png) ![archer_r](examples/archer_red.png) ![tank_b](examples/tank_blue.png) ![tank_r](examples/tank_red.png)
 
-- Les entités possèdent des comportement particuliers comme la mise en groupe (image suivante lorsqu'un trop grand nombre d'ennemis 
+- Les entités possèdent des comportement particuliers comme la mise en groupe (image suivante), lorsque trop d'ennemis 
   sont dans le champ de vision du soldat. Les défenseurs ont aussi la faculté de défendre un village et, lorsque trop ont
   été vaincus, de battre en retraite jusqu'au chateau. Par ailleurs, lorsque celui-ci est attaqué, les défenseurs restants sur la 
   carte sont appellés pour le défendre.
